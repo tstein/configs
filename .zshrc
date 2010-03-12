@@ -144,7 +144,24 @@ update-rc() {
 }
 
 update-zshrc() {
-    rsync -azve "ssh -p54848" ted@halberd.dyndns.org:~/.zshrc ~/.zshrc && source ~/.zshrc
+    if [ ! `whence git` ]; then
+        print -l "git is required to do this, but it is not in your path.";
+        return 1;
+    fi
+    
+    TMPDIR=`uuidgen`-ted
+    pushd
+
+    mkdir ~/$TMPDIR
+    cd ~/$TMPDIR
+    git clone git://github.com/tstein/ted-configs.git
+    cp ted-configs/.zshrc ~/.zshrc
+    
+    popd
+    rm -rf ~/$TMPDIR
+
+    source ~/.zshrc
+    return 0;
 }
 
 update-vimrc() {
