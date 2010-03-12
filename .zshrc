@@ -4,7 +4,7 @@
 #######################################
 # setopt lines - sections correspond to zshoptions
 # dir opts
-setopt autocd chaselinks
+setopt autocd chaselinks pushd_silent
 
 # completion opts
 setopt autolist autoparamkeys autoparamslash hashlistall listambiguous listpacked listtypes
@@ -151,9 +151,9 @@ update-zshrc() {
     
     TMPDIR=`uuidgen`-ted
     pushd
-
     mkdir ~/$TMPDIR
     cd ~/$TMPDIR
+    
     git clone git://github.com/tstein/ted-configs.git
     cp ted-configs/.zshrc ~/.zshrc
     
@@ -242,6 +242,7 @@ get-comfy() {
 # interface-printing functions
 drawCornMeter() {
     WIDTH=$1
+    STEP=$((100.0 / $WIDTH))
     LEVEL=`acpi -b | perl -ne '/(\d{1,3}\%)/; $LVL = $1; $LVL =~ s/\%//; print $LVL;'`
     CHARGING=`acpi -a | perl -ne '/on-line/; print $1'`
     print -n $PR_WHITE"["
@@ -263,16 +264,16 @@ drawCornMeter() {
             fi
         fi
 
-        LEVEL=$(($LEVEL - (100.0 / $WIDTH))) 
         if (($LEVEL >= 0.0)); then
-            if (($LEVEL <= 2.5)); then
-                print -n "-"
+            if (($LEVEL <= $(($STEP / 2.0)))); then
+                print -n "\-"
             else
                 print -n "="
             fi
         else
             print -n " "
         fi
+        LEVEL=$(($LEVEL - $STEP)) 
     done
     print -n $PR_WHITE"]"
 }
@@ -383,9 +384,8 @@ if [ $AM_LAPTOP ]; then
     AM_LAPTOP=`acpi -b`
 fi
 
-# define how wide the RPROMPT battery meter should be
-# this should really be dynamic
-BATT_METER_WIDTH=20
+# How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
+BATT_METER_WIDTH=0
 #######################################
 
 
@@ -422,7 +422,11 @@ case "$TERM" in
     if [ $AM_LAPTOP ]; then
         precmd() {
             print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) (%y)\a"
-            RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $BATT_METER_WIDTH`'%b'
+            if (( $BATT_METER_WIDTH > 0 )); then
+                RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $BATT_METER_WIDTH`'%b'
+            else
+                RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $(($COLUMNS / 10))`'%b'
+            fi
         }
     else
         precmd() {
