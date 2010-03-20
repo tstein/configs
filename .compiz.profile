@@ -1,9 +1,13 @@
 [maximumize]
 as_ignore_overlapping = true
 as_trigger_max_key = <Super>q
+as_trigger_max_vertically = <Shift><Super>q
 
 [switcher]
-s0_bring_to_front = false
+s0_speed = 1.600000
+
+[staticswitcher]
+s0_mouse_select = true
 
 [mag]
 s0_box_width = 640
@@ -52,12 +56,12 @@ as_toggle_key = <Control><Super>a
 
 [shift]
 as_terminate_button = Disabled
-s0_speed = 2.000000
-s0_shift_speed = 1.300000
+s0_speed = 2.400000
+s0_shift_speed = 1.340000
 
 [cube]
 s0_skydome = true
-s0_skydome_gradient_start_color = #00003cff
+s0_skydome_gradient_start_color = #00b8ffff
 s0_active_opacity = 25.000000
 s0_inactive_opacity = 20.000000
 s0_transparent_manual_only = false
@@ -84,7 +88,7 @@ as_ignore_key = Disabled
 s0_glow_size = 18
 
 [core]
-as_active_plugins = core;regex;maximumize;gnomecompat;dbus;annotate;commands;glib;shift;minimize;neg;video;resize;decoration;mousepoll;extrawm;place;resizeinfo;wobbly;fade;cube;scale;group;switcher;mag;3d;rotate;move;cubeaddon;bench;
+as_active_plugins = core;regex;maximumize;gnomecompat;dbus;annotate;commands;glib;shift;minimize;neg;video;resize;decoration;mousepoll;extrawm;place;resizeinfo;wobbly;fade;cube;scale;group;staticswitcher;mag;3d;rotate;move;cubeaddon;bench;
 as_texture_filter = 2
 as_show_desktop_key = <Super>d
 s0_hsize = 6

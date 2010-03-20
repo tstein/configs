@@ -122,6 +122,7 @@ bindkey '[20~' tetris # F9
 #######################################
 # command customizations
 # aliases
+alias -- \-='cd \-'
 alias bc='bc -l'
 alias cep='call-embedded-perl'
 alias emacs='emacs -nw'
@@ -244,7 +245,7 @@ drawCornMeter() {
     WIDTH=$1
     STEP=$((100.0 / $WIDTH))
     LEVEL=`acpi -b | perl -ne '/(\d{1,3}\%)/; $LVL = $1; $LVL =~ s/\%//; print $LVL;'`
-    CHARGING=`acpi -a | perl -ne '/on-line/; print $1'`
+    CHARGING=`acpi -a | perl -ne 'if (/on-line/) { print $1; }'`
     print -n $PR_WHITE"["
     LEVEL=$(($LEVEL * 1.0))
     if (($LEVEL <= 30.0)); then
@@ -252,7 +253,7 @@ drawCornMeter() {
     else
         print -n $PR_YELLOW
     fi
-    if (($LEVEL >= 98.0)); then
+    if (($LEVEL >= 95.0)); then
         print -n $PR_WHITE
     fi
     for (( i = 0; i < $WIDTH; i++ ))
@@ -367,13 +368,6 @@ bindkey "^x " no-magic-abbrev-expand
 HISTFILE=~/.zhistfile
 HISTSIZE=1000
 SAVEHIST=1000000
-
-#if [ `whence vim` ]; then
-#    EDITOR='vim'
-#    if [ `whence vimpager` ]; then
-#        export PAGER="vimpager"
-#    fi
-#fi
 
 # better to accidentally deny access than grant it
 umask 077
