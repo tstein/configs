@@ -127,7 +127,7 @@ alias bc='bc -l'
 alias cep='call-embedded-perl'
 alias emacs='emacs -nw'
 alias fortune='fortune -c'
-alias getip='ifconfig | perl -ne "if (/inet addr:/) { s/\s+inet addr://; s/ .*\n//; print $F; last; }"'
+alias getip='wget -qO - http://www.whatismyip.com/automation/n09230945.asp'
 alias grep='grep --color=auto'
 alias ls='ls --color=auto -F'
 alias open='xdg-open'
@@ -186,7 +186,7 @@ call-embedded-perl() {
         DEBUG_CEP="FALSE"
         perl -ne "print $F if s/#$SCRIPT#//" ~/.zshrc
     else
-        perl -ne "print $F if s/#$SCRIPT#//" ~/.zshrc | perl -w
+        perl -ne "print $F if s/#$SCRIPT#//" ~/.zshrc | perl -w \- $@
     fi
 }
 
@@ -303,7 +303,7 @@ drawCornMeter() {
 #localinfo#  if (-e '/proc/cpuinfo') {
 #localinfo#      $buffer = `grep -P '(?:model name|cpu\\s+:)' /proc/cpuinfo | head -n 1`;
 #localinfo#      $buffer =~ s/^(?:model name|cpu)\s*:\s*(.+)/$1/;
-#localinfo#      $buffer =~ s/\((?:R|TM)\)//g;
+#localinfo#      $buffer =~ s/\((?:R|TM)\)/ /gi;
 #localinfo#      $buffer =~ s/CPU//;
 #localinfo#      $buffer =~ s/\s{2,}/ /g;
 #localinfo#      $buffer =~ s/[@\s]*[\d\.]+\s?[GM]Hz$//;
@@ -331,6 +331,34 @@ drawCornMeter() {
 #localinfo#  }
 #localinfo#  print $sysinfo;
 
+#rpmstats#   
+#rpmstats#   unless (-e '/bin/rpm') {
+#rpmstats#       die("rpm not found. Are you sure this is an rpm-based system?");
+#rpmstats#   }
+#rpmstats#   print "Gathering info on installed rpms... This may take a few.\n";
+#rpmstats#   @rpms = split(/\n/, `/bin/rpm -qa`);
+#rpmstats#   foreach $rpm (@rpms) {
+#rpmstats#       if ($rpm =~ /\.fc(\d{1,2})\.(\w+)$/) {
+#rpmstats#           $rel = $1;
+#rpmstats#           $arch = $2;
+#rpmstats#           $releases{$rel} = () unless ($releases{$rel});
+#rpmstats#           push(@{$releases{$rel}}, \$rpm);
+#rpmstats#               $arches{$arch} = () unless ($arches{$arch});
+#rpmstats#           push(@{$arches{$arch}}, \$rpm);
+#rpmstats#       } else {
+#rpmstats#           push(@unsortable, \$rpm);
+#rpmstats#       }
+#rpmstats#   }
+#rpmstats#   print("\nFound $#rpms packages.\n");
+#rpmstats#   print("By release:\n");
+#rpmstats#   foreach $rel (sort {$b <=> $a} keys %releases) {
+#rpmstats#       printf("    fc$rel: %d packages\n", $#{$releases{$rel}} + 1);
+#rpmstats#   }
+#rpmstats#   print("\nBy arch:\n");
+#rpmstats#   foreach $arch (sort keys %arches) {
+#rpmstats#       printf("    $arch: %d packages\n", $#{$arches{$arch}} + 1);
+#rpmstats#   }
+#rpmstats#   printf("\n%d packages unsorted.\n", $#unsortable);
 #######################################
 
 
