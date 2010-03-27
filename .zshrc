@@ -120,7 +120,7 @@ bindkey '[20~' tetris # F9
 
 
 #######################################
-# command customizations
+# Command customizations.
 # aliases
 alias -- \-='cd \-'
 alias bc='bc -l'
@@ -190,10 +190,12 @@ call-embedded-perl() {
     fi
 }
 
+# Designed to be called on first run, as decided by the presence or absence of a .zlocal.
 get-comfy() {
     trap 'trap 2; return 1' 2
     if [[ -f ~/.zlocal ]]; then
-        print -l "You have a .zlocal on this machine. If you really intended to run this function, delete it manually and try again."
+        print -l "You have a .zlocal on this machine. If you really intended to run this function,\
+        delete it manually and try again."
         return 1
     fi
     print -l "\nLooks like it's your first time here.\n"
@@ -240,7 +242,8 @@ get-comfy() {
     trap 2
 }
 
-# interface-printing functions
+# Interface-printing functions.
+# cornmeter is a visual battery meter meant for one of your prompts.
 drawCornMeter() {
     WIDTH=$1
     STEP=$((100.0 / $WIDTH))
@@ -278,6 +281,29 @@ drawCornMeter() {
     done
     print -n $PR_WHITE"]"
 }
+
+# When on a laptop, enable cornmeter.
+if [ $AM_LAPTOP ]; then
+    update_rprompt() {
+        if (( $BATT_METER_WIDTH > 0 )); then
+            RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $BATT_METER_WIDTH`'%b'
+        else
+            RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $(($COLUMNS / 10))`'%b'
+        fi
+    }
+fi
+
+# For terms known to support it, print some info to the terminal title.
+case "$TERM" in
+    xterm|xterm*|screen)
+    precmd_update_title() {
+        print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) (%y)\a"
+    }
+    preexec_update_title() {
+        print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) <%30>...>$1%<<> (%y)\a"
+    }
+    ;;
+esac
 #######################################
 
 
@@ -385,7 +411,7 @@ no-magic-abbrev-expand() {
 zle -N magic-abbrev-expand
 zle -N no-magic-abbrev-expand
 bindkey " " magic-abbrev-expand
-bindkey "^x " no-magic-abbrev-expand
+bindkey "^x" no-magic-abbrev-expand
 #######################################
 
 
@@ -400,7 +426,7 @@ SAVEHIST=1000000
 # better to accidentally deny access than grant it
 umask 077
 
-# test for laptoppiness - $AM_LAPTOP will be true if there are batteries detected by acpi
+# Test for laptoppiness. $AM_LAPTOP will be true if there are batteries detected by acpi.
 AM_LAPTOP=`whence acpi`
 if [ $AM_LAPTOP ]; then
     AM_LAPTOP=`acpi -b`
@@ -428,39 +454,14 @@ fi
 
 
 #######################################
-# finally, let's set up our interface
-# prompt lines
+# Finally, let's set up our interface.
 PROMPT=$PR_COLOR'%B[%n@%m %D{%H:%M}]\%#%b '
 PROMPT2=$PR_GREEN'%B%_>%b '
 RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})%b'
 SPROMPT=$PR_MAGENTA'zsh: correct '%R' to '%r'? '$PR_NO_COLOR
 
-# precmd is executed before returning a prompt
-# preexec is executed before running any command
-# for $TERMs known to support it, use the title to give
-#     who you are, where you're logged in, on what tty, and, if applicable, what you are currently running
-case "$TERM" in
-    xterm|xterm*|screen)
-    if [ $AM_LAPTOP ]; then
-        precmd() {
-            print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) (%y)\a"
-            if (( $BATT_METER_WIDTH > 0 )); then
-                RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $BATT_METER_WIDTH`'%b'
-            else
-                RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $(($COLUMNS / 10))`'%b'
-            fi
-        }
-    else
-        precmd() {
-            print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) (%y)\a"
-        }
-    fi
-
-    preexec() {
-        print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) <%30>...>$1%<<> (%y)\a"
-    }
-    ;;
-esac
+precmd_functions=(precmd_update_title update_rprompt)
+preexec_functions=(preexec_update_title)
 # ZSH IS GO
 #######################################
 
