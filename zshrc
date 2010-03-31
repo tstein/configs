@@ -1,8 +1,7 @@
 # .zshrc configured for halberd
 #######################################
 
-#######################################
-# setopt lines - sections correspond to zshoptions
+# zsh options. Each group corresponds to a heading in the zshoptions manpage {{{
 # dir opts
 setopt autocd chaselinks pushd_silent
 
@@ -29,12 +28,12 @@ setopt cbases functionargzero localoptions multios
 
 # ZLE
 setopt nobeep zle
-#######################################
+####################################### }}}
 
 
 
-#######################################
-# The following lines were added by compinstall
+# zle configuration. {{{
+# The following lines were added by compinstall a very long time ago.
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' matcher-list ''
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
@@ -60,12 +59,11 @@ PR_NO_COLOR="%{$terminfo[sgr0]%}"
 # enable tetris - don't forget to bind it
 autoload -Uz tetris
 zle -N tetris
-#######################################
+####################################### }}}
 
 
 
-#######################################
-# custom key bindings
+# Key bindings. {{{
 bindkey -e
 bindkey TAB expand-or-complete-prefix
 bindkey '' delete-word
@@ -73,7 +71,7 @@ bindkey '^J' backward-delete-word
 bindkey '[1;5D' backward-word # Ctrl <-
 bindkey '[1;5C' forward-word  # Ctrl ->
 
-# can't count on these keys to be consistent
+# Can't count on these keys to be consistent.
 case "$TERM" in
     'xterm')
     bindkey '[H' beginning-of-line
@@ -115,12 +113,11 @@ case "$TERM" in
 esac
 
 bindkey '[20~' tetris # F9
-#######################################
+####################################### }}}
 
 
 
-#######################################
-# Command customizations.
+# Command customizations. {{{
 # aliases
 alias -- \-='cd \-'
 alias bc='bc -l'
@@ -304,12 +301,11 @@ case "$TERM" in
     }
     ;;
 esac
-#######################################
+####################################### }}}
 
 
 
-#######################################
-# embedded Perl scripts
+# Embedded Perl scripts. {{{
 #
 # To create a new script, write it here, with each line prefixed with #NAME#. It will be callable
 # with `call-embedded-perl NAME`.
@@ -385,12 +381,11 @@ esac
 #rpmstats#       printf("    $arch: %d packages\n", $#{$arches{$arch}} + 1);
 #rpmstats#   }
 #rpmstats#   printf("\n%d packages unsorted.\n", $#unsortable);
-#######################################
+####################################### }}}
 
 
 
-#######################################
-# space expansion - cause a space to expand to certain text given what's already on the line
+# Space expansion: cause a space to expand to certain text given what's already on the line. {{{
 typeset -Ag abbreviations
 abbreviations=(
     "ps"                "ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command"
@@ -412,12 +407,11 @@ zle -N magic-abbrev-expand
 zle -N no-magic-abbrev-expand
 bindkey " " magic-abbrev-expand
 bindkey "^x" no-magic-abbrev-expand
-#######################################
+####################################### }}}
 
 
 
-#######################################
-# shell configuration
+# Shell configuration. {{{
 # history-related variables
 HISTFILE=~/.zhistfile
 HISTSIZE=1000
@@ -434,11 +428,7 @@ fi
 
 # How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
 BATT_METER_WIDTH=0
-#######################################
 
-
-
-#######################################
 # .zlocal is a file of my creation - contains site-specific anything so I don't have to modify this
 # file for every machine.
 # if needed, default values go first so that the source call overwrites them.
@@ -449,12 +439,11 @@ fi
 if test -f ~/.zlocal; then
     source ~/.zlocal
 fi
-#######################################
+####################################### }}}
 
 
 
-#######################################
-# Finally, let's set up our interface.
+# Finally, let's set up our interface. {{{
 PROMPT=$PR_COLOR'%B[%n@%m %D{%H:%M}]\%#%b '
 PROMPT2=$PR_GREEN'%B%_>%b '
 RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})%b'
@@ -462,6 +451,11 @@ SPROMPT=$PR_MAGENTA'zsh: correct '%R' to '%r'? '$PR_NO_COLOR
 
 precmd_functions=(precmd_update_title update_rprompt)
 preexec_functions=(preexec_update_title)
+####################################### }}}
 # ZSH IS GO
 #######################################
+# vim:filetype=zsh foldmethod=marker autoindent expandtab shiftwidth=4
+# Local variables:
+# mode: sh
+# End:
 
