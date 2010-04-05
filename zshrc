@@ -122,6 +122,14 @@ bindkey '[20~' tetris # F9
 alias -- \-='cd \-'
 alias bc='bc -l'
 alias cep='call-embedded-perl'
+alias chrome='google-chrome'
+alias chrome-get-rss='
+    CHROME_RSS=0
+    for num in `ps axwwo rss,command | grep -P "(google-|)chrome" | grep -v grep | sed "s/^\s*//g" | cut -d " " -f 1`
+    do
+        CHROME_RSS=$(($num * 1 + $CHROME_RSS))
+    done
+    print $CHROME_RSS; unset CHROME_RSS'
 alias emacs='emacs -nw'
 alias fortune='fortune -c'
 alias getip='wget -qO - http://www.whatismyip.com/automation/n09230945.asp'
@@ -280,15 +288,15 @@ drawCornMeter() {
 }
 
 # When on a laptop, enable cornmeter.
-if [ $AM_LAPTOP ]; then
-    update_rprompt() {
+update_rprompt() {
+    if [ $AM_LAPTOP ]; then
         if (( $BATT_METER_WIDTH > 0 )); then
             RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $BATT_METER_WIDTH`'%b'
         else
             RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $(($COLUMNS / 10))`'%b'
         fi
-    }
-fi
+    fi
+}
 
 # For terms known to support it, print some info to the terminal title.
 case "$TERM" in
