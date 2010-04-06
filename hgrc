@@ -1,0 +1,10 @@
+[ui]
+username = Ted Stein <karamarisan@gmail.com>
+verbose = True
+
+[merge-tools]
+filemerge.executable = vimdiff
+filemerge.args = $local $other
+filemerge.checkchanged = true
+filemerge.gui = true
+

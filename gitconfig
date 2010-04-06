@@ -1,0 +1,9 @@
+[user]
+	name = Ted Stein
+	email = karamarisan@gmail.com
+[color]
+    branch = auto
+    interactive = auto
+    diff = auto
+    status = auto
+
