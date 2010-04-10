@@ -1,6 +1,8 @@
 [ui]
 username = Ted Stein <karamarisan@gmail.com>
 verbose = True
+merge = meld
+editor = vim
 
 [merge-tools]
 filemerge.executable = vimdiff
@@ -8,3 +10,10 @@ filemerge.args = $local $other
 filemerge.checkchanged = true
 filemerge.gui = true
 
+
+
+[tortoisehg]
+vdiff = vimdiff
+editor = gvim
+tabwidth = 4
+pushafterci = True

@@ -199,16 +199,16 @@ call-embedded-perl() {
 get-comfy() {
     trap 'trap 2; return 1' 2
     if [[ -f ~/.zlocal ]]; then
-        print -l "You have a .zlocal on this machine. If you really intended to run this function,\
+        print -l "You have a .zlocal on this machine. If you really intended to run this function,\n
         delete it manually and try again."
         return 1
     fi
     print -l "\nLooks like it's your first time here.\n"
-    DATE=`date -R`
+    DATE=`date`
     print -l ".zlocal for "`hostname`" created on $DATE" >> ~/.zlocal
     print -l "configuration:\n" >> ~/.zlocal
     call-embedded-perl localinfo | tee -a ~/.zlocal
-    sed -i 's/.*/# &/' ~/.zlocal
+    sed -i -e 's/.*/# &/' ~/.zlocal
     print >> ~/.zlocal
     print -l "\nWhat color would you like your prompt on this machine to be? Pick one."
     print -n "[red|green|blue|cyan|magenta|yellow|white|black]: "
@@ -363,7 +363,8 @@ esac
 
 #rpmstats#   
 #rpmstats#   unless (-e '/bin/rpm') {
-#rpmstats#       die("rpm not found. Are you sure this is an rpm-based system?");
+#rpmstats#       print("rpm not found. Are you sure this is an rpm-based system?\n");
+#rpmstats#       exit(1);
 #rpmstats#   }
 #rpmstats#   print "Gathering info on installed rpms... This may take a few.\n";
 #rpmstats#   @rpms = split(/\n/, `/bin/rpm -qa`);
