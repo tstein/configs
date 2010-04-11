@@ -61,7 +61,7 @@ s0_shift_speed = 1.340000
 
 [cube]
 s0_skydome = true
-s0_skydome_gradient_start_color = #00b8ffff
+s0_skydome_gradient_start_color = #00afffff
 s0_active_opacity = 25.000000
 s0_inactive_opacity = 20.000000
 s0_transparent_manual_only = false
