@@ -287,15 +287,56 @@ drawCornMeter() {
     print -n $PR_WHITE"]"
 }
 
-# When on a laptop, enable cornmeter.
-update_rprompt() {
-    if [ $AM_LAPTOP ]; then
-        if (( $BATT_METER_WIDTH > 0 )); then
-            RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $BATT_METER_WIDTH`'%b'
-        else
-            RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $(($COLUMNS / 10))`'%b'
+# If we're in a repo, print some info. Intended for use in a prompt.
+rprompt_git_status() {
+    git status &> /dev/null
+    if (( $? != 128 )); then
+        print -n " git:"
+        GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null); print -n ${GITBRANCH#refs/heads/}
+    fi
+}
+
+rprompt_hg_status() {
+    hg status &> /dev/null
+    if (( $? != 255 )); then
+        print -n " hg:"
+        print -n `hg summary | perl -ne 'if (/^branch: (.*)$/) { print $1; }'`
+        if [ ! "`hg summary | grep clean`" ]; then
+            print -n "(unclean)"
         fi
     fi
+}
+
+# When on a laptop, enable cornmeter.
+update_rprompt() {
+    #if [ $AM_LAPTOP ]; then
+    #    if (( $BATT_METER_WIDTH > 0 )); then
+    #        RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $BATT_METER_WIDTH`'%b'
+    #    else
+    #        RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $(($COLUMNS / 10))`'%b'
+    #    fi
+    #fi
+    RPROMPT=$PR_CYAN'%B[%~'
+
+    if [ `whence git` ]; then
+        RPROMPT+=`rprompt_git_status`
+    fi
+
+    if [ `whence hg` ]; then
+        RPROMPT+=`rprompt_hg_status`
+    fi
+
+    RPROMPT+=']%(?..{%?})'
+
+    if [ $AM_LAPTOP ]; then
+        if (( $BATT_METER_WIDTH > 0 )); then
+            RPROMPT+=`drawCornMeter $BATT_METER_WIDTH`
+        else
+            RPROMPT+=`drawCornMeter $(($COLUMNS / 10))`
+        fi
+    fi
+
+    RPROMPT+='%b'
 }
 
 # For terms known to support it, print some info to the terminal title.

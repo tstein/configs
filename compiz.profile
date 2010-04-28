@@ -6,6 +6,12 @@ as_trigger_max_vertically = <Shift><Super>q
 [switcher]
 s0_speed = 1.600000
 
+[zoom]
+as_initiate_button = <Super>Button2
+as_zoom_in_button = Disabled
+as_zoom_out_button = Disabled
+as_zoom_pan_button = <Super>Button3
+
 [staticswitcher]
 s0_mouse_select = true
 
@@ -26,9 +32,15 @@ as_arrow_base_color = #e6e6e6d9
 as_arrow_shadow_color = #dcdcdcd9
 
 [cubeaddon]
+as_top_next_key = Disabled
 s0_mode = 3
 s0_deformation = 0
 s0_cylinder_manual_only = true
+s0_top_images = 
+s0_bottom_images = 
+
+[atlantis]
+s0_start_crabs_bottom = true
 
 [gnomecompat]
 as_command_terminal = terminator
@@ -60,10 +72,10 @@ s0_speed = 2.400000
 s0_shift_speed = 1.340000
 
 [cube]
+s0_images = 
 s0_skydome = true
-s0_skydome_gradient_start_color = #00afffff
 s0_active_opacity = 25.000000
-s0_inactive_opacity = 20.000000
+s0_inactive_opacity = 50.000000
 s0_transparent_manual_only = false
 
 [neg]
@@ -82,13 +94,16 @@ as_initiate_all_key = <Alt><Super>e
 [extrawm]
 as_toggle_fullscreen_key = F11
 
+[place]
+s0_mode = 1
+
 [group]
 as_remove_key = Disabled
 as_ignore_key = Disabled
 s0_glow_size = 18
 
 [core]
-as_active_plugins = core;regex;maximumize;gnomecompat;dbus;annotate;commands;glib;shift;minimize;neg;video;resize;decoration;mousepoll;extrawm;place;resizeinfo;wobbly;fade;cube;scale;group;staticswitcher;mag;3d;rotate;move;cubeaddon;bench;
+as_active_plugins = core;regex;maximumize;zoom;text;gnomecompat;dbus;annotate;commands;glib;png;shift;minimize;neg;video;resize;decoration;mousepoll;extrawm;place;notification;reflex;resizeinfo;wobbly;fade;cube;scale;group;staticswitcher;mag;3d;rotate;move;cubeaddon;bench;
 as_texture_filter = 2
 as_show_desktop_key = <Super>d
 s0_hsize = 6
