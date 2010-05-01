@@ -505,7 +505,7 @@ precmd_functions=(precmd_update_title update_rprompt)
 preexec_functions=(preexec_update_title)
 
 if [ `whence keychain` ]; then
-    keychain -Q -q --nogui $ssh_keys
+    keychain -Q -q --nogui $ssh_key_list
     source ~/.keychain/${HOSTNAME}-sh
 fi
 
