@@ -6,7 +6,7 @@ set softtabstop=4
 set autoindent
 set number
 
-set tw=100
+set tw=80
 
 syntax on
 filetype plugin indent on

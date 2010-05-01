@@ -52,9 +52,9 @@ zle -N self-insert url-quote-magic
 autoload -U colors
 colors
 for color in RED GREEN BLUE YELLOW MAGENTA CYAN WHITE BLACK; do
-    eval PR_$color='%{$fg[${(L)color}]%}'
+    eval local PR_$color='%{$fg[${(L)color}]%}'
 done
-PR_NO_COLOR="%{$terminfo[sgr0]%}"
+local PR_NO_COLOR="%{$terminfo[sgr0]%}"
 
 # enable tetris - don't forget to bind it
 autoload -Uz tetris
@@ -155,7 +155,7 @@ update-zshrc() {
         return 1;
     fi
     
-    TMPDIR=`uuidgen`-ted
+    local TMPDIR=`uuidgen`-ted
     pushd
     mkdir ~/$TMPDIR
     cd ~/$TMPDIR
@@ -175,6 +175,7 @@ update-vimrc() {
 }
 
 call-embedded-perl() {
+    local DEBUG_CEP
     if [[ "$1" == "debug" ]]; then
         DEBUG_CEP="TRUE"
         shift
@@ -184,11 +185,10 @@ call-embedded-perl() {
         print -l "Which script would you like to run?"
         return 0;
     fi
-    SCRIPT="$1"
+    local SCRIPT="$1"
     shift
     
     if [[ "$DEBUG_CEP" == "TRUE" ]]; then
-        DEBUG_CEP="FALSE"
         perl -ne "print $F if s/#$SCRIPT#//" ~/.zshrc
     else
         perl -ne "print $F if s/#$SCRIPT#//" ~/.zshrc | perl -w \- $@
@@ -204,15 +204,14 @@ get-comfy() {
         return 1
     fi
     print -l "\nLooks like it's your first time here.\n"
-    DATE=`date`
-    print -l ".zlocal for "`hostname`" created on $DATE" >> ~/.zlocal
+    print -l ".zlocal for "`hostname`" created on `date`" >> ~/.zlocal
     print -l "configuration:\n" >> ~/.zlocal
     call-embedded-perl localinfo | tee -a ~/.zlocal
     sed -i -e 's/.*/# &/' ~/.zlocal
     print >> ~/.zlocal
     print -l "\nWhat color would you like your prompt on this machine to be? Pick one."
     print -n "[red|green|blue|cyan|magenta|yellow|white|black]: "
-    read CHOICE
+    read local CHOICE
     case "$CHOICE" in
         'red')
         print -l 'PR_COLOR=$PR_RED\n' >> ~/.zlocal
@@ -250,12 +249,13 @@ get-comfy() {
 # Interface-printing functions.
 # cornmeter is a visual battery meter meant for one of your prompts.
 drawCornMeter() {
+    for var in WIDTH STEP LEVEL CHARGING; do; eval local $var=""; done
     WIDTH=$1
     STEP=$((100.0 / $WIDTH))
     LEVEL=`acpi -b | perl -ne '/(\d{1,3}\%)/; $LVL = $1; $LVL =~ s/\%//; print $LVL;'`
     CHARGING=`acpi -a | perl -ne 'if (/on-line/) { print $1; }'`
-    print -n $PR_WHITE"["
     LEVEL=$(($LEVEL * 1.0))
+    print -n $PR_WHITE"["
     if (($LEVEL <= 30.0)); then
         print -n $PR_RED
     else
@@ -289,10 +289,11 @@ drawCornMeter() {
 
 # If we're in a repo, print some info. Intended for use in a prompt.
 rprompt_git_status() {
+    local GITBRANCH=""
     git status &> /dev/null
     if (( $? != 128 )); then
-        print -n " git:"
-        GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null); print -n ${GITBRANCH#refs/heads/}
+        GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
+        print -n " git:${GITBRANCH#refs/heads/}"
     fi
 }
 
@@ -302,7 +303,7 @@ rprompt_hg_status() {
         print -n " hg:"
         print -n `hg summary | perl -ne 'if (/^branch: (.*)$/) { print $1; }'`
         if [ ! "`hg summary | grep clean`" ]; then
-            print -n "(unclean)"
+            print -n "(*)"
         fi
     fi
 }
@@ -464,7 +465,7 @@ bindkey "^x" no-magic-abbrev-expand
 # Shell configuration. {{{
 # history-related variables
 HISTFILE=~/.zhistfile
-HISTSIZE=1000
+HISTSIZE=5000
 SAVEHIST=1000000
 
 # better to accidentally deny access than grant it
@@ -483,6 +484,7 @@ BATT_METER_WIDTH=0
 # file for every machine.
 # if needed, default values go first so that the source call overwrites them.
 PR_COLOR=$PR_BLUE
+ssh_key_list=()
 if test ! -e ~/.zlocal; then
     get-comfy
 fi
@@ -494,13 +496,19 @@ fi
 
 
 # Finally, let's set up our interface. {{{
-PROMPT=$PR_COLOR'%B[%n@%m %D{%H:%M}]\%#%b '
+PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)\%#%b "
 PROMPT2=$PR_GREEN'%B%_>%b '
 RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})%b'
 SPROMPT=$PR_MAGENTA'zsh: correct '%R' to '%r'? '$PR_NO_COLOR
 
 precmd_functions=(precmd_update_title update_rprompt)
 preexec_functions=(preexec_update_title)
+
+if [ `whence keychain` ]; then
+    keychain -Q -q --nogui $ssh_keys
+    source ~/.keychain/${HOSTNAME}-sh
+fi
+
 ####################################### }}}
 # ZSH IS GO
 #######################################

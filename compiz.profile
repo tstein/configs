@@ -36,6 +36,7 @@ as_top_next_key = Disabled
 s0_mode = 3
 s0_deformation = 0
 s0_cylinder_manual_only = true
+s0_top_color = #00a2ffff
 s0_top_images = 
 s0_bottom_images = 
 
