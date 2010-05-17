@@ -43,9 +43,15 @@ s0_bottom_images =
 [atlantis]
 s0_start_crabs_bottom = true
 
+[scaleaddon]
+as_close_key = <Alt><Super>w
+as_close_button = Disabled
+as_pull_key = <Alt><Super>q
+s0_highlight_color = #ffffff36
+
 [gnomecompat]
 as_command_terminal = terminator
-as_run_command_terminal_key = <Control><Super>n
+as_run_command_terminal_key = <Alt><Super>n
 
 [expo]
 as_expo_animation = 2
@@ -62,7 +68,9 @@ s0_speed = 3.000000
 
 [commands]
 as_command0 = toggle_rotate
+as_command1 = terminator -bme htop
 as_run_command0_key = <Super>r
+as_run_command1_key = <Alt><Super>h
 
 [addhelper]
 as_toggle_key = <Control><Super>a
@@ -73,6 +81,7 @@ s0_speed = 2.400000
 s0_shift_speed = 1.340000
 
 [cube]
+as_next_slide_key = Disabled
 s0_images = 
 s0_skydome = true
 s0_active_opacity = 25.000000
@@ -104,9 +113,10 @@ as_ignore_key = Disabled
 s0_glow_size = 18
 
 [core]
-as_active_plugins = core;regex;maximumize;zoom;text;gnomecompat;dbus;annotate;commands;glib;png;shift;minimize;neg;video;resize;decoration;mousepoll;extrawm;place;notification;reflex;resizeinfo;wobbly;fade;cube;scale;group;staticswitcher;mag;3d;rotate;move;cubeaddon;bench;
+as_active_plugins = core;regex;maximumize;zoom;text;gnomecompat;dbus;annotate;commands;glib;png;shift;minimize;neg;video;resize;decoration;mousepoll;extrawm;place;notification;resizeinfo;wobbly;fade;cube;scale;group;staticswitcher;mag;scaleaddon;3d;rotate;move;cubeaddon;bench;
 as_texture_filter = 2
 as_show_desktop_key = <Super>d
+as_slow_animations_key = <Shift><Control><Alt>s
 s0_hsize = 6
 s0_outputs = 1920x1200+0+0;
 

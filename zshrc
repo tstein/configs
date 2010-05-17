@@ -211,7 +211,8 @@ get-comfy() {
     print >> ~/.zlocal
     print -l "\nWhat color would you like your prompt on this machine to be? Pick one."
     print -n "[red|green|blue|cyan|magenta|yellow|white|black]: "
-    read local CHOICE
+    local CHOICE=""
+    read CHOICE
     case "$CHOICE" in
         'red')
         print -l 'PR_COLOR=$PR_RED\n' >> ~/.zlocal
@@ -288,11 +289,12 @@ drawCornMeter() {
 }
 
 # If we're in a repo, print some info. Intended for use in a prompt.
+# TODO: Switch from precmd_functions to chpwd_functions
 rprompt_git_status() {
     local GITBRANCH=""
     git status &> /dev/null
     if (( $? != 128 )); then
-        GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
+        #GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
         print -n " git:${GITBRANCH#refs/heads/}"
     fi
 }
@@ -368,6 +370,11 @@ esac
 #localinfo#      $sysinfo .= "Operating system:      $buffer\n";
 #localinfo#  if (-e '/etc/issue') {
 #localinfo#      $buffer = `head -n 1 /etc/issue`;
+#localinfo#      # Arch (at least) puts `clear` in its /etc/issue.
+#localinfo#      # This monstrosity fixes that.
+#localinfo#      if ($buffer =~ /\x1b\x5b\x48\x1b\x5b\x32\x4a/) {
+#localinfo#          $buffer = `head -n 2 /etc/issue | tail -n 1`;
+#localinfo#      }
 #localinfo#      $buffer =~ s/\s*\\\S+//g;
 #localinfo#      chomp($buffer);
 #localinfo#      $sysinfo .= "Distro/release:        $buffer\n";
@@ -411,7 +418,7 @@ esac
 #rpmstats#   print "Gathering info on installed rpms... This may take a few.\n";
 #rpmstats#   @rpms = split(/\n/, `/bin/rpm -qa`);
 #rpmstats#   foreach $rpm (@rpms) {
-#rpmstats#       if ($rpm =~ /\.fc(\d{1,2})\.(\w+)$/) {
+#rpmstats#       if ($rpm =~ /fc(\d{1,2})\.(\w+)$/) {
 #rpmstats#           $rel = $1;
 #rpmstats#           $arch = $2;
 #rpmstats#           $releases{$rel} = () unless ($releases{$rel});
@@ -463,6 +470,8 @@ bindkey "^x" no-magic-abbrev-expand
 
 
 # Shell configuration. {{{
+EDITOR=vim
+
 # history-related variables
 HISTFILE=~/.zhistfile
 HISTSIZE=5000
@@ -498,7 +507,7 @@ fi
 # Finally, let's set up our interface. {{{
 PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)\%#%b "
 PROMPT2=$PR_GREEN'%B%_>%b '
-RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})%b'
+RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})%b' # For reference only. This is clobbered by update_rprompt().
 SPROMPT=$PR_MAGENTA'zsh: correct '%R' to '%r'? '$PR_NO_COLOR
 
 precmd_functions=(precmd_update_title update_rprompt)

@@ -2,11 +2,15 @@ set et
 set sw=4
 set tabstop=4
 set softtabstop=4
-"set nowrap
+set tw=80
+
+" Set up text wrap
+set wrap
+set linebreak
+
 set autoindent
 set number
-
-set tw=80
+set bg=dark
 
 syntax on
 filetype plugin indent on
