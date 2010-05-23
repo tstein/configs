@@ -66,53 +66,55 @@ zle -N tetris
 # Key bindings. {{{
 bindkey -e
 bindkey TAB expand-or-complete-prefix
-bindkey '' delete-word
+bindkey '^K' delete-word
 bindkey '^J' backward-delete-word
-bindkey '[1;5D' backward-word # Ctrl <-
-bindkey '[1;5C' forward-word  # Ctrl ->
+bindkey '[20~' tetris     # Press F9 to play.
 
-# Can't count on these keys to be consistent.
+# Can't count on these keys to be consistent. This switch sets the following:
+#   <Delete>        :   delete-char
+#   <Home>          :   beginning-of-line
+#   <End>           :   end-of-line
+#   <PageUp>        :   insert-last-word
+#   <PageDown>      :   end-of-history
+#   ^<LeftArrow>    :   backward-word
+#   ^<RightArrow>   :   forward-word
 case "$TERM" in
-    'xterm')
-    bindkey '[H' beginning-of-line
-    bindkey 'OH' beginning-of-line
-    bindkey '[F' end-of-line
-    bindkey 'OF' end-of-line
-    bindkey '[3~' delete-char
-    bindkey '[6~' end-of-history
-    bindkey '[5~' insert-last-word
+    'xterm'*)
+    bindkey '[3~'     delete-char
+    bindkey 'OH'      beginning-of-line
+    bindkey 'OF'      end-of-line
+    bindkey '[5~'     insert-last-word
+    bindkey '[6~'     end-of-history
+    bindkey '[1;5D'   backward-word # Ctrl <-
+    bindkey '[1;5C'   forward-word  # Ctrl ->
     ;;
-    'xterm*')
-    bindkey 'OH' beginning-of-line
-    bindkey 'OF' end-of-line
-    bindkey '[3~' delete-char
-    bindkey '[6~' end-of-history
-    bindkey '[5~' insert-last-word
-    ;;
-    'rxvt-unicode')
-    bindkey '^[[7~' beginning-of-line
-    bindkey '[8~' end-of-line
-    bindkey '[3~' delete-char
-    bindkey '[6~' end-of-history
-    bindkey '[5~' insert-last-word
+    "rxvt"*)
+    bindkey '[3~'     delete-char
+    bindkey '[7~'     beginning-of-line
+    bindkey '[8~'     end-of-line
+    bindkey '[5~'     insert-last-word
+    bindkey '[6~'     end-of-history
+    bindkey 'Od'      backward-word
+    bindkey 'Oc'      forward-word
     ;;
     'screen')
-    bindkey '[1~' beginning-of-line
-    bindkey '[4~' end-of-line
-    bindkey '[3~' delete-char
-    bindkey '[6~' end-of-history
-    bindkey '[5~' insert-last-word
+    bindkey '[3~'     delete-char
+    bindkey '[1~'     beginning-of-line
+    bindkey '[4~'     end-of-line
+    bindkey '[5~'     insert-last-word
+    bindkey '[6~'     end-of-history
+    bindkey '[1;5D'   backward-word
+    bindkey '[1;5C'   forward-word
     ;;
     'linux')
-    bindkey '[1~' beginning-of-line
-    bindkey '[4~' end-of-line
-    bindkey '[3~' delete-char
-    bindkey '[6~' end-of-history
-    bindkey '[5~' insert-last-word
+    bindkey '[3~'     delete-char
+    bindkey '[1~'     beginning-of-line
+    bindkey '[4~'     end-of-line
+    bindkey '[5~'     insert-last-word
+    bindkey '[6~'     end-of-history
+    # mingetty doesn't distinguish between ^<LeftArrow> and <LeftArrow>.
     ;;
 esac
-
-bindkey '[20~' tetris # F9
 ####################################### }}}
 
 
@@ -515,7 +517,7 @@ preexec_functions=(preexec_update_title)
 
 if [ `whence keychain` ]; then
     keychain -Q -q --nogui $ssh_key_list
-    source ~/.keychain/${HOSTNAME}-sh
+    source ~/.keychain/${HOST}-sh
 fi
 
 ####################################### }}}
