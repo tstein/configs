@@ -1,7 +1,7 @@
 # .zshrc configured for halberd
 #######################################
 
-# zsh options. Each group corresponds to a heading in the zshoptions manpage {{{
+# zsh options. Each group corresponds to a heading in the zshoptions manpage. {{{
 # dir opts
 setopt autocd chaselinks pushd_silent
 
@@ -119,8 +119,7 @@ esac
 
 
 
-# Command customizations. {{{
-# aliases
+# Aliases. {{{
 alias -- \-='cd \-'
 alias bc='bc -l'
 alias cep='call-embedded-perl'
@@ -140,8 +139,11 @@ alias ls='ls --color=auto -F'
 alias open='xdg-open'
 alias rm='rm -i'    # someday, I hope to earn the right to remove this line
 alias units='units --verbose'
+####################################### }}}
 
-# command functions
+
+
+# Command functions. {{{
 oh() {
     echo "oh $@"
 }
@@ -196,165 +198,6 @@ call-embedded-perl() {
         perl -ne "print $F if s/#$SCRIPT#//" ~/.zshrc | perl -w \- $@
     fi
 }
-
-# Designed to be called on first run, as decided by the presence or absence of a .zlocal.
-get-comfy() {
-    trap 'trap 2; return 1' 2
-    if [[ -f ~/.zlocal ]]; then
-        print -l "You have a .zlocal on this machine. If you really intended to run this function,\n
-        delete it manually and try again."
-        return 1
-    fi
-    print -l "\nLooks like it's your first time here.\n"
-    print -l ".zlocal for "`hostname`" created on `date`" >> ~/.zlocal
-    print -l "configuration:\n" >> ~/.zlocal
-    call-embedded-perl localinfo | tee -a ~/.zlocal
-    sed -i -e 's/.*/# &/' ~/.zlocal
-    print >> ~/.zlocal
-    print -l "\nWhat color would you like your prompt on this machine to be? Pick one."
-    print -n "[red|green|blue|cyan|magenta|yellow|white|black]: "
-    local CHOICE=""
-    read CHOICE
-    case "$CHOICE" in
-        'red')
-        print -l 'PR_COLOR=$PR_RED\n' >> ~/.zlocal
-        ;;
-        'green')
-        print -l 'PR_COLOR=$PR_GREEN\n' >> ~/.zlocal
-        ;;
-        'blue')
-        print -l 'PR_COLOR=$PR_BLUE\n' >> ~/.zlocal
-        ;;
-        'cyan')
-        print -l 'PR_COLOR=$PR_CYAN\n' >> ~/.zlocal
-        ;;
-        'magenta')
-        print -l 'PR_COLOR=$PR_MAGENTA\n' >> ~/.zlocal
-        ;;
-        'yellow')
-        print -l 'PR_COLOR=$PR_YELLOW\n' >> ~/.zlocal
-        ;;
-        'white')
-        print -l 'PR_COLOR=$PR_WHITE\n' >> ~/.zlocal
-        ;;
-        'black')
-        print -l "Really? If you say so..."
-        print -l 'PR_COLOR=$PR_BLACK\n' >> ~/.zlocal
-        ;;
-        *)
-        print -l "You get blue. Set PR_COLOR in .zlocal later if you want anything else."
-        ;;
-    esac
-    print -l
-    trap 2
-}
-
-# Interface-printing functions.
-# cornmeter is a visual battery meter meant for one of your prompts.
-drawCornMeter() {
-    for var in WIDTH STEP LEVEL CHARGING; do; eval local $var=""; done
-    WIDTH=$1
-    STEP=$((100.0 / $WIDTH))
-    LEVEL=`acpi -b | perl -ne '/(\d{1,3}\%)/; $LVL = $1; $LVL =~ s/\%//; print $LVL;'`
-    CHARGING=`acpi -a | perl -ne 'if (/on-line/) { print $1; }'`
-    LEVEL=$(($LEVEL * 1.0))
-    print -n $PR_WHITE"["
-    if (($LEVEL <= 30.0)); then
-        print -n $PR_RED
-    else
-        print -n $PR_YELLOW
-    fi
-    if (($LEVEL >= 95.0)); then
-        print -n $PR_WHITE
-    fi
-    for (( i = 0; i < $WIDTH; i++ ))
-    do
-        if (($(($i + 1)) == $WIDTH)); then
-            if [ `acpi -a | grep -o on-line` ]; then
-                print -n "C"
-                continue
-            fi
-        fi
-
-        if (($LEVEL >= 0.0)); then
-            if (($LEVEL <= $(($STEP / 2.0)))); then
-                print -n "\-"
-            else
-                print -n "="
-            fi
-        else
-            print -n " "
-        fi
-        LEVEL=$(($LEVEL - $STEP)) 
-    done
-    print -n $PR_WHITE"]"
-}
-
-# If we're in a repo, print some info. Intended for use in a prompt.
-# TODO: Switch from precmd_functions to chpwd_functions
-rprompt_git_status() {
-    local GITBRANCH=""
-    git status &> /dev/null
-    if (( $? != 128 )); then
-        #GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
-        print -n " git:${GITBRANCH#refs/heads/}"
-    fi
-}
-
-rprompt_hg_status() {
-    hg status &> /dev/null
-    if (( $? != 255 )); then
-        print -n " hg:"
-        print -n `hg summary | perl -ne 'if (/^branch: (.*)$/) { print $1; }'`
-        if [ ! "`hg summary | grep clean`" ]; then
-            print -n "(*)"
-        fi
-    fi
-}
-
-# When on a laptop, enable cornmeter.
-update_rprompt() {
-    #if [ $AM_LAPTOP ]; then
-    #    if (( $BATT_METER_WIDTH > 0 )); then
-    #        RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $BATT_METER_WIDTH`'%b'
-    #    else
-    #        RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $(($COLUMNS / 10))`'%b'
-    #    fi
-    #fi
-    RPROMPT=$PR_CYAN'%B[%~'
-
-    if [ `whence git` ]; then
-        RPROMPT+=`rprompt_git_status`
-    fi
-
-    if [ `whence hg` ]; then
-        RPROMPT+=`rprompt_hg_status`
-    fi
-
-    RPROMPT+=']%(?..{%?})'
-
-    if [ $AM_LAPTOP ]; then
-        if (( $BATT_METER_WIDTH > 0 )); then
-            RPROMPT+=`drawCornMeter $BATT_METER_WIDTH`
-        else
-            RPROMPT+=`drawCornMeter $(($COLUMNS / 10))`
-        fi
-    fi
-
-    RPROMPT+='%b'
-}
-
-# For terms known to support it, print some info to the terminal title.
-case "$TERM" in
-    xterm|xterm*|screen)
-    precmd_update_title() {
-        print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) (%y)\a"
-    }
-    preexec_update_title() {
-        print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) <%30>...>$1%<<> (%y)\a"
-    }
-    ;;
-esac
 ####################################### }}}
 
 
@@ -412,7 +255,7 @@ esac
 #localinfo#  }
 #localinfo#  print $sysinfo;
 
-#rpmstats#   
+#rpmstats#
 #rpmstats#   unless (-e '/bin/rpm') {
 #rpmstats#       print("rpm not found. Are you sure this is an rpm-based system?\n");
 #rpmstats#       exit(1);
@@ -502,6 +345,162 @@ fi
 if test -f ~/.zlocal; then
     source ~/.zlocal
 fi
+####################################### }}}
+
+
+
+# Interface functions. {{{
+# Designed to be called on first run, as decided by the presence or absence of a .zlocal.
+get-comfy() {
+    trap 'trap 2; return 1' 2
+    if [[ -f ~/.zlocal ]]; then
+        print -l "You have a .zlocal on this machine. If you really intended to run this function,\n
+        delete it manually and try again."
+        return 1
+    fi
+    print -l "\nLooks like it's your first time here.\n"
+    print -l ".zlocal for "`hostname`" created on `date`" >> ~/.zlocal
+    print -l "configuration:\n" >> ~/.zlocal
+    call-embedded-perl localinfo | tee -a ~/.zlocal
+    sed -i -e 's/.*/# &/' ~/.zlocal
+    print >> ~/.zlocal
+    print -l "\nWhat color would you like your prompt on this machine to be? Pick one."
+    print -n "[red|green|blue|cyan|magenta|yellow|white|black]: "
+    local CHOICE=""
+    read CHOICE
+    case "$CHOICE" in
+        'red')
+        print -l 'PR_COLOR=$PR_RED\n' >> ~/.zlocal
+        ;;
+        'green')
+        print -l 'PR_COLOR=$PR_GREEN\n' >> ~/.zlocal
+        ;;
+        'blue')
+        print -l 'PR_COLOR=$PR_BLUE\n' >> ~/.zlocal
+        ;;
+        'cyan')
+        print -l 'PR_COLOR=$PR_CYAN\n' >> ~/.zlocal
+        ;;
+        'magenta')
+        print -l 'PR_COLOR=$PR_MAGENTA\n' >> ~/.zlocal
+        ;;
+        'yellow')
+        print -l 'PR_COLOR=$PR_YELLOW\n' >> ~/.zlocal
+        ;;
+        'white')
+        print -l 'PR_COLOR=$PR_WHITE\n' >> ~/.zlocal
+        ;;
+        'black')
+        print -l "Really? If you say so..."
+        print -l 'PR_COLOR=$PR_BLACK\n' >> ~/.zlocal
+        ;;
+        *)
+        print -l "You get blue. Set PR_COLOR in .zlocal later if you want anything else."
+        ;;
+    esac
+    print -l
+    trap 2
+}
+
+# cornmeter is a visual battery meter meant for a prompt. This function spits
+# out the meter as it should appear at call time.
+drawCornMeter() {
+    for var in WIDTH STEP LEVEL CHARGING; do; eval local $var=""; done
+    WIDTH=$1
+    STEP=$((100.0 / $WIDTH))
+    LEVEL=`acpi -b | perl -ne '/(\d{1,3}\%)/; $LVL = $1; $LVL =~ s/\%//; print $LVL;'`
+    CHARGING=`acpi -a | perl -ne 'if (/on-line/) { print $1; }'`
+    LEVEL=$(($LEVEL * 1.0))
+    print -n $PR_WHITE"["
+    if (($LEVEL <= 30.0)); then
+        print -n $PR_RED
+    else
+        print -n $PR_YELLOW
+    fi
+    if (($LEVEL >= 95.0)); then
+        print -n $PR_WHITE
+    fi
+    for (( i = 0; i < $WIDTH; i++ ))
+    do
+        if (($(($i + 1)) == $WIDTH)); then
+            if [ `acpi -a | grep -o on-line` ]; then
+                print -n "C"
+                continue
+            fi
+        fi
+
+        if (($LEVEL >= 0.0)); then
+            if (($LEVEL <= $(($STEP / 2.0)))); then
+                print -n "\-"
+            else
+                print -n "="
+            fi
+        else
+            print -n " "
+        fi
+        LEVEL=$(($LEVEL - $STEP)) 
+    done
+    print -n $PR_WHITE"]"
+}
+
+# If we're in a repo, print some info. Intended for use in a prompt.
+# TODO: Switch from precmd_functions to chpwd_functions
+rprompt_git_status() {
+    local GITBRANCH=""
+    git status &> /dev/null
+    if (( $? != 128 )); then
+        #GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
+        print -n " git:${GITBRANCH#refs/heads/}"
+    fi
+}
+
+rprompt_hg_status() {
+    hg status &> /dev/null
+    if (( $? != 255 )); then
+        print -n " hg:"
+        print -n `hg summary | perl -ne 'if (/^branch: (.*)$/) { print $1; }'`
+        if [ ! "`hg summary | grep clean`" ]; then
+            print -n "(*)"
+        fi
+    fi
+}
+
+# When on a laptop, enable cornmeter.
+update_rprompt() {
+    RPROMPT=$PR_CYAN'%B[%~'
+
+    if [ `whence git` ]; then
+        RPROMPT+=`rprompt_git_status`
+    fi
+
+    if [ `whence hg` ]; then
+        RPROMPT+=`rprompt_hg_status`
+    fi
+
+    RPROMPT+=']%(?..{%?})'
+
+    if [ $AM_LAPTOP ]; then
+        if (( $BATT_METER_WIDTH > 0 )); then
+            RPROMPT+=`drawCornMeter $BATT_METER_WIDTH`
+        else
+            RPROMPT+=`drawCornMeter $(($COLUMNS / 10))`
+        fi
+    fi
+
+    RPROMPT+='%b'
+}
+
+# For terms known to support it, print some info to the terminal title.
+case "$TERM" in
+    xterm|xterm*|screen)
+    precmd_update_title() {
+        print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) (%y)\a"
+    }
+    preexec_update_title() {
+        print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) <%30>...>$1%<<> (%y)\a"
+    }
+    ;;
+esac
 ####################################### }}}
 
 
