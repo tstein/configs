@@ -85,8 +85,8 @@ case "$TERM" in
     bindkey 'OF'      end-of-line
     bindkey '[5~'     insert-last-word
     bindkey '[6~'     end-of-history
-    bindkey '[1;5D'   backward-word # Ctrl <-
-    bindkey '[1;5C'   forward-word  # Ctrl ->
+    bindkey '[1;5D'   backward-word
+    bindkey '[1;5C'   forward-word
     ;;
     "rxvt"*)
     bindkey '[3~'     delete-char
@@ -120,10 +120,7 @@ esac
 
 
 # Aliases. {{{
-alias -- \-='cd \-'
-alias bc='bc -l'
-alias cep='call-embedded-perl'
-alias chrome='google-chrome'
+# ... to add functionality.
 alias chrome-get-rss='
     CHROME_RSS=0
     for num in `ps axwwo rss,command | grep -P "(google-|)chrome" | grep -v grep | sed "s/^\s*//g" | cut -d " " -f 1`
@@ -131,14 +128,30 @@ alias chrome-get-rss='
         CHROME_RSS=$(($num * 1 + $CHROME_RSS))
     done
     print $CHROME_RSS; unset CHROME_RSS'
+alias getip='wget -qO - http://www.whatismyip.com/automation/n09230945.asp'
+alias sudo='sudo '  # This enables alias, but not function, expansion on the next word.
+
+# ... to use alternative programs, if available.
+if [ `whence inotail` ]; then
+    alias tail='inotail'
+fi
+
+# ... to save keystrokes.
+alias -- \-='cd \-'
+alias cep='call-embedded-perl'
+alias chrome='google-chrome'
+alias open='xdg-open'
+
+# ... to enable 'default' options.
+alias bc='bc -l'
 alias emacs='emacs -nw'
 alias fortune='fortune -c'
-alias getip='wget -qO - http://www.whatismyip.com/automation/n09230945.asp'
 alias grep='grep --color=auto'
 alias ls='ls --color=auto -F'
-alias open='xdg-open'
-alias rm='rm -i'    # someday, I hope to earn the right to remove this line
 alias units='units --verbose'
+
+# ... to compensate for me being an idiot.
+alias rm='rm -i'
 ####################################### }}}
 
 
@@ -256,7 +269,7 @@ call-embedded-perl() {
 #localinfo#  print $sysinfo;
 
 #rpmstats#
-#rpmstats#   unless (-e '/bin/rpm') {
+#rpmstats#   if (! -e '/bin/rpm') {
 #rpmstats#       print("rpm not found. Are you sure this is an rpm-based system?\n");
 #rpmstats#       exit(1);
 #rpmstats#   }
@@ -315,7 +328,10 @@ bindkey "^x" no-magic-abbrev-expand
 
 
 # Shell configuration. {{{
-EDITOR=vim
+export EDITOR=vim
+if [ `whence most` ]; then
+    export PAGER=most
+fi
 
 # history-related variables
 HISTFILE=~/.zhistfile
