@@ -305,6 +305,8 @@ call-embedded-perl() {
 typeset -Ag abbreviations
 abbreviations=(
     "ps"                "ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command"
+    "pacman"            "pacman-color"
+    "sudo pacman"       "sudo pacman-color"
     "sudo yum remove"   "sudo yum remove --remove-leaves"
 )
 
@@ -323,44 +325,6 @@ zle -N magic-abbrev-expand
 zle -N no-magic-abbrev-expand
 bindkey " " magic-abbrev-expand
 bindkey "^x" no-magic-abbrev-expand
-####################################### }}}
-
-
-
-# Shell configuration. {{{
-export EDITOR=vim
-if [ `whence most` ]; then
-    export PAGER=most
-fi
-
-# history-related variables
-HISTFILE=~/.zhistfile
-HISTSIZE=5000
-SAVEHIST=1000000
-
-# better to accidentally deny access than grant it
-umask 077
-
-# Test for laptoppiness. $AM_LAPTOP will be true if there are batteries detected by acpi.
-AM_LAPTOP=`whence acpi`
-if [ $AM_LAPTOP ]; then
-    AM_LAPTOP=`acpi -b`
-fi
-
-# How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
-BATT_METER_WIDTH=0
-
-# .zlocal is a file of my creation - contains site-specific anything so I don't have to modify this
-# file for every machine.
-# if needed, default values go first so that the source call overwrites them.
-PR_COLOR=$PR_BLUE
-ssh_key_list=()
-if test ! -e ~/.zlocal; then
-    get-comfy
-fi
-if test -f ~/.zlocal; then
-    source ~/.zlocal
-fi
 ####################################### }}}
 
 
@@ -517,6 +481,44 @@ case "$TERM" in
     }
     ;;
 esac
+####################################### }}}
+
+
+
+# Shell configuration. {{{
+export EDITOR=vim
+if [ `whence most` ]; then
+    export PAGER=most
+fi
+
+# history-related variables
+HISTFILE=~/.zhistfile
+HISTSIZE=5000
+SAVEHIST=1000000
+
+# better to accidentally deny access than grant it
+umask 077
+
+# Test for laptoppiness. $AM_LAPTOP will be true if there are batteries detected by acpi.
+AM_LAPTOP=`whence acpi`
+if [ $AM_LAPTOP ]; then
+    AM_LAPTOP=`acpi -b`
+fi
+
+# How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
+BATT_METER_WIDTH=0
+
+# .zlocal is a file of my creation - contains site-specific anything so I don't have to modify this
+# file for every machine.
+# if needed, default values go first so that the source call overwrites them.
+PR_COLOR=$PR_BLUE
+ssh_key_list=()
+if test ! -e ~/.zlocal; then
+    get-comfy
+fi
+if test -f ~/.zlocal; then
+    source ~/.zlocal
+fi
 ####################################### }}}
 
 
