@@ -15,7 +15,7 @@ setopt extended_glob glob glob_dots
 setopt extendedhistory
 
 # I/O
-setopt aliases clobber correct hashcmds hashdirs ignoreeof normstarsilent normstarwait
+setopt aliases clobber correct hashcmds hashdirs ignoreeof rmstarsilent normstarwait
 
 # job control
 setopt autoresume notify
@@ -304,10 +304,11 @@ call-embedded-perl() {
 # Space expansion: cause a space to expand to certain text given what's already on the line. {{{
 typeset -Ag abbreviations
 abbreviations=(
-    "ps"                "ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command"
-    "pacman"            "pacman-color"
-    "sudo pacman"       "sudo pacman-color"
-    "sudo yum remove"   "sudo yum remove --remove-leaves"
+    'lame'              'lame -V 0 -q 0 -m j --replaygain-accurate --add-id3v2'
+    'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command'
+    'pacman'            'pacman-color'
+    'sudo pacman'       'sudo pacman-color'
+    'sudo yum remove'   'sudo yum remove --remove-leaves'
 )
 
 magic-abbrev-expand() {
