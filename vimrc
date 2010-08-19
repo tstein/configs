@@ -28,7 +28,7 @@ imap <M-Space> <Esc>
 
 set hidden
 set wildmenu
-set wildmode=list:longest
+set wildmode=list:longest,full
 set title
 set backspace=2
 
@@ -54,4 +54,7 @@ nnoremap ,, <C-^>
 
 set ruler
 
-"colorscheme desert
+set mouse=a
+
+"Is this evil?
+"autocmd FileType gitcommit set nolinebreak
