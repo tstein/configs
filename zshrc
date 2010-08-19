@@ -141,6 +141,7 @@ alias -- \-='cd \-'
 alias cep='call-embedded-perl'
 alias chrome='google-chrome'
 alias open='xdg-open'
+alias rezsh='source ~/.zshrc'
 
 # ... to enable 'default' options.
 alias bc='bc -l'
@@ -188,7 +189,7 @@ update-zshrc() {
 }
 
 update-vimrc() {
-    rsync -azve "ssh -p54848" ted@halberd.dyndns.org:~/.vimrc ~/.vimrc
+    rsync -aLze "ssh -p54848" ted@halberd.dyndns.org:~/.vimrc ~/.vimrc
 }
 
 call-embedded-perl() {
@@ -220,7 +221,7 @@ call-embedded-perl() {
 # To create a new script, write it here, with each line prefixed with #NAME#. It will be callable
 # with `call-embedded-perl NAME`.
 
-#localinfo#
+#localinfo#  # {{{
 #localinfo#  # TODO: switch from grep -P to perl proper.
 #localinfo#  $sysinfo = "";
 #localinfo#  $buffer = `uname -s`;
@@ -267,8 +268,9 @@ call-embedded-perl() {
 #localinfo#      $sysinfo .= "Swap:                  $buffer MB\n";
 #localinfo#  }
 #localinfo#  print $sysinfo;
+#localinfo#  # }}}
 
-#rpmstats#
+#rpmstats#   # {{{
 #rpmstats#   if (! -e '/bin/rpm') {
 #rpmstats#       print("rpm not found. Are you sure this is an rpm-based system?\n");
 #rpmstats#       exit(1);
@@ -297,13 +299,15 @@ call-embedded-perl() {
 #rpmstats#       printf("    $arch: %d packages\n", $#{$arches{$arch}} + 1);
 #rpmstats#   }
 #rpmstats#   printf("\n%d packages unsorted.\n", $#unsortable);
+#rpmstats#   # }}}
 ####################################### }}}
 
 
 
 # Space expansion: cause a space to expand to certain text given what's already on the line. {{{
-typeset -Ag abbreviations
+typeset -A abbreviations
 abbreviations=(
+    'df'                'df -hT --total'
     'lame'              'lame -V 0 -q 0 -m j --replaygain-accurate --add-id3v2'
     'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command'
     'pacman'            'pacman-color'
@@ -383,8 +387,8 @@ get-comfy() {
     trap 2
 }
 
-# cornmeter is a visual battery meter meant for a prompt. This function spits
-# out the meter as it should appear at call time.
+# cornmeter is a visual battery meter meant for a prompt. {{{
+# This function spits out the meter as it should appear at call time.
 drawCornMeter() {
     for var in WIDTH STEP LEVEL CHARGING; do; eval local $var=""; done
     WIDTH=$1
@@ -422,16 +426,19 @@ drawCornMeter() {
         LEVEL=$(($LEVEL - $STEP)) 
     done
     print -n $PR_WHITE"]"
-}
+} # }}}
 
-# If we're in a repo, print some info. Intended for use in a prompt.
+# If we're in a repo, print some info. Intended for use in a prompt. {{{
 # TODO: Switch from precmd_functions to chpwd_functions
 rprompt_git_status() {
     local GITBRANCH=""
     git status &> /dev/null
     if (( $? != 128 )); then
-        #GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
+        GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
         print -n " git:${GITBRANCH#refs/heads/}"
+        if [ ! "`git status | grep clean`" ]; then
+            print -n "(*)"
+        fi
     fi
 }
 
@@ -445,6 +452,7 @@ rprompt_hg_status() {
         fi
     fi
 }
+# }}}
 
 # When on a laptop, enable cornmeter.
 update_rprompt() {
@@ -501,6 +509,10 @@ SAVEHIST=1000000
 umask 077
 
 # Test for laptoppiness. $AM_LAPTOP will be true if there are batteries detected by acpi.
+
+# TODO: acpi 1.5.1 introduced the possibility of text output from acpi -b when
+# no battery is present.
+
 AM_LAPTOP=`whence acpi`
 if [ $AM_LAPTOP ]; then
     AM_LAPTOP=`acpi -b`
@@ -533,8 +545,9 @@ SPROMPT=$PR_MAGENTA'zsh: correct '%R' to '%r'? '$PR_NO_COLOR
 precmd_functions=(precmd_update_title update_rprompt)
 preexec_functions=(preexec_update_title)
 
+#TODO: Check if we are a login shell. This could hang a script without that.
 if [ `whence keychain` ]; then
-    keychain -Q -q --nogui $ssh_key_list
+    keychain -Q -q $ssh_key_list
     source ~/.keychain/${HOST}-sh
 fi
 
