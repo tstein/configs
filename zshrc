@@ -495,24 +495,23 @@ esac
 
 
 # Shell configuration. {{{
-export EDITOR=vim
-if [ `whence most` ]; then
-    export PAGER=most
-fi
+# zsh vars
+WORDCHARS="${WORDCHARS:s#/#}" # consider / as a word separator
 
 # history-related variables
 HISTFILE=~/.zhistfile
 HISTSIZE=5000
 SAVEHIST=1000000
 
-# better to accidentally deny access than grant it
-umask 077
+# default programs
+export EDITOR=vim
+if [ `whence most` ]; then
+    export PAGER=most
+fi
 
 # Test for laptoppiness. $AM_LAPTOP will be true if there are batteries detected by acpi.
-
 # TODO: acpi 1.5.1 introduced the possibility of text output from acpi -b when
 # no battery is present.
-
 AM_LAPTOP=`whence acpi`
 if [ $AM_LAPTOP ]; then
     AM_LAPTOP=`acpi -b`
@@ -521,9 +520,12 @@ fi
 # How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
 BATT_METER_WIDTH=0
 
+# better to accidentally deny access than grant it
+umask 077
+
 # .zlocal is a file of my creation - contains site-specific anything so I don't have to modify this
-# file for every machine.
-# if needed, default values go first so that the source call overwrites them.
+# file for every machine. If needed, default values go first so that the source call overwrites
+# them.
 PR_COLOR=$PR_BLUE
 ssh_key_list=()
 if test ! -e ~/.zlocal; then
