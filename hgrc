@@ -3,7 +3,9 @@ username = Ted Stein <karamarisan@gmail.com>
 verbose = True
 merge = meld
 editor = vim
-ssh = ssh -i ~/.ssh/n1_rsa -C
+
+[extensions]
+color = 
 
 [merge-tools]
 filemerge.executable = vimdiff

@@ -1,7 +1,7 @@
 # .zshrc configured for halberd
 #######################################
 
-# zsh options. Each group corresponds to a heading in the zshoptions manpage {{{
+# zsh options. Each group corresponds to a heading in the zshoptions manpage. {{{
 # dir opts
 setopt autocd chaselinks pushd_silent
 
@@ -15,7 +15,7 @@ setopt extended_glob glob glob_dots
 setopt extendedhistory
 
 # I/O
-setopt aliases clobber correct hashcmds hashdirs ignoreeof normstarsilent normstarwait
+setopt aliases clobber correct hashcmds hashdirs ignoreeof rmstarsilent normstarwait
 
 # job control
 setopt autoresume notify
@@ -66,63 +66,61 @@ zle -N tetris
 # Key bindings. {{{
 bindkey -e
 bindkey TAB expand-or-complete-prefix
-bindkey '' delete-word
+bindkey '^K' delete-word
 bindkey '^J' backward-delete-word
-bindkey '[1;5D' backward-word # Ctrl <-
-bindkey '[1;5C' forward-word  # Ctrl ->
+bindkey '[20~' tetris     # Press F9 to play.
 
-# Can't count on these keys to be consistent.
+# Can't count on these keys to be consistent. This switch sets the following:
+#   <Delete>        :   delete-char
+#   <Home>          :   beginning-of-line
+#   <End>           :   end-of-line
+#   <PageUp>        :   insert-last-word
+#   <PageDown>      :   end-of-history
+#   ^<LeftArrow>    :   backward-word
+#   ^<RightArrow>   :   forward-word
 case "$TERM" in
-    'xterm')
-    bindkey '[H' beginning-of-line
-    bindkey 'OH' beginning-of-line
-    bindkey '[F' end-of-line
-    bindkey 'OF' end-of-line
-    bindkey '[3~' delete-char
-    bindkey '[6~' end-of-history
-    bindkey '[5~' insert-last-word
+    'xterm'*)
+    bindkey '[3~'     delete-char
+    bindkey 'OH'      beginning-of-line
+    bindkey 'OF'      end-of-line
+    bindkey '[5~'     insert-last-word
+    bindkey '[6~'     end-of-history
+    bindkey '[1;5D'   backward-word
+    bindkey '[1;5C'   forward-word
     ;;
-    'xterm*')
-    bindkey 'OH' beginning-of-line
-    bindkey 'OF' end-of-line
-    bindkey '[3~' delete-char
-    bindkey '[6~' end-of-history
-    bindkey '[5~' insert-last-word
-    ;;
-    'rxvt-unicode')
-    bindkey '^[[7~' beginning-of-line
-    bindkey '[8~' end-of-line
-    bindkey '[3~' delete-char
-    bindkey '[6~' end-of-history
-    bindkey '[5~' insert-last-word
+    "rxvt"*)
+    bindkey '[3~'     delete-char
+    bindkey '[7~'     beginning-of-line
+    bindkey '[8~'     end-of-line
+    bindkey '[5~'     insert-last-word
+    bindkey '[6~'     end-of-history
+    bindkey 'Od'      backward-word
+    bindkey 'Oc'      forward-word
     ;;
     'screen')
-    bindkey '[1~' beginning-of-line
-    bindkey '[4~' end-of-line
-    bindkey '[3~' delete-char
-    bindkey '[6~' end-of-history
-    bindkey '[5~' insert-last-word
+    bindkey '[3~'     delete-char
+    bindkey '[1~'     beginning-of-line
+    bindkey '[4~'     end-of-line
+    bindkey '[5~'     insert-last-word
+    bindkey '[6~'     end-of-history
+    bindkey '[1;5D'   backward-word
+    bindkey '[1;5C'   forward-word
     ;;
     'linux')
-    bindkey '[1~' beginning-of-line
-    bindkey '[4~' end-of-line
-    bindkey '[3~' delete-char
-    bindkey '[6~' end-of-history
-    bindkey '[5~' insert-last-word
+    bindkey '[3~'     delete-char
+    bindkey '[1~'     beginning-of-line
+    bindkey '[4~'     end-of-line
+    bindkey '[5~'     insert-last-word
+    bindkey '[6~'     end-of-history
+    # mingetty doesn't distinguish between ^<LeftArrow> and <LeftArrow>.
     ;;
 esac
-
-bindkey '[20~' tetris # F9
 ####################################### }}}
 
 
 
-# Command customizations. {{{
-# aliases
-alias -- \-='cd \-'
-alias bc='bc -l'
-alias cep='call-embedded-perl'
-alias chrome='google-chrome'
+# Aliases. {{{
+# ... to add functionality.
 alias chrome-get-rss='
     CHROME_RSS=0
     for num in `ps axwwo rss,command | grep -P "(google-|)chrome" | grep -v grep | sed "s/^\s*//g" | cut -d " " -f 1`
@@ -130,16 +128,36 @@ alias chrome-get-rss='
         CHROME_RSS=$(($num * 1 + $CHROME_RSS))
     done
     print $CHROME_RSS; unset CHROME_RSS'
+alias getip='wget -qO - http://www.whatismyip.com/automation/n09230945.asp'
+alias sudo='sudo '  # This enables alias, but not function, expansion on the next word.
+
+# ... to use alternative programs, if available.
+if [ `whence inotail` ]; then
+    alias tail='inotail'
+fi
+
+# ... to save keystrokes.
+alias -- \-='cd \-'
+alias cep='call-embedded-perl'
+alias chrome='google-chrome'
+alias open='xdg-open'
+alias rezsh='source ~/.zshrc'
+
+# ... to enable 'default' options.
+alias bc='bc -l'
 alias emacs='emacs -nw'
 alias fortune='fortune -c'
-alias getip='wget -qO - http://www.whatismyip.com/automation/n09230945.asp'
 alias grep='grep --color=auto'
 alias ls='ls --color=auto -F'
-alias open='xdg-open'
-alias rm='rm -i'    # someday, I hope to earn the right to remove this line
 alias units='units --verbose'
 
-# command functions
+# ... to compensate for me being an idiot.
+alias rm='rm -i'
+####################################### }}}
+
+
+
+# Command functions. {{{
 oh() {
     echo "oh $@"
 }
@@ -171,7 +189,7 @@ update-zshrc() {
 }
 
 update-vimrc() {
-    rsync -azve "ssh -p54848" ted@halberd.dyndns.org:~/.vimrc ~/.vimrc
+    rsync -aLze "ssh -p54848" ted@halberd.dyndns.org:~/.vimrc ~/.vimrc
 }
 
 call-embedded-perl() {
@@ -194,7 +212,129 @@ call-embedded-perl() {
         perl -ne "print $F if s/#$SCRIPT#//" ~/.zshrc | perl -w \- $@
     fi
 }
+####################################### }}}
 
+
+
+# Embedded Perl scripts. {{{
+#
+# To create a new script, write it here, with each line prefixed with #NAME#. It will be callable
+# with `call-embedded-perl NAME`.
+
+#localinfo#  # {{{
+#localinfo#  # TODO: switch from grep -P to perl proper.
+#localinfo#  $sysinfo = "";
+#localinfo#  $buffer = `uname -s`;
+#localinfo#  chomp($buffer);
+#localinfo#      $sysinfo .= "Operating system:      $buffer\n";
+#localinfo#  if (-e '/etc/issue') {
+#localinfo#      $buffer = `head -n 1 /etc/issue`;
+#localinfo#      # Arch (at least) puts `clear` in its /etc/issue.
+#localinfo#      # This monstrosity fixes that.
+#localinfo#      if ($buffer =~ /\x1b\x5b\x48\x1b\x5b\x32\x4a/) {
+#localinfo#          $buffer = `head -n 2 /etc/issue | tail -n 1`;
+#localinfo#      }
+#localinfo#      $buffer =~ s/\s*\\\S+//g;
+#localinfo#      chomp($buffer);
+#localinfo#      $sysinfo .= "Distro/release:        $buffer\n";
+#localinfo#  }
+#localinfo#  if (-e '/proc/cpuinfo') {
+#localinfo#      $buffer = `grep -P '(?:model name|cpu\\s+:)' /proc/cpuinfo | head -n 1`;
+#localinfo#      $buffer =~ s/^(?:model name|cpu)\s*:\s*(.+)/$1/;
+#localinfo#      $buffer =~ s/\((?:R|TM)\)/ /gi;
+#localinfo#      $buffer =~ s/CPU//;
+#localinfo#      $buffer =~ s/\s{2,}/ /g;
+#localinfo#      $buffer =~ s/[@\s]*[\d\.]+\s?[GM]Hz$//;
+#localinfo#      chomp($buffer);
+#localinfo#      $sysinfo .= "Processor:             $buffer\n";
+#localinfo#      $buffer = `grep -P '(cpu MHz|clock)' /proc/cpuinfo | head -n 1`;
+#localinfo#      $buffer =~ s/^(?:cpu MHz|clock)\s*:\s*(\d+).*/$1/;
+#localinfo#      $buffer =~ s/MHz//;
+#localinfo#      chomp($buffer);
+#localinfo#      $sysinfo .= "Clock speed:           $buffer MHz\n";
+#localinfo#      $buffer = `grep 'processor' /proc/cpuinfo | tail -n 1`;
+#localinfo#      $buffer =~ s/^processor\s*:\s*(\d+)\s*\n[.\n]*/$1/;
+#localinfo#      $buffer = $buffer + 1;
+#localinfo#      $sysinfo .= "Count:                 $buffer\n";
+#localinfo#  }
+#localinfo#  if (-e '/proc/meminfo') {
+#localinfo#      $buffer = `grep 'MemTotal' /proc/meminfo`;
+#localinfo#      $buffer =~ s/^MemTotal:\s+(\d+).*$/$1/;
+#localinfo#      $buffer = int($buffer / 1024);
+#localinfo#      $sysinfo .= "Memory:                $buffer MB\n";
+#localinfo#      $buffer = `grep 'SwapTotal' /proc/meminfo`;
+#localinfo#      $buffer =~ s/^SwapTotal:\s+(\d+).*$/$1/;
+#localinfo#      $buffer = int($buffer / 1024);
+#localinfo#      $sysinfo .= "Swap:                  $buffer MB\n";
+#localinfo#  }
+#localinfo#  print $sysinfo;
+#localinfo#  # }}}
+
+#rpmstats#   # {{{
+#rpmstats#   if (! -e '/bin/rpm') {
+#rpmstats#       print("rpm not found. Are you sure this is an rpm-based system?\n");
+#rpmstats#       exit(1);
+#rpmstats#   }
+#rpmstats#   print "Gathering info on installed rpms... This may take a few.\n";
+#rpmstats#   @rpms = split(/\n/, `/bin/rpm -qa`);
+#rpmstats#   foreach $rpm (@rpms) {
+#rpmstats#       if ($rpm =~ /fc(\d{1,2})\.(\w+)$/) {
+#rpmstats#           $rel = $1;
+#rpmstats#           $arch = $2;
+#rpmstats#           $releases{$rel} = () unless ($releases{$rel});
+#rpmstats#           push(@{$releases{$rel}}, \$rpm);
+#rpmstats#               $arches{$arch} = () unless ($arches{$arch});
+#rpmstats#           push(@{$arches{$arch}}, \$rpm);
+#rpmstats#       } else {
+#rpmstats#           push(@unsortable, \$rpm);
+#rpmstats#       }
+#rpmstats#   }
+#rpmstats#   print("\nFound $#rpms packages.\n");
+#rpmstats#   print("By release:\n");
+#rpmstats#   foreach $rel (sort {$b <=> $a} keys %releases) {
+#rpmstats#       printf("    fc$rel: %d packages\n", $#{$releases{$rel}} + 1);
+#rpmstats#   }
+#rpmstats#   print("\nBy arch:\n");
+#rpmstats#   foreach $arch (sort keys %arches) {
+#rpmstats#       printf("    $arch: %d packages\n", $#{$arches{$arch}} + 1);
+#rpmstats#   }
+#rpmstats#   printf("\n%d packages unsorted.\n", $#unsortable);
+#rpmstats#   # }}}
+####################################### }}}
+
+
+
+# Space expansion: cause a space to expand to certain text given what's already on the line. {{{
+typeset -A abbreviations
+abbreviations=(
+    'df'                'df -hT --total'
+    'lame'              'lame -V 0 -q 0 -m j --replaygain-accurate --add-id3v2'
+    'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command'
+    'pacman'            'pacman-color'
+    'sudo pacman'       'sudo pacman-color'
+    'sudo yum remove'   'sudo yum remove --remove-leaves'
+)
+
+magic-abbrev-expand() {
+    local MATCH
+    LBUFFER=${LBUFFER%%(#m)[_a-zA-Z0-9 ]#}
+    LBUFFER+=${abbreviations[$MATCH]:-$MATCH}
+    zle self-insert
+}
+
+no-magic-abbrev-expand() {
+    LBUFFER+=' '
+}
+
+zle -N magic-abbrev-expand
+zle -N no-magic-abbrev-expand
+bindkey " " magic-abbrev-expand
+bindkey "^x" no-magic-abbrev-expand
+####################################### }}}
+
+
+
+# Interface functions. {{{
 # Designed to be called on first run, as decided by the presence or absence of a .zlocal.
 get-comfy() {
     trap 'trap 2; return 1' 2
@@ -211,7 +351,8 @@ get-comfy() {
     print >> ~/.zlocal
     print -l "\nWhat color would you like your prompt on this machine to be? Pick one."
     print -n "[red|green|blue|cyan|magenta|yellow|white|black]: "
-    read local CHOICE
+    local CHOICE=""
+    read CHOICE
     case "$CHOICE" in
         'red')
         print -l 'PR_COLOR=$PR_RED\n' >> ~/.zlocal
@@ -246,8 +387,8 @@ get-comfy() {
     trap 2
 }
 
-# Interface-printing functions.
-# cornmeter is a visual battery meter meant for one of your prompts.
+# cornmeter is a visual battery meter meant for a prompt. {{{
+# This function spits out the meter as it should appear at call time.
 drawCornMeter() {
     for var in WIDTH STEP LEVEL CHARGING; do; eval local $var=""; done
     WIDTH=$1
@@ -285,15 +426,19 @@ drawCornMeter() {
         LEVEL=$(($LEVEL - $STEP)) 
     done
     print -n $PR_WHITE"]"
-}
+} # }}}
 
-# If we're in a repo, print some info. Intended for use in a prompt.
+# If we're in a repo, print some info. Intended for use in a prompt. {{{
+# TODO: Switch from precmd_functions to chpwd_functions
 rprompt_git_status() {
     local GITBRANCH=""
     git status &> /dev/null
     if (( $? != 128 )); then
         GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
         print -n " git:${GITBRANCH#refs/heads/}"
+        if [ ! "`git status | grep clean`" ]; then
+            print -n "(*)"
+        fi
     fi
 }
 
@@ -307,16 +452,10 @@ rprompt_hg_status() {
         fi
     fi
 }
+# }}}
 
 # When on a laptop, enable cornmeter.
 update_rprompt() {
-    #if [ $AM_LAPTOP ]; then
-    #    if (( $BATT_METER_WIDTH > 0 )); then
-    #        RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $BATT_METER_WIDTH`'%b'
-    #    else
-    #        RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})'`drawCornMeter $(($COLUMNS / 10))`'%b'
-    #    fi
-    #fi
     RPROMPT=$PR_CYAN'%B[%~'
 
     if [ `whence git` ]; then
@@ -355,123 +494,24 @@ esac
 
 
 
-# Embedded Perl scripts. {{{
-#
-# To create a new script, write it here, with each line prefixed with #NAME#. It will be callable
-# with `call-embedded-perl NAME`.
-
-#localinfo#
-#localinfo#  # TODO: switch from grep -P to perl proper.
-#localinfo#  $sysinfo = "";
-#localinfo#  $buffer = `uname -s`;
-#localinfo#  chomp($buffer);
-#localinfo#      $sysinfo .= "Operating system:      $buffer\n";
-#localinfo#  if (-e '/etc/issue') {
-#localinfo#      $buffer = `head -n 1 /etc/issue`;
-#localinfo#      $buffer =~ s/\s*\\\S+//g;
-#localinfo#      chomp($buffer);
-#localinfo#      $sysinfo .= "Distro/release:        $buffer\n";
-#localinfo#  }
-#localinfo#  if (-e '/proc/cpuinfo') {
-#localinfo#      $buffer = `grep -P '(?:model name|cpu\\s+:)' /proc/cpuinfo | head -n 1`;
-#localinfo#      $buffer =~ s/^(?:model name|cpu)\s*:\s*(.+)/$1/;
-#localinfo#      $buffer =~ s/\((?:R|TM)\)/ /gi;
-#localinfo#      $buffer =~ s/CPU//;
-#localinfo#      $buffer =~ s/\s{2,}/ /g;
-#localinfo#      $buffer =~ s/[@\s]*[\d\.]+\s?[GM]Hz$//;
-#localinfo#      chomp($buffer);
-#localinfo#      $sysinfo .= "Processor:             $buffer\n";
-#localinfo#      $buffer = `grep -P '(cpu MHz|clock)' /proc/cpuinfo | head -n 1`;
-#localinfo#      $buffer =~ s/^(?:cpu MHz|clock)\s*:\s*(\d+).*/$1/;
-#localinfo#      $buffer =~ s/MHz//;
-#localinfo#      chomp($buffer);
-#localinfo#      $sysinfo .= "Clock speed:           $buffer MHz\n";
-#localinfo#      $buffer = `grep 'processor' /proc/cpuinfo | tail -n 1`;
-#localinfo#      $buffer =~ s/^processor\s*:\s*(\d+)\s*\n[.\n]*/$1/;
-#localinfo#      $buffer = $buffer + 1;
-#localinfo#      $sysinfo .= "Count:                 $buffer\n";
-#localinfo#  }
-#localinfo#  if (-e '/proc/meminfo') {
-#localinfo#      $buffer = `grep 'MemTotal' /proc/meminfo`;
-#localinfo#      $buffer =~ s/^MemTotal:\s+(\d+).*$/$1/;
-#localinfo#      $buffer = int($buffer / 1024);
-#localinfo#      $sysinfo .= "Memory:                $buffer MB\n";
-#localinfo#      $buffer = `grep 'SwapTotal' /proc/meminfo`;
-#localinfo#      $buffer =~ s/^SwapTotal:\s+(\d+).*$/$1/;
-#localinfo#      $buffer = int($buffer / 1024);
-#localinfo#      $sysinfo .= "Swap:                  $buffer MB\n";
-#localinfo#  }
-#localinfo#  print $sysinfo;
-
-#rpmstats#   
-#rpmstats#   unless (-e '/bin/rpm') {
-#rpmstats#       print("rpm not found. Are you sure this is an rpm-based system?\n");
-#rpmstats#       exit(1);
-#rpmstats#   }
-#rpmstats#   print "Gathering info on installed rpms... This may take a few.\n";
-#rpmstats#   @rpms = split(/\n/, `/bin/rpm -qa`);
-#rpmstats#   foreach $rpm (@rpms) {
-#rpmstats#       if ($rpm =~ /\.fc(\d{1,2})\.(\w+)$/) {
-#rpmstats#           $rel = $1;
-#rpmstats#           $arch = $2;
-#rpmstats#           $releases{$rel} = () unless ($releases{$rel});
-#rpmstats#           push(@{$releases{$rel}}, \$rpm);
-#rpmstats#               $arches{$arch} = () unless ($arches{$arch});
-#rpmstats#           push(@{$arches{$arch}}, \$rpm);
-#rpmstats#       } else {
-#rpmstats#           push(@unsortable, \$rpm);
-#rpmstats#       }
-#rpmstats#   }
-#rpmstats#   print("\nFound $#rpms packages.\n");
-#rpmstats#   print("By release:\n");
-#rpmstats#   foreach $rel (sort {$b <=> $a} keys %releases) {
-#rpmstats#       printf("    fc$rel: %d packages\n", $#{$releases{$rel}} + 1);
-#rpmstats#   }
-#rpmstats#   print("\nBy arch:\n");
-#rpmstats#   foreach $arch (sort keys %arches) {
-#rpmstats#       printf("    $arch: %d packages\n", $#{$arches{$arch}} + 1);
-#rpmstats#   }
-#rpmstats#   printf("\n%d packages unsorted.\n", $#unsortable);
-####################################### }}}
-
-
-
-# Space expansion: cause a space to expand to certain text given what's already on the line. {{{
-typeset -Ag abbreviations
-abbreviations=(
-    "ps"                "ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command"
-    "sudo yum remove"   "sudo yum remove --remove-leaves"
-)
-
-magic-abbrev-expand() {
-    local MATCH
-    LBUFFER=${LBUFFER%%(#m)[_a-zA-Z0-9 ]#}
-    LBUFFER+=${abbreviations[$MATCH]:-$MATCH}
-    zle self-insert
-}
-
-no-magic-abbrev-expand() {
-    LBUFFER+=' '
-}
-
-zle -N magic-abbrev-expand
-zle -N no-magic-abbrev-expand
-bindkey " " magic-abbrev-expand
-bindkey "^x" no-magic-abbrev-expand
-####################################### }}}
-
-
-
 # Shell configuration. {{{
+# zsh vars
+WORDCHARS="${WORDCHARS:s#/#}" # consider / as a word separator
+
 # history-related variables
 HISTFILE=~/.zhistfile
 HISTSIZE=5000
 SAVEHIST=1000000
 
-# better to accidentally deny access than grant it
-umask 077
+# default programs
+export EDITOR=vim
+if [ `whence most` ]; then
+    export PAGER=most
+fi
 
 # Test for laptoppiness. $AM_LAPTOP will be true if there are batteries detected by acpi.
+# TODO: acpi 1.5.1 introduced the possibility of text output from acpi -b when
+# no battery is present.
 AM_LAPTOP=`whence acpi`
 if [ $AM_LAPTOP ]; then
     AM_LAPTOP=`acpi -b`
@@ -480,9 +520,12 @@ fi
 # How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
 BATT_METER_WIDTH=0
 
+# better to accidentally deny access than grant it
+umask 077
+
 # .zlocal is a file of my creation - contains site-specific anything so I don't have to modify this
-# file for every machine.
-# if needed, default values go first so that the source call overwrites them.
+# file for every machine. If needed, default values go first so that the source call overwrites
+# them.
 PR_COLOR=$PR_BLUE
 ssh_key_list=()
 if test ! -e ~/.zlocal; then
@@ -498,15 +541,16 @@ fi
 # Finally, let's set up our interface. {{{
 PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)\%#%b "
 PROMPT2=$PR_GREEN'%B%_>%b '
-RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})%b'
+RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})%b' # For reference only. This is clobbered by update_rprompt().
 SPROMPT=$PR_MAGENTA'zsh: correct '%R' to '%r'? '$PR_NO_COLOR
 
 precmd_functions=(precmd_update_title update_rprompt)
 preexec_functions=(preexec_update_title)
 
+#TODO: Check if we are a login shell. This could hang a script without that.
 if [ `whence keychain` ]; then
-    keychain -Q -q --nogui $ssh_key_list
-    source ~/.keychain/${HOSTNAME}-sh
+    keychain -Q -q $ssh_key_list
+    source ~/.keychain/${HOST}-sh
 fi
 
 ####################################### }}}
