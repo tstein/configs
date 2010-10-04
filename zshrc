@@ -354,30 +354,12 @@ get-comfy() {
     local CHOICE=""
     read CHOICE
     case "$CHOICE" in
-        'red')
-        print -l 'PR_COLOR=$PR_RED\n' >> ~/.zlocal
-        ;;
-        'green')
-        print -l 'PR_COLOR=$PR_GREEN\n' >> ~/.zlocal
-        ;;
-        'blue')
-        print -l 'PR_COLOR=$PR_BLUE\n' >> ~/.zlocal
-        ;;
-        'cyan')
-        print -l 'PR_COLOR=$PR_CYAN\n' >> ~/.zlocal
-        ;;
-        'magenta')
-        print -l 'PR_COLOR=$PR_MAGENTA\n' >> ~/.zlocal
-        ;;
-        'yellow')
-        print -l 'PR_COLOR=$PR_YELLOW\n' >> ~/.zlocal
-        ;;
-        'white')
-        print -l 'PR_COLOR=$PR_WHITE\n' >> ~/.zlocal
-        ;;
         'black')
         print -l "Really? If you say so..."
-        print -l 'PR_COLOR=$PR_BLACK\n' >> ~/.zlocal
+        ;&
+        ('red'|'green'|'blue'|'cyan'|'magenta'|'yellow'|'white'))
+        CHOICE=`echo $CHOICE | tr 'a-z' 'A-Z'`
+        print -l "PR_COLOR=\$PR_$CHOICE\n" >> ~/.zlocal
         ;;
         *)
         print -l "You get blue. Set PR_COLOR in .zlocal later if you want anything else."
