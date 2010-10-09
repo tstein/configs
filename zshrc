@@ -1,7 +1,43 @@
 # .zshrc configured for halberd
 #######################################
 
-# zsh options. Each group corresponds to a heading in the zshoptions manpage. {{{
+# Properties: __prop {{{
+# There are many properties of a system that influence what's appropriate in
+# that environment. Before we do anything else, get the lay of the land and save
+# it in an associative array. Intentionally left global.
+typeset -A __prop
+set_prop() { __prop+=($1 $2) }
+get_prop() { print $__prop[$1] }
+
+# Operating system?
+case `uname -s` in
+    'Linux')
+    set_prop OS Linux
+    ;;
+    'Darwin')
+    set_prop OS Ossix
+    ;;
+esac
+
+# Installed programs?
+for i in acpi keychain git hg inotail most; do
+    if [ `whence $i` ]; then
+        set_prop "have_$i" yes
+    fi
+done
+
+# Laptop? (i.e., Can we access laptop-specific power info?)
+if [ `get_prop have_acpi` ]; then
+    if [ "`acpi -b 2>/dev/null`" ]; then
+        set_prop am_laptop yes
+    fi
+fi
+
+####################################### }}}
+
+
+
+ # zsh options. Each group corresponds to a heading in the zshoptions manpage. {{{
 # dir opts
 setopt autocd chaselinks pushd_silent
 
@@ -134,7 +170,7 @@ alias getip='wget -qO - http://www.whatismyip.com/automation/n09230945.asp'
 alias sudo='sudo '  # This enables alias, but not function, expansion on the next word.
 
 # ... to use alternative programs, if available.
-if [ `whence inotail` ]; then
+if [ `get_prop have_inotail` ]; then
     alias tail='inotail'
 fi
 
@@ -150,8 +186,16 @@ alias bc='bc -l'
 alias emacs='emacs -nw'
 alias fortune='fortune -c'
 alias grep='grep --color=auto'
-alias ls='ls --color=auto -F'
 alias units='units --verbose'
+
+case `get_prop OS` in
+    'Linux')
+    alias ls='ls -F --color=auto'
+    ;;
+    'Ossix')
+    alias ls='ls -FG'
+    ;;
+esac
 
 # ... to compensate for me being an idiot.
 alias rm='rm -i'
@@ -170,7 +214,7 @@ update-rc() {
 }
 
 update-zshrc() {
-    if [ ! `whence git` ]; then
+    if [ ! `get_prop have_git` ]; then
         print -l "git is required to do this, but it is not in your path.";
         return 1;
     fi
@@ -442,17 +486,17 @@ rprompt_hg_status() {
 update_rprompt() {
     RPROMPT=$PR_CYAN'%B[%~'
 
-    if [ `whence git` ]; then
+    if [ `get_prop have_git` ]; then
         RPROMPT+=`rprompt_git_status`
     fi
 
-    if [ `whence hg` ]; then
+    if [ `get_prop have_hg` ]; then
         RPROMPT+=`rprompt_hg_status`
     fi
 
     RPROMPT+=']%(?..{%?})'
 
-    if [ $AM_LAPTOP ]; then
+    if [ `get_prop am_laptop` ]; then
         if (( $BATT_METER_WIDTH > 0 )); then
             RPROMPT+=`drawCornMeter $BATT_METER_WIDTH`
         else
@@ -489,16 +533,8 @@ SAVEHIST=1000000
 
 # default programs
 export EDITOR=vim
-if [ `whence most` ]; then
+if [ `get_prop have_most` ]; then
     export PAGER=most
-fi
-
-# Test for laptoppiness. $AM_LAPTOP will be true if there are batteries detected by acpi.
-# TODO: acpi 1.5.1 introduced the possibility of text output from acpi -b when
-# no battery is present.
-AM_LAPTOP=`whence acpi`
-if [ $AM_LAPTOP ]; then
-    AM_LAPTOP=`acpi -b`
 fi
 
 # How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
@@ -532,7 +568,7 @@ precmd_functions=(precmd_update_title update_rprompt)
 preexec_functions=(preexec_update_title)
 
 #TODO: Check if we are a login shell. This could hang a script without that.
-if [ `whence keychain` ]; then
+if [ `get_prop have_keychain` ]; then
     keychain -Q -q $ssh_key_list
     source ~/.keychain/${HOST}-sh
 fi
