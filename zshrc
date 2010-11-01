@@ -185,6 +185,7 @@ alias rezsh='source ~/.zshrc'
 alias bc='bc -l'
 alias emacs='emacs -nw'
 alias fortune='fortune -c'
+alias getpwdfs='getfstype .'
 alias grep='grep --color=auto'
 alias units='units --verbose'
 
@@ -206,6 +207,24 @@ alias rm='rm -i'
 # Command functions. {{{
 oh() {
     echo "oh $@"
+}
+
+getfstype() {
+    local DIR=$1
+    if [ ! "$DIR" ]; then; return; fi
+    # zsh lacks a do while, so I went with an explicit break from an infinite
+    # loop. This will terminate as long as your cwd is of finite length.
+    while (true); do
+        local FS=`mount | grep " $DIR " | sed 's/.*type //' | sed 's/ .*//'`
+        if [ "$FS" ]; then
+            print $FS
+            break
+        fi
+        if [[ "$DIR" == '/' ]]; then
+            break
+        fi
+        DIR=`dirname $DIR`
+    done
 }
 
 update-rc() {
@@ -383,6 +402,8 @@ bindkey "^x" no-magic-abbrev-expand
 # Interface functions. {{{
 # Designed to be called on first run, as decided by the presence or absence of a .zlocal.
 get-comfy() {
+    # If this function gets ^C'd, we want to catch it and return so the rest of
+    # this file is sourced properly.
     trap 'trap 2; return 1' 2
     if [[ -f ~/.zlocal ]]; then
         print -l "You have a .zlocal on this machine. If you really intended to run this function,\n
@@ -408,10 +429,10 @@ get-comfy() {
         print -l "PR_COLOR=\$PR_$CHOICE\n" >> ~/.zlocal
         ;;
         *)
-        print -l "You get blue. Set PR_COLOR in .zlocal later if you want anything else."
+        print -l "You get blue. Set PR_COLOR later if you want anything else."
         ;;
     esac
-    print -l
+    print -l 'All the above information has been saved to ~/.zlocal. Happy zshing!'
     trap 2
 }
 
