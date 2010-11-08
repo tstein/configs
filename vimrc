@@ -113,6 +113,9 @@ autocmd FileType gitcommit set nolinebreak
 " taglist
 nnoremap <silent> <F8> :TlistToggle<CR>
 
+" and also views
+autocmd BufWritePost, BufLeave, WinLeave ?* mkview
+autocmd BufReadPre ?* silent loadview
 
 
 " What's a vimrc without a vimline?
