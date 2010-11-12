@@ -4,7 +4,9 @@ as_trigger_max_key = <Super>q
 as_trigger_max_vertically = <Shift><Super>q
 
 [switcher]
-s0_speed = 1.600000
+s0_speed = 2.500000
+s0_zoom = 0.000000
+s0_auto_rotate = true
 
 [zoom]
 as_initiate_button = <Super>Button2
@@ -38,7 +40,7 @@ as_zoom_out_key = <Super>Escape
 s0_sync_mouse = false
 s0_scale_mouse = true
 s0_hide_original_mouse = true
-s0_restrain_mouse = true
+s0_speed = 30.000000
 
 [cubeaddon]
 as_top_next_key = Disabled
@@ -137,7 +139,6 @@ as_next_slide_key = Disabled
 s0_images = 
 s0_skydome = true
 s0_skydome_animated = true
-s0_skydome_gradient_start_color = #fd220dff
 s0_active_opacity = 25.000000
 s0_inactive_opacity = 50.000000
 s1_inactive_opacity = 30.000000
@@ -169,7 +170,7 @@ as_ignore_key = Disabled
 s0_glow_size = 18
 
 [core]
-as_active_plugins = core;regex;maximumize;text;imgjpeg;gnomecompat;widget;dbus;annotate;commands;glib;png;shift;minimize;neg;video;resize;decoration;mousepoll;extrawm;place;notification;ezoom;resizeinfo;wobbly;fade;cube;scale;group;staticswitcher;mag;scaleaddon;3d;rotate;move;cubeaddon;bench;
+as_active_plugins = core;regex;maximumize;text;imgjpeg;gnomecompat;widget;dbus;annotate;commands;glib;png;shift;minimize;neg;video;resize;decoration;mousepoll;grid;extrawm;place;notification;ezoom;resizeinfo;wobbly;fade;cube;scale;group;switcher;mag;scaleaddon;3d;rotate;move;cubeaddon;bench;
 as_texture_filter = 2
 as_window_menu_key = Disabled
 as_show_desktop_key = <Super>d
