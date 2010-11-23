@@ -505,27 +505,31 @@ rprompt_hg_status() {
 
 # When on a laptop, enable cornmeter.
 update_rprompt() {
-    RPROMPT=$PR_CYAN'%B[%~'
+    local BOLD_ON BOLD_OFF DIR GIT HG COND_RETVAL CORNMETER
+    BOLD_ON='%B'
+
+    DIR=`print -P '%~'`
 
     if [ `get_prop have_git` ]; then
-        RPROMPT+=`rprompt_git_status`
+        GIT=`rprompt_git_status`
     fi
 
     if [ `get_prop have_hg` ]; then
-        RPROMPT+=`rprompt_hg_status`
+        HG=`rprompt_hg_status`
     fi
 
-    RPROMPT+=']%(?..{%?})'
+    COND_RETVAL='%(?..{%?})'
 
     if [ `get_prop am_laptop` ]; then
         if (( $BATT_METER_WIDTH > 0 )); then
-            RPROMPT+=`drawCornMeter $BATT_METER_WIDTH`
+            CORNMETER=`drawCornMeter $BATT_METER_WIDTH`
         else
-            RPROMPT+=`drawCornMeter $(($COLUMNS / 10))`
+            CORNMETER=`drawCornMeter $(($COLUMNS / 10))`
         fi
     fi
 
-    RPROMPT+='%b'
+    BOLD_OFF='%b'
+    RPROMPT="$PR_CYAN$BOLD_ON"["$DIR$GIT$HG"]"$COND_RETVAL$CORNMETER$BOLD_OFF"
 }
 
 # For terms known to support it, print some info to the terminal title.
