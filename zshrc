@@ -1,7 +1,43 @@
 # .zshrc configured for halberd
 #######################################
 
-# zsh options. Each group corresponds to a heading in the zshoptions manpage. {{{
+# Properties: __prop {{{
+# There are many properties of a system that influence what's appropriate in
+# that environment. Before we do anything else, get the lay of the land and save
+# it in an associative array. Intentionally left global.
+typeset -A __prop
+set_prop() { __prop+=($1 $2) }
+get_prop() { print $__prop[$1] }
+
+# Operating system?
+case `uname -s` in
+    'Linux')
+    set_prop OS Linux
+    ;;
+    'Darwin')
+    set_prop OS Ossix
+    ;;
+esac
+
+# Installed programs?
+for i in acpi keychain git hg inotail most; do
+    if [ `whence $i` ]; then
+        set_prop "have_$i" yes
+    fi
+done
+
+# Laptop? (i.e., Can we access laptop-specific power info?)
+if [ `get_prop have_acpi` ]; then
+    if [ "`acpi -b 2>/dev/null`" ]; then
+        set_prop am_laptop yes
+    fi
+fi
+
+####################################### }}}
+
+
+
+ # zsh options. Each group corresponds to a heading in the zshoptions manpage. {{{
 # dir opts
 setopt autocd chaselinks pushd_silent
 
@@ -104,7 +140,9 @@ case "$TERM" in
     bindkey '[5~'     insert-last-word
     bindkey '[6~'     end-of-history
     bindkey '[1;5D'   backward-word
+    bindkey 'O5D'     backward-word
     bindkey '[1;5C'   forward-word
+    bindkey 'O5C'     forward-word
     ;;
     'linux')
     bindkey '[3~'     delete-char
@@ -132,7 +170,7 @@ alias getip='wget -qO - http://www.whatismyip.com/automation/n09230945.asp'
 alias sudo='sudo '  # This enables alias, but not function, expansion on the next word.
 
 # ... to use alternative programs, if available.
-if [ `whence inotail` ]; then
+if [ `get_prop have_inotail` ]; then
     alias tail='inotail'
 fi
 
@@ -147,9 +185,18 @@ alias rezsh='source ~/.zshrc'
 alias bc='bc -l'
 alias emacs='emacs -nw'
 alias fortune='fortune -c'
+alias getpwdfs='getfstype .'
 alias grep='grep --color=auto'
-alias ls='ls --color=auto -F'
 alias units='units --verbose'
+
+case `get_prop OS` in
+    'Linux')
+    alias ls='ls -F --color=auto'
+    ;;
+    'Ossix')
+    alias ls='ls -FG'
+    ;;
+esac
 
 # ... to compensate for me being an idiot.
 alias rm='rm -i'
@@ -162,13 +209,31 @@ oh() {
     echo "oh $@"
 }
 
+getfstype() {
+    local DIR=$1
+    if [ ! "$DIR" ]; then; return; fi
+    # zsh lacks a do while, so I went with an explicit break from an infinite
+    # loop. This will terminate as long as your cwd is of finite length.
+    while (true); do
+        local FS=`mount | grep " $DIR " | sed 's/.*type //' | sed 's/ .*//'`
+        if [ "$FS" ]; then
+            print $FS
+            break
+        fi
+        if [[ "$DIR" == '/' ]]; then
+            break
+        fi
+        DIR=`dirname $DIR`
+    done
+}
+
 update-rc() {
     update-zshrc
     update-vimrc
 }
 
 update-zshrc() {
-    if [ ! `whence git` ]; then
+    if [ ! `get_prop have_git` ]; then
         print -l "git is required to do this, but it is not in your path.";
         return 1;
     fi
@@ -337,6 +402,8 @@ bindkey "^x" no-magic-abbrev-expand
 # Interface functions. {{{
 # Designed to be called on first run, as decided by the presence or absence of a .zlocal.
 get-comfy() {
+    # If this function gets ^C'd, we want to catch it and return so the rest of
+    # this file is sourced properly.
     trap 'trap 2; return 1' 2
     if [[ -f ~/.zlocal ]]; then
         print -l "You have a .zlocal on this machine. If you really intended to run this function,\n
@@ -354,36 +421,18 @@ get-comfy() {
     local CHOICE=""
     read CHOICE
     case "$CHOICE" in
-        'red')
-        print -l 'PR_COLOR=$PR_RED\n' >> ~/.zlocal
-        ;;
-        'green')
-        print -l 'PR_COLOR=$PR_GREEN\n' >> ~/.zlocal
-        ;;
-        'blue')
-        print -l 'PR_COLOR=$PR_BLUE\n' >> ~/.zlocal
-        ;;
-        'cyan')
-        print -l 'PR_COLOR=$PR_CYAN\n' >> ~/.zlocal
-        ;;
-        'magenta')
-        print -l 'PR_COLOR=$PR_MAGENTA\n' >> ~/.zlocal
-        ;;
-        'yellow')
-        print -l 'PR_COLOR=$PR_YELLOW\n' >> ~/.zlocal
-        ;;
-        'white')
-        print -l 'PR_COLOR=$PR_WHITE\n' >> ~/.zlocal
-        ;;
         'black')
         print -l "Really? If you say so..."
-        print -l 'PR_COLOR=$PR_BLACK\n' >> ~/.zlocal
+        ;&
+        ('red'|'green'|'blue'|'cyan'|'magenta'|'yellow'|'white'))
+        CHOICE=`echo $CHOICE | tr 'a-z' 'A-Z'`
+        print -l "PR_COLOR=\$PR_$CHOICE\n" >> ~/.zlocal
         ;;
         *)
-        print -l "You get blue. Set PR_COLOR in .zlocal later if you want anything else."
+        print -l "You get blue. Set PR_COLOR later if you want anything else."
         ;;
     esac
-    print -l
+    print -l 'All the above information has been saved to ~/.zlocal. Happy zshing!'
     trap 2
 }
 
@@ -456,27 +505,31 @@ rprompt_hg_status() {
 
 # When on a laptop, enable cornmeter.
 update_rprompt() {
-    RPROMPT=$PR_CYAN'%B[%~'
+    local BOLD_ON BOLD_OFF DIR GIT HG COND_RETVAL CORNMETER
+    BOLD_ON='%B'
 
-    if [ `whence git` ]; then
-        RPROMPT+=`rprompt_git_status`
+    DIR=`print -P '%~'`
+
+    if [ `get_prop have_git` ]; then
+        GIT=`rprompt_git_status`
     fi
 
-    if [ `whence hg` ]; then
-        RPROMPT+=`rprompt_hg_status`
+    if [ `get_prop have_hg` ]; then
+        HG=`rprompt_hg_status`
     fi
 
-    RPROMPT+=']%(?..{%?})'
+    COND_RETVAL='%(?..{%?})'
 
-    if [ $AM_LAPTOP ]; then
+    if [ `get_prop am_laptop` ]; then
         if (( $BATT_METER_WIDTH > 0 )); then
-            RPROMPT+=`drawCornMeter $BATT_METER_WIDTH`
+            CORNMETER=`drawCornMeter $BATT_METER_WIDTH`
         else
-            RPROMPT+=`drawCornMeter $(($COLUMNS / 10))`
+            CORNMETER=`drawCornMeter $(($COLUMNS / 10))`
         fi
     fi
 
-    RPROMPT+='%b'
+    BOLD_OFF='%b'
+    RPROMPT="$PR_CYAN$BOLD_ON"["$DIR$GIT$HG"]"$COND_RETVAL$CORNMETER$BOLD_OFF"
 }
 
 # For terms known to support it, print some info to the terminal title.
@@ -505,16 +558,8 @@ SAVEHIST=1000000
 
 # default programs
 export EDITOR=vim
-if [ `whence most` ]; then
+if [ `get_prop have_most` ]; then
     export PAGER=most
-fi
-
-# Test for laptoppiness. $AM_LAPTOP will be true if there are batteries detected by acpi.
-# TODO: acpi 1.5.1 introduced the possibility of text output from acpi -b when
-# no battery is present.
-AM_LAPTOP=`whence acpi`
-if [ $AM_LAPTOP ]; then
-    AM_LAPTOP=`acpi -b`
 fi
 
 # How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
@@ -548,7 +593,7 @@ precmd_functions=(precmd_update_title update_rprompt)
 preexec_functions=(preexec_update_title)
 
 #TODO: Check if we are a login shell. This could hang a script without that.
-if [ `whence keychain` ]; then
+if [ `get_prop have_keychain` ]; then
     keychain -Q -q $ssh_key_list
     source ~/.keychain/${HOST}-sh
 fi

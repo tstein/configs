@@ -1,60 +1,123 @@
-set et
-set sw=4
+"""""""""""""""
+" Options.
+" death to vi, long live vim
+set nocompatible
+
+" the outside world
+set encoding=utf8
+set shell=/bin/zsh
+
+" affordances
+syntax on
+set title
+set cursorline
+set scrolloff=4 "scroll ahead of the cursor
+set number
+set ruler
+set showcmd "enable a couple of useful realtime prints on the status bar
+set showmatch
+set bg=dark
+set shortmess+=aO
+
+" wildmenu
+set wildmenu
+set wildmode=list:longest,full
+
+" identation, tabs, and text wrap
+set autoindent
+set smartindent
+
+set expandtab
+set shiftwidth=4
 set tabstop=4
 set softtabstop=4
-set tw=80
 
-" Set up text wrap
+set tw=80
 set wrap
 set linebreak
 
-set autoindent
-set number
-set bg=dark
+" there is a backspace option
+set backspace=indent,eol,start
 
-syntax on
-filetype plugin indent on
-let g:asmsyntax="asmx86"
-nnoremap <silent> <F8> :TlistToggle<CR>
+" text selection
+set mouse=a
+set virtualedit=block
 
+" search
 set smartcase
-autocmd BufEnter * lcd %:p:h
 set incsearch
 set hlsearch
-nnoremap <CR> :noh<CR><CR>
-set tags=tags;
 
-imap <M-Space> <Esc>
-
+" buffers
 set hidden
-set wildmenu
-set wildmode=list:longest,full
-set title
-set backspace=2
+set switchbuf=usetab
 
-" autobackup
-set backupdir=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
-set directory=~/.vim-tmp,~/.tmp,~/tmp,/var/tmp,/tmp
+" backup and swap
+set nobackup
+set backupdir=~/.vim-tmp,~/.tmp,/tmp
+set directory=~/.vim-tmp,~/.tmp,/tmp
 
-" miniBufExplorer settings
+
+
+"""""""""""""""
+" Remaps.
+let mapleader = ","
+let g:mapleader = ","
+
+" Serious Save
+cmap w!! w !sudo tee % > /dev/null
+
+" fast save
+nmap <leader>w :w<CR>
+
+" fast buffer switch
+nnoremap <leader>1 :1b<CR>
+nnoremap <leader>2 :2b<CR>
+nnoremap <leader>3 :3b<CR>
+nnoremap <leader>4 :4b<CR>
+nnoremap <leader>5 :5b<CR>
+nnoremap <leader>6 :6b<CR>
+nnoremap <leader>7 :7b<CR>
+nnoremap <leader>8 :8b<CR>
+nnoremap <leader>9 :9b<CR>
+nnoremap <leader>0 :10b<CR>
+nnoremap <leader><leader> <C-^>
+
+" clear highlighting on enter
+nnoremap <CR> :noh<CR><CR>
+
+" vimnav for windows
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" alternate escape - maybe not so useful
+imap <M-Space> <ESC>
+
+" vimline on demand
+imap <ESC>v vim:foldmethod=marker autoindent expandtab shiftwidth=4 filetype=
+
+
+
+"""""""""""""""
+" Plugins.
+" miniBufExplorer
 let g:miniBufExplModSelTarget = 1
 
-" Set buffer shortcut
-nnoremap ,1 :1b<CR>
-nnoremap ,2 :2b<CR>
-nnoremap ,3 :3b<CR>
-nnoremap ,4 :4b<CR>
-nnoremap ,5 :5b<CR>
-nnoremap ,6 :6b<CR>
-nnoremap ,7 :7b<CR>
-nnoremap ,8 :8b<CR>
-nnoremap ,9 :9b<CR>
-nnoremap ,0 :10b<CR>
-nnoremap ,, <C-^>
+" filetype
+filetype plugin indent on
+" Use the following responsibly.
+autocmd FileType gitcommit set nolinebreak
 
-set ruler
+" taglist
+nnoremap <silent> <F8> :TlistToggle<CR>
 
-set mouse=a
+" and also views
+autocmd BufWritePost, BufLeave, WinLeave ?* mkview
+autocmd BufReadPre ?* silent loadview
 
-"Is this evil?
-"autocmd FileType gitcommit set nolinebreak
+
+" What's a vimrc without a vimline?
+"vim:foldmethod=marker autoindent expandtab shiftwidth=4 filetype=vim
+"
