@@ -573,6 +573,9 @@ umask 077
 # them.
 PR_COLOR=$PR_BLUE
 ssh_key_list=()
+# Save these values so we can tell if they've been changed by zlocal.
+typeset -A old_vals
+old_vals+=("PROMPT" $PROMPT)
 if test ! -e ~/.zlocal; then
     get-comfy
 fi
@@ -584,10 +587,13 @@ fi
 
 
 # Finally, let's set up our interface. {{{
-PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)\%#%b "
+if [[ "$PROMPT" == "$old_vals[PROMPT]" ]]; then
+    PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)\%#%b "
+fi
 PROMPT2=$PR_GREEN'%B%_>%b '
 RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})%b' # For reference only. This is clobbered by update_rprompt().
 SPROMPT=$PR_MAGENTA'zsh: correct '%R' to '%r'? '$PR_NO_COLOR
+unset old_vals
 
 precmd_functions=(precmd_update_title update_rprompt)
 preexec_functions=(preexec_update_title)
