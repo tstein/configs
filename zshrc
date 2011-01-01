@@ -365,6 +365,72 @@ call-embedded-perl() {
 #rpmstats#   }
 #rpmstats#   printf("\n%d packages unsorted.\n", $#unsortable);
 #rpmstats#   # }}}
+
+#automat#   # {{{
+#automat#   # automat automates the unprivileged installation of packages from the Internet
+#automat#   # when one does cannot or does not want to use system package management. It
+#automat#   # uses the following directories:
+#automat#   #   ~/bin       Binaries or symbolic links, as appropriate.
+#automat#   #   ~/.src      Untarred sources, and as a build directory.
+#automat#   #   ~/.root     Install prefix (as in ./configure --prefix=).
+#automat#
+#automat#   if ($#ARGV < 0) {
+#automat#       print("No packages specified.\n");
+#automat#       exit(1);
+#automat#   }
+#automat#
+#automat#   sub ack {
+#automat#       `curl http://betterthangrep.com/ack-standalone > ~/bin/ack && chmod u+x ~/bin/ack #:3`;
+#automat#       return $?;
+#automat#   }
+#automat#
+#automat#   sub git {
+#automat#       chdir("$ENV{'HOME'}/.src");
+#automat#       `wget -qO- http://www.kernel.org/pub/software/scm/git/git-1.7.3.tar.bz2 | tar -xjf-`;
+#automat#       return $? if ($? != 0);
+#automat#       chdir("git-1.7.3");
+#automat#       `./configure --prefix=$ENV{'HOME'}/.root --bindir=$ENV{'HOME'}/bin`;
+#automat#       return $? if ($? != 0);
+#automat#       `make`;
+#automat#       return $? if ($? != 0);
+#automat#       `make install`;
+#automat#       return $?;
+#automat#   }
+#automat#
+#automat#   sub htop {
+#automat#       chdir("$ENV{'HOME'}/.src");
+#automat#       `wget -qO- http://downloads.sourceforge.net/project/htop/htop/0.9/htop-0.9.tar.gz | tar -xzf-`;
+#automat#       return $? if ($? != 0);
+#automat#       chdir("htop-0.9");
+#automat#       `./configure --prefix=$ENV{'HOME'}/.root --bindir=$ENV{'HOME'}/bin`;
+#automat#       return $? if ($? != 0);
+#automat#       `make`;
+#automat#       return $? if ($? != 0);
+#automat#       `make install`;
+#automat#       return $?;
+#automat#   }
+#automat#
+#automat#   %progs = (
+#automat#       'ack'   => \&ack,
+#automat#       'git'   => \&git,
+#automat#       'htop'  => \&htop,
+#automat#   );
+#automat#
+#automat#   $home = $ENV{'HOME'};
+#automat#   foreach $dir ("$home/bin", "$home/.src", "$home/.root") {
+#automat#       unless (-d $dir) {
+#automat#           mkdir($dir);
+#automat#       }
+#automat#   }
+#automat#
+#automat#   foreach $arg (@ARGV) {
+#automat#       if ($progs{$arg}) {
+#automat#           $progs{$arg}();
+#automat#       } else {
+#automat#           print("Don't know how to 'mat $arg!\n")
+#automat#       }
+#automat#   }
+#automat#   # }}}
 ####################################### }}}
 
 
