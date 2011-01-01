@@ -425,7 +425,8 @@ call-embedded-perl() {
 #automat#
 #automat#   foreach $arg (@ARGV) {
 #automat#       if ($progs{$arg}) {
-#automat#           $progs{$arg}();
+#automat#           $ret = $progs{$arg}();
+#automat#           print("$arg: " . ($ret == 0 ? "installed successfully." : "not installed!") . "\n");
 #automat#       } else {
 #automat#           print("Don't know how to 'mat $arg!\n")
 #automat#       }
