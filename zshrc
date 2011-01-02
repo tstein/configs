@@ -410,10 +410,24 @@ call-embedded-perl() {
 #automat#       return $?;
 #automat#   }
 #automat#
+#automat#   sub vim {
+#automat#       chdir("$ENV{'HOME'}/.src");
+#automat#       `wget -qO- ftp://ftp.vim.org/pub/vim/unix/vim-7.3.tar.bz2 | tar -xjf-`;
+#automat#       return $? if ($? != 0);
+#automat#       chdir("vim73");
+#automat#       `./configure --prefix=$ENV{'HOME'}/.root --bindir=$ENV{'HOME'}/bin`;
+#automat#       return $? if ($? != 0);
+#automat#       `make`;
+#automat#       return $? if ($? != 0);
+#automat#       `make install`;
+#automat#       return $?;
+#automat#   }
+#automat#
 #automat#   %progs = (
 #automat#       'ack'   => \&ack,
 #automat#       'git'   => \&git,
 #automat#       'htop'  => \&htop,
+#automat#       'vim'   => \&vim,
 #automat#   );
 #automat#
 #automat#   $home = $ENV{'HOME'};
@@ -426,7 +440,7 @@ call-embedded-perl() {
 #automat#   foreach $arg (@ARGV) {
 #automat#       if ($progs{$arg}) {
 #automat#           $ret = $progs{$arg}();
-#automat#           print("$arg: " . ($ret == 0 ? "installed successfully." : "not installed!") . "\n");
+#automat#           print("automat: $arg " . ($ret == 0 ? "installed successfully." : "not installed!") . "\n");
 #automat#       } else {
 #automat#           print("Don't know how to 'mat $arg!\n")
 #automat#       }
