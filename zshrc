@@ -237,15 +237,15 @@ update-zshrc() {
         print -l "git is required to do this, but it is not in your path.";
         return 1;
     fi
-    
+
     local TMPDIR=`uuidgen`-ted
     pushd
     mkdir ~/$TMPDIR
     cd ~/$TMPDIR
-    
+
     git clone git://github.com/tstein/ted-configs.git
     cp ted-configs/zshrc ~/.zshrc
-    
+
     popd
     rm -rf ~/$TMPDIR
 
@@ -263,14 +263,14 @@ call-embedded-perl() {
         DEBUG_CEP="TRUE"
         shift
     fi
-    
+
     if [[ $ARGC -eq 0 ]]; then
         print -l "Which script would you like to run?"
         return 0;
     fi
     local SCRIPT="$1"
     shift
-    
+
     if [[ "$DEBUG_CEP" == "TRUE" ]]; then
         perl -ne "print $F if s/#$SCRIPT#//" ~/.zshrc
     else
@@ -553,7 +553,7 @@ drawCornMeter() {
         else
             print -n " "
         fi
-        LEVEL=$(($LEVEL - $STEP)) 
+        LEVEL=$(($LEVEL - $STEP))
     done
     print -n $PR_WHITE"]"
 } # }}}
