@@ -141,8 +141,10 @@ case "$TERM" in
     bindkey '[6~'     end-of-history
     bindkey '[1;5D'   backward-word
     bindkey 'O5D'     backward-word
+    bindkey 'OD'      backward-word
     bindkey '[1;5C'   forward-word
     bindkey 'O5C'     forward-word
+    bindkey 'OC'      forward-word
     ;;
     'linux')
     bindkey '[3~'     delete-char
