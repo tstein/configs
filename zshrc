@@ -399,6 +399,17 @@ call-embedded-perl() {
 #automat#       return $?;
 #automat#   }
 #automat#
+#automat#   sub hg {
+#automat#       chdir("$ENV{'HOME'}/.root");
+#automat#       `wget -qO- http://mercurial.selenic.com/release/mercurial-1.7.3.tar.gz | tar -xzf-`;
+#automat#       return $? if ($? != 0);
+#automat#       chdir("mercurial-1.7.3");
+#automat#       `make local`;
+#automat#       return $? if ($? != 0);
+#automat#       `ln -fs ../.root/mercurial-1.7.3/hg $ENV{'HOME'}/bin/hg`;
+#automat#       return $?;
+#automat#   }
+#automat#
 #automat#   sub htop {
 #automat#       chdir("$ENV{'HOME'}/.src");
 #automat#       `wget -qO- http://downloads.sourceforge.net/project/htop/htop/0.9/htop-0.9.tar.gz | tar -xzf-`;
@@ -428,6 +439,7 @@ call-embedded-perl() {
 #automat#   %progs = (
 #automat#       'ack'   => \&ack,
 #automat#       'git'   => \&git,
+#automat#       'hg'    => \&hg,
 #automat#       'htop'  => \&htop,
 #automat#       'vim'   => \&vim,
 #automat#   );
