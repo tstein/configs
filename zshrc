@@ -76,13 +76,16 @@ zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*:*:kill:*:processes' command 'ps -axco pid,user,command'
 zstyle :compinstall filename '/home/ted/.zshrc'
 
-autoload -Uz compinit
+autoload -U compinit
 compinit
 # End of lines added by compinstall
 
 # autoload various functions provided with zsh
-autoload -Uz sticky-note url-quote-magic zcalc zed zmv
-zle -N self-insert url-quote-magic
+autoload -U is-at-least
+if is-at-least "4.2.0"; then
+    autoload -U sticky-note url-quote-magic zcalc zed zmv
+    zle -N self-insert url-quote-magic
+fi
 
 # set up colors for prompt
 autoload -U colors
@@ -93,7 +96,7 @@ done
 local PR_NO_COLOR="%{$terminfo[sgr0]%}"
 
 # enable tetris - don't forget to bind it
-autoload -Uz tetris
+autoload -U tetris
 zle -N tetris
 ####################################### }}}
 
