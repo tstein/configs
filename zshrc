@@ -303,6 +303,7 @@ call-embedded-perl() {
 #localinfo#      # This monstrosity fixes that.
 #localinfo#      if ($buffer =~ /\x1b\x5b\x48\x1b\x5b\x32\x4a/) {
 #localinfo#          $buffer = `head -n 2 /etc/issue | tail -n 1`;
+#localinfo#          $buffer =~ s/ \\r.*//;
 #localinfo#      }
 #localinfo#      $buffer =~ s/\s*\\\S+//g;
 #localinfo#      chomp($buffer);
