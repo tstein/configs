@@ -37,7 +37,7 @@ fi
 
 
 
- # zsh options. Each group corresponds to a heading in the zshoptions manpage. {{{
+# zsh options. Each group corresponds to a heading in the zshoptions manpage. {{{
 # dir opts
 setopt autocd chaselinks pushd_silent
 
