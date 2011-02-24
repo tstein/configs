@@ -39,7 +39,7 @@ fi
 
 # zsh options. Each group corresponds to a heading in the zshoptions manpage. {{{
 # dir opts
-setopt autocd chaselinks pushd_silent
+setopt autocd autopushd chaselinks pushd_silent
 
 # completion opts
 setopt autolist autoparamkeys autoparamslash hashlistall listambiguous listpacked listtypes
