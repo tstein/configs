@@ -107,6 +107,7 @@ let g:miniBufExplModSelTarget = 1
 
 " filetype
 filetype plugin indent on
+autocmd FileType xml set shiftwidth=2 tabstop=2 softtabstop=2
 " Use the following responsibly.
 autocmd FileType gitcommit set nolinebreak
 
