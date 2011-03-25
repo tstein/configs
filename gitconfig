@@ -1,6 +1,8 @@
 [user]
-	name = Ted Stein
-	email = karamarisan@gmail.com
+    name = Ted Stein
+    email = karamarisan@gmail.com
+[core]
+    whitespace = -blank-at-eol,tab-in-indent,tabwidth=4
 [color]
     branch = auto
     interactive = auto
