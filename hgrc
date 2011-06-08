@@ -6,6 +6,8 @@ editor = vim
 
 [extensions]
 color = 
+pager =
+hgshelve = ~/.hgext/hgshelve.py
 
 [merge-tools]
 filemerge.executable = vimdiff
