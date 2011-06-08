@@ -20,7 +20,7 @@ case `uname -s` in
 esac
 
 # Installed programs?
-for i in acpi keychain git hg inotail most; do
+for i in acpi keychain git hg inotail; do
     if [ `whence $i` ]; then
         set_prop "have_$i" yes
     fi
@@ -183,6 +183,7 @@ fi
 alias -- \-='cd \-'
 alias cep='call-embedded-perl'
 alias chrome='google-chrome'
+alias no='yes n'
 alias open='xdg-open'
 alias rezsh='source ~/.zshrc'
 
@@ -657,9 +658,7 @@ SAVEHIST=1000000
 
 # default programs
 export EDITOR=vim
-if [ `get_prop have_most` ]; then
-    export PAGER=most
-fi
+export PAGER="less -FRSX"
 
 # How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
 BATT_METER_WIDTH=0
