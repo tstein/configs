@@ -375,8 +375,8 @@ call-embedded-perl() {
 
 #automat#   # {{{
 #automat#   # automat automates the unprivileged installation of packages from the Internet
-#automat#   # when one does cannot or does not want to use system package management. It
-#automat#   # uses the following directories:
+#automat#   # when one cannot or does not want to use system package management. It uses
+#automat#   # the following directories:
 #automat#   #   ~/bin       Binaries or symbolic links, as appropriate.
 #automat#   #   ~/.src      Untarred sources, and as a build directory.
 #automat#   #   ~/.root     Install prefix (as in ./configure --prefix=).
@@ -428,6 +428,19 @@ call-embedded-perl() {
 #automat#       return $?;
 #automat#   }
 #automat#
+#automat#   sub tmux {
+#automat#       chdir("$ENV{'HOME'}/.src");
+#automat#       `wget -qO- http://downloads.sourceforge.net/project/tmux/tmux/tmux-1.4/tmux-1.4.tar.gz | tar -xzf-`;
+#automat#       return $? if ($? != 0);
+#automat#       chdir("tmux-1.4");
+#automat#       `./configure --prefix=$ENV{'HOME'}/.root --bindir=$ENV{'HOME'}/bin`;
+#automat#       return $? if ($? != 0);
+#automat#       `make`;
+#automat#       return $? if ($? != 0);
+#automat#       `make install`;
+#automat#       return $?;
+#automat#   }
+#automat#
 #automat#   sub vim {
 #automat#       chdir("$ENV{'HOME'}/.src");
 #automat#       `wget -qO- ftp://ftp.vim.org/pub/vim/unix/vim-7.3.tar.bz2 | tar -xjf-`;
@@ -446,6 +459,7 @@ call-embedded-perl() {
 #automat#       'git'   => \&git,
 #automat#       'hg'    => \&hg,
 #automat#       'htop'  => \&htop,
+#automat#       'tmux'  => \&tmux,
 #automat#       'vim'   => \&vim,
 #automat#   );
 #automat#
