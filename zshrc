@@ -386,6 +386,19 @@ call-embedded-perl() {
 #automat#       exit(1);
 #automat#   }
 #automat#
+#automat#   sub libevent {
+#automat#       chdir("$ENV{'HOME'}/.src");
+#automat#       `wget -qO- http://monkey.org/~provos/libevent-2.0.12-stable.tar.gz | tar -xzf-`;
+#automat#       return $? if ($? != 0);
+#automat#       chdir("libevent-2.0.12-stable");
+#automat#       `./configure --prefix=$ENV{'HOME'}/.root`;
+#automat#       return $? if ($? != 0);
+#automat#       `make`;
+#automat#       return $? if ($? != 0);
+#automat#       `make install`;
+#automat#       return $?;
+#automat#   }
+#automat#
 #automat#   sub ack {
 #automat#       `curl http://betterthangrep.com/ack-standalone > ~/bin/ack && chmod u+x ~/bin/ack #:3`;
 #automat#       return $?;
@@ -429,15 +442,19 @@ call-embedded-perl() {
 #automat#   }
 #automat#
 #automat#   sub tmux {
+#automat#       $ret = libevent();
+#automat#       return $ret if ($ret != 0);
+#automat#       $ENV{'CPPFLAGS'} = "-I $ENV{'HOME'}/.root/include";
+#automat#       $ENV{'LDFLAGS'} = "-L $ENV{'HOME'}/.root/include -L $ENV{'HOME'}/.root/lib";
 #automat#       chdir("$ENV{'HOME'}/.src");
 #automat#       `wget -qO- http://downloads.sourceforge.net/project/tmux/tmux/tmux-1.4/tmux-1.4.tar.gz | tar -xzf-`;
 #automat#       return $? if ($? != 0);
 #automat#       chdir("tmux-1.4");
-#automat#       `./configure --prefix=$ENV{'HOME'}/.root --bindir=$ENV{'HOME'}/bin`;
+#automat#       `./configure`;
 #automat#       return $? if ($? != 0);
 #automat#       `make`;
 #automat#       return $? if ($? != 0);
-#automat#       `make install`;
+#automat#       `cp tmux $ENV{'HOME'}/bin`;
 #automat#       return $?;
 #automat#   }
 #automat#
