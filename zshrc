@@ -20,7 +20,7 @@ case `uname -s` in
 esac
 
 # Installed programs?
-for i in acpi keychain git hg inotail; do
+for i in acpi keychain git hg; do
     if [ `whence $i` ]; then
         set_prop "have_$i" yes
     fi
@@ -173,11 +173,6 @@ alias chrome-get-rss='
     print $CHROME_RSS; unset CHROME_RSS'
 alias getip='wget -qO - http://www.whatismyip.com/automation/n09230945.asp'
 alias sudo='sudo '  # This enables alias, but not function, expansion on the next word.
-
-# ... to use alternative programs, if available.
-if [ `get_prop have_inotail` ]; then
-    alias tail='inotail'
-fi
 
 # ... to save keystrokes.
 alias -- \-='cd \-'
