@@ -436,6 +436,14 @@ call-embedded-perl() {
 #automat#       return $?;
 #automat#   }
 #automat#
+#automat#   sub keychain {
+#automat#       chdir("$ENV{'HOME'}/.src");
+#automat#       `wget -qO- http://www.funtoo.org/archive/keychain/keychain-2.7.1.tar.bz2 | tar -xjf-`;
+#automat#       return $? if ($? != 0);
+#automat#       `ln -fs ../.src/keychain-2.7.1/keychain $ENV{'HOME'}/bin/keychain`;
+#automat#       return $? if ($? != 0);
+#automat#   }
+#automat#
 #automat#   sub tmux {
 #automat#       $ret = libevent();
 #automat#       return $ret if ($ret != 0);
@@ -467,12 +475,13 @@ call-embedded-perl() {
 #automat#   }
 #automat#
 #automat#   %progs = (
-#automat#       'ack'   => \&ack,
-#automat#       'git'   => \&git,
-#automat#       'hg'    => \&hg,
-#automat#       'htop'  => \&htop,
-#automat#       'tmux'  => \&tmux,
-#automat#       'vim'   => \&vim,
+#automat#       'ack'       => \&ack,
+#automat#       'git'       => \&git,
+#automat#       'hg'        => \&hg,
+#automat#       'keychain'  => \&keychain,
+#automat#       'htop'      => \&htop,
+#automat#       'tmux'      => \&tmux,
+#automat#       'vim'       => \&vim,
 #automat#   );
 #automat#
 #automat#   $home = $ENV{'HOME'};
