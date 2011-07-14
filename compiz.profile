@@ -121,6 +121,11 @@ s0_wm_cmd = xfwm4 --replace
 
 [opengl]
 s0_texture_filter = 2
+s0_texture_compression = true
+
+[composite]
+s0_detect_refresh_rate = false
+s0_refresh_rate = 60
 
 [staticswitcher]
 s0_mouse_select = true
@@ -151,7 +156,7 @@ s0_run_command4_key = <Alt><Super>h
 s0_run_command5_key = <Alt><Super>b
 
 [core]
-s0_active_plugins = core;crashhandler;composite;opengl;copytex;imgjpeg;compiztoolbox;maximumize;decor;shift;extrawm;titleinfo;dbus;regex;imgpng;resize;move;commands;place;grid;mousepoll;winrules;annotate;neg;wobbly;cube;animation;resizeinfo;notification;td;rotate;scale;animationaddon;cubeaddon;workarounds;expo;ezoom;switcher;bench;
+s0_active_plugins = core;crashhandler;composite;opengl;copytex;imgjpeg;compiztoolbox;maximumize;decor;shift;extrawm;titleinfo;dbus;regex;imgpng;resize;move;commands;place;grid;mousepoll;winrules;annotate;neg;wobbly;cube;animation;resizeinfo;notification;session;td;rotate;scale;animationaddon;cubeaddon;workarounds;expo;ezoom;switcher;bench;
 s0_outputs = 1920x1200+0+0;1680x1050+1920+0;
 s0_toggle_window_shaded_key = Disabled
 s0_hsize = 6
