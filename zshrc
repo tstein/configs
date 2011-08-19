@@ -176,6 +176,7 @@ alias sudo='sudo '  # This enables alias, but not function, expansion on the nex
 
 # ... to save keystrokes.
 alias -- \-='cd \-'
+alias absname='readlink -m'
 alias cep='call-embedded-perl'
 alias chrome='google-chrome'
 alias no='yes n'
