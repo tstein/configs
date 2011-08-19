@@ -171,7 +171,7 @@ alias chrome-get-rss='
         CHROME_RSS=$(($num * 1 + $CHROME_RSS))
     done
     print $CHROME_RSS; unset CHROME_RSS'
-alias getip='wget -qO - http://www.whatismyip.com/automation/n09230945.asp'
+alias getip='curl ifconfig.me'
 alias sudo='sudo '  # This enables alias, but not function, expansion on the next word.
 
 # ... to save keystrokes.
