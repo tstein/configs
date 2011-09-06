@@ -5,8 +5,13 @@ merge = meld
 editor = vim
 
 [extensions]
+churn =
 color = 
+graphlog =
+inotify =
+mq =
 pager =
+progress =
 hgshelve = ~/.hgext/hgshelve.py
 
 [merge-tools]
