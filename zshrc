@@ -189,7 +189,9 @@ alias -- \-='cd \-'
 alias cep='call-embedded-perl'
 alias chrome='google-chrome'
 alias no='yes n'
-alias open='xdg-open'
+if [[ `get_prop OS` == 'Linux' ]]; then
+    alias open='xdg-open'
+fi
 alias rezsh='source ~/.zshrc'
 
 # ... to enable 'default' options.
