@@ -109,54 +109,64 @@ bindkey '^K' delete-word
 bindkey '^J' backward-delete-word
 bindkey '[20~' tetris     # Press F9 to play.
 
-# Can't count on these keys to be consistent. This switch sets the following:
-#   <Delete>        :   delete-char
-#   <Home>          :   beginning-of-line
-#   <End>           :   end-of-line
-#   <PageUp>        :   insert-last-word
-#   <PageDown>      :   end-of-history
-#   ^<LeftArrow>    :   backward-word
-#   ^<RightArrow>   :   forward-word
-case "$TERM" in
-    'xterm'*)
-    bindkey '[3~'     delete-char
-    bindkey 'OH'      beginning-of-line
-    bindkey 'OF'      end-of-line
-    bindkey '[5~'     insert-last-word
-    bindkey '[6~'     end-of-history
-    bindkey '[1;5D'   backward-word
-    bindkey '[1;5C'   forward-word
-    ;;
-    "rxvt"*)
-    bindkey '[3~'     delete-char
-    bindkey '[7~'     beginning-of-line
-    bindkey '[8~'     end-of-line
-    bindkey '[5~'     insert-last-word
-    bindkey '[6~'     end-of-history
-    bindkey 'Od'      backward-word
-    bindkey 'Oc'      forward-word
-    ;;
-    'screen')
-    bindkey '[3~'     delete-char
-    bindkey '[1~'     beginning-of-line
-    bindkey '[4~'     end-of-line
-    bindkey '[5~'     insert-last-word
-    bindkey '[6~'     end-of-history
-    bindkey '[1;5D'   backward-word
-    bindkey 'O5D'     backward-word
-    bindkey 'OD'      backward-word
-    bindkey '[1;5C'   forward-word
-    bindkey 'O5C'     forward-word
-    bindkey 'OC'      forward-word
-    ;;
-    'linux')
-    bindkey '[3~'     delete-char
-    bindkey '[1~'     beginning-of-line
-    bindkey '[4~'     end-of-line
-    bindkey '[5~'     insert-last-word
-    bindkey '[6~'     end-of-history
-    # mingetty doesn't distinguish between ^<LeftArrow> and <LeftArrow>.
-    ;;
+case `get_prop OS` in
+    'Linux')
+        # Can't count on these keys to be consistent. This switch sets the following:
+        #   <Delete>        :   delete-char
+        #   <Home>          :   beginning-of-line
+        #   <End>           :   end-of-line
+        #   <PageUp>        :   insert-last-word
+        #   <PageDown>      :   end-of-history
+        #   ^<LeftArrow>    :   backward-word
+        #   ^<RightArrow>   :   forward-word
+        case "$TERM" in
+            'xterm'*)
+                bindkey '[3~'     delete-char
+                bindkey 'OH'      beginning-of-line
+                bindkey 'OF'      end-of-line
+                bindkey '[5~'     insert-last-word
+                bindkey '[6~'     end-of-history
+                bindkey '[1;5D'   backward-word
+                bindkey '[1;5C'   forward-word
+                ;;
+            "rxvt"*)
+                bindkey '[3~'     delete-char
+                bindkey '[7~'     beginning-of-line
+                bindkey '[8~'     end-of-line
+                bindkey '[5~'     insert-last-word
+                bindkey '[6~'     end-of-history
+                bindkey 'Od'      backward-word
+                bindkey 'Oc'      forward-word
+                ;;
+            'screen')
+                bindkey '[3~'     delete-char
+                bindkey '[1~'     beginning-of-line
+                bindkey '[4~'     end-of-line
+                bindkey '[5~'     insert-last-word
+                bindkey '[6~'     end-of-history
+                bindkey '[1;5D'   backward-word
+                bindkey 'O5D'     backward-word
+                bindkey 'OD'      backward-word
+                bindkey '[1;5C'   forward-word
+                bindkey 'O5C'     forward-word
+                bindkey 'OC'      forward-word
+                ;;
+            'linux')
+                bindkey '[3~'     delete-char
+                bindkey '[1~'     beginning-of-line
+                bindkey '[4~'     end-of-line
+                bindkey '[5~'     insert-last-word
+                bindkey '[6~'     end-of-history
+                # mingetty doesn't distinguish between ^<LeftArrow> and <LeftArrow>.
+                ;;
+        esac
+        ;;
+    'Ossix')
+        bindkey '[D'            backward-word       # option-left
+        bindkey '[C'            forward-word        # option-right
+        bindkey '[1;10D'      beginning-of-line   # shift-option-left
+        bindkey '[1;10C'      end-of-line         # shift-option-right
+        ;;
 esac
 ####################################### }}}
 
@@ -180,7 +190,9 @@ alias absname='readlink -m'
 alias cep='call-embedded-perl'
 alias chrome='google-chrome'
 alias no='yes n'
-alias open='xdg-open'
+if [[ `get_prop OS` == 'Linux' ]]; then
+    alias open='xdg-open'
+fi
 alias rezsh='source ~/.zshrc'
 
 # ... to enable 'default' options.

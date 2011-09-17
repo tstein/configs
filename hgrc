@@ -3,12 +3,12 @@ username = Ted Stein <karamarisan@gmail.com>
 verbose = True
 merge = meld
 editor = vim
+ignore = ~/.hgignore
 
 [extensions]
 churn =
 color = 
 graphlog =
-inotify =
 mq =
 pager =
 progress =
