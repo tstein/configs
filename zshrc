@@ -12,10 +12,10 @@ get_prop() { print $__prop[$1] }
 # Operating system?
 case `uname -s` in
     'Linux')
-    set_prop OS Linux
+        set_prop OS Linux
     ;;
     'Darwin')
-    set_prop OS Ossix
+        set_prop OS Ossix
     ;;
 esac
 
@@ -128,7 +128,7 @@ case `get_prop OS` in
                 bindkey '[6~'     end-of-history
                 bindkey '[1;5D'   backward-word
                 bindkey '[1;5C'   forward-word
-                ;;
+            ;;
             "rxvt"*)
                 bindkey '[3~'     delete-char
                 bindkey '[7~'     beginning-of-line
@@ -137,7 +137,7 @@ case `get_prop OS` in
                 bindkey '[6~'     end-of-history
                 bindkey 'Od'      backward-word
                 bindkey 'Oc'      forward-word
-                ;;
+            ;;
             'screen')
                 bindkey '[3~'     delete-char
                 bindkey '[1~'     beginning-of-line
@@ -150,7 +150,7 @@ case `get_prop OS` in
                 bindkey '[1;5C'   forward-word
                 bindkey 'O5C'     forward-word
                 bindkey 'OC'      forward-word
-                ;;
+            ;;
             'linux')
                 bindkey '[3~'     delete-char
                 bindkey '[1~'     beginning-of-line
@@ -158,15 +158,15 @@ case `get_prop OS` in
                 bindkey '[5~'     insert-last-word
                 bindkey '[6~'     end-of-history
                 # mingetty doesn't distinguish between ^<LeftArrow> and <LeftArrow>.
-                ;;
+            ;;
         esac
-        ;;
+    ;;
     'Ossix')
         bindkey '[D'            backward-word       # option-left
         bindkey '[C'            forward-word        # option-right
         bindkey '[1;10D'      beginning-of-line   # shift-option-left
         bindkey '[1;10C'      end-of-line         # shift-option-right
-        ;;
+    ;;
 esac
 ####################################### }}}
 
@@ -204,10 +204,10 @@ alias units='units --verbose'
 
 case `get_prop OS` in
     'Linux')
-    alias ls='ls -F --color=auto'
+        alias ls='ls -F --color=auto'
     ;;
     'Ossix')
-    alias ls='ls -FG'
+        alias ls='ls -FG'
     ;;
 esac
 
@@ -530,13 +530,13 @@ case `get_prop OS` in
             'sudo pacman'       'sudo pacman-color'
             'sudo yum remove'   'sudo yum remove --remove-leaves'
         )
-        ;;
+    ;;
     'Ossix')
         abbreviations+=(
             'df'                'df -h'
             'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,command'
         )
-        ;;
+    ;;
 esac
 
 magic-abbrev-expand() {
@@ -581,14 +581,14 @@ get-comfy() {
     read CHOICE
     case "$CHOICE" in
         'black')
-        print -l "Really? If you say so..."
+            print -l "Really? If you say so..."
         ;&
         ('red'|'green'|'blue'|'cyan'|'magenta'|'yellow'|'white'))
-        CHOICE=`echo $CHOICE | tr 'a-z' 'A-Z'`
-        print -l "PR_COLOR=\$PR_$CHOICE\n" >> ~/.zlocal
+            CHOICE=`echo $CHOICE | tr 'a-z' 'A-Z'`
+            print -l "PR_COLOR=\$PR_$CHOICE\n" >> ~/.zlocal
         ;;
         *)
-        print -l "You get blue. Set PR_COLOR later if you want anything else."
+            print -l "You get blue. Set PR_COLOR later if you want anything else."
         ;;
     esac
     print -l 'All the above information has been saved to ~/.zlocal. Happy zshing!'
@@ -694,12 +694,12 @@ update_rprompt() {
 # For terms known to support it, print some info to the terminal title.
 case "$TERM" in
     xterm|xterm*|screen)
-    precmd_update_title() {
-        print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) (%y)\a"
-    }
-    preexec_update_title() {
-        print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) <%30>...>$1%<<> (%y)\a"
-    }
+        precmd_update_title() {
+            print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) (%y)\a"
+        }
+        preexec_update_title() {
+            print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) <%30>...>$1%<<> (%y)\a"
+        }
     ;;
 esac
 ####################################### }}}
