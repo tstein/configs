@@ -519,13 +519,25 @@ call-embedded-perl() {
 # Space expansion: cause a space to expand to certain text given what's already on the line. {{{
 typeset -A abbreviations
 abbreviations=(
-    'df'                'df -hT --total'
     'lame'              'lame -V 0 -q 0 -m j --replaygain-accurate --add-id3v2'
-    'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command'
-    'pacman'            'pacman-color'
-    'sudo pacman'       'sudo pacman-color'
-    'sudo yum remove'   'sudo yum remove --remove-leaves'
 )
+case `get_prop OS` in
+    'Linux')
+        abbreviations+=(
+            'df'                'df -hT --total'
+            'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command'
+            'pacman'            'pacman-color'
+            'sudo pacman'       'sudo pacman-color'
+            'sudo yum remove'   'sudo yum remove --remove-leaves'
+        )
+        ;;
+    'Ossix')
+        abbreviations+=(
+            'df'                'df -h'
+            'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,command'
+        )
+        ;;
+esac
 
 magic-abbrev-expand() {
     local MATCH
