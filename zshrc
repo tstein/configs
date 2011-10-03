@@ -1,6 +1,51 @@
 # .zshrc configured for halberd
 #######################################
 
+# Shell configuration. {{{
+# Set up colors for prompts. This must be done before zlocal gets sourced.
+autoload -U colors
+colors
+for color in RED GREEN BLUE YELLOW MAGENTA CYAN WHITE BLACK; do
+    eval local PR_$color='%{$fg[${(L)color}]%}'
+done
+local PR_NO_COLOR="%{$terminfo[sgr0]%}"
+
+# zsh vars
+WORDCHARS="${WORDCHARS:s#/#}" # consider / as a word separator
+
+# history-related variables
+HISTFILE=~/.zhistfile
+HISTSIZE=5000
+SAVEHIST=1000000
+
+# default programs
+export EDITOR=vim
+export PAGER="less -FRSX"
+
+# How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
+BATT_METER_WIDTH=0
+
+# better to accidentally deny access than grant it
+umask 077
+
+# .zlocal is a file of my creation - contains site-specific anything so I don't have to modify this
+# file for every machine. If needed, default values go first so that the source call overwrites
+# them.
+PR_COLOR=$PR_BLUE
+ssh_key_list=()
+# Save these values so we can tell if they've been changed by zlocal.
+typeset -A old_vals
+old_vals+=("PROMPT" $PROMPT)
+if test ! -e ~/.zlocal; then
+    get-comfy
+fi
+if test -f ~/.zlocal; then
+    source ~/.zlocal
+fi
+####################################### }}}
+
+
+
 # Properties: __prop {{{
 # There are many properties of a system that influence what's appropriate in
 # that environment. Before we do anything else, get the lay of the land and save
@@ -86,14 +131,6 @@ if is-at-least "4.2.0"; then
     autoload -U sticky-note url-quote-magic zcalc zed zmv
     zle -N self-insert url-quote-magic
 fi
-
-# set up colors for prompt
-autoload -U colors
-colors
-for color in RED GREEN BLUE YELLOW MAGENTA CYAN WHITE BLACK; do
-    eval local PR_$color='%{$fg[${(L)color}]%}'
-done
-local PR_NO_COLOR="%{$terminfo[sgr0]%}"
 
 # enable tetris - don't forget to bind it
 autoload -U tetris
@@ -703,43 +740,6 @@ case "$TERM" in
         }
     ;;
 esac
-####################################### }}}
-
-
-
-# Shell configuration. {{{
-# zsh vars
-WORDCHARS="${WORDCHARS:s#/#}" # consider / as a word separator
-
-# history-related variables
-HISTFILE=~/.zhistfile
-HISTSIZE=5000
-SAVEHIST=1000000
-
-# default programs
-export EDITOR=vim
-export PAGER="less -FRSX"
-
-# How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
-BATT_METER_WIDTH=0
-
-# better to accidentally deny access than grant it
-umask 077
-
-# .zlocal is a file of my creation - contains site-specific anything so I don't have to modify this
-# file for every machine. If needed, default values go first so that the source call overwrites
-# them.
-PR_COLOR=$PR_BLUE
-ssh_key_list=()
-# Save these values so we can tell if they've been changed by zlocal.
-typeset -A old_vals
-old_vals+=("PROMPT" $PROMPT)
-if test ! -e ~/.zlocal; then
-    get-comfy
-fi
-if test -f ~/.zlocal; then
-    source ~/.zlocal
-fi
 ####################################### }}}
 
 
