@@ -72,11 +72,20 @@ for i in acpi keychain git hg; do
 done
 
 # Laptop? (i.e., Can we access laptop-specific power info?)
-if [ `get_prop have_acpi` ]; then
-    if [ "`acpi -b 2>/dev/null`" ]; then
-        set_prop am_laptop yes
-    fi
-fi
+case `get_prop OS` in
+    'Linux')
+        if [ `get_prop have_acpi` ]; then
+            if [ "`acpi -b 2>/dev/null`" ]; then
+                set_prop am_laptop yes
+            fi
+        fi
+    ;;
+    'Ossix')
+        if [ "`system_profiler SPHardwareDataType | grep 'MacBook'`" ]; then
+            set_prop am_laptop yes
+        fi
+    ;;
+esac
 
 ####################################### }}}
 
@@ -636,12 +645,24 @@ get-comfy() {
 # cornmeter is a visual battery meter meant for a prompt. {{{
 # This function spits out the meter as it should appear at call time.
 drawCornMeter() {
-    for var in WIDTH STEP LEVEL CHARGING; do; eval local $var=""; done
+    for var in WIDTH STEP LEVEL CHARGING SPPOWER CHARGE CAPACITY; do; eval local $var=""; done
     WIDTH=$1
     STEP=$((100.0 / $WIDTH))
-    LEVEL=`acpi -b | perl -ne '/(\d{1,3}\%)/; $LVL = $1; $LVL =~ s/\%//; print $LVL;'`
-    CHARGING=`acpi -a | perl -ne 'if (/on-line/) { print $1; }'`
-    LEVEL=$(($LEVEL * 1.0))
+    case `get_prop OS` in
+        'Linux')
+            LEVEL=`acpi -b | perl -ne '/(\d{1,3}\%)/; $LVL = $1; $LVL =~ s/\%//; print $LVL;'`
+            LEVEL=$(($LEVEL * 1.0))
+            CHARGING=`acpi -a | perl -ne 'if (/on-line/) { print $1; }'`
+        ;;
+        'Ossix')
+            SPPOWER=`system_profiler SPPowerDataType`
+            CHARGE=`print $SPPOWER | perl -ne 'if (/Charge Remaining.* (\d+)/) { print $1; }'`
+            CAPACITY=`print $SPPOWER | perl -ne 'if (/Full Charge Capacity.* (\d+)/) { print $1; }'`
+            LEVEL=$((100.0 * $CHARGE / $CAPACITY))
+            CHARGING=`print $SPPOWER | perl -ne 'if (/Charging: (\w+)/) { if ($1 =~ "Yes") { print "Yes"; } }'`
+        ;;
+    esac
+
     print -n $PR_WHITE"["
     if (($LEVEL <= 30.0)); then
         print -n $PR_RED
@@ -654,7 +675,7 @@ drawCornMeter() {
     for (( i = 0; i < $WIDTH; i++ ))
     do
         if (($(($i + 1)) == $WIDTH)); then
-            if [ `acpi -a | grep -o on-line` ]; then
+            if [ "$CHARGING" ]; then
                 print -n "C"
                 continue
             fi
