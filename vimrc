@@ -18,6 +18,7 @@ set showcmd "enable a couple of useful realtime prints on the status bar
 set showmatch
 set bg=dark
 set shortmess+=aO
+set visualbell t_vb=
 
 " wildmenu
 set wildmenu
@@ -56,6 +57,9 @@ set switchbuf=usetab
 set nobackup
 set backupdir=~/.vim-tmp,~/.tmp,/tmp
 set directory=~/.vim-tmp,~/.tmp,/tmp
+
+" colors
+"colorscheme solarized
 
 
 
@@ -102,6 +106,8 @@ imap <ESC>v vim:foldmethod=marker autoindent expandtab shiftwidth=4 filetype=
 
 """""""""""""""
 " Plugins.
+call pathogen#runtime_append_all_bundles()
+
 " miniBufExplorer
 let g:miniBufExplModSelTarget = 1
 
@@ -110,6 +116,9 @@ filetype plugin indent on
 autocmd FileType xml set shiftwidth=2 tabstop=2 softtabstop=2
 " Use the following responsibly.
 autocmd FileType gitcommit set nolinebreak
+
+" omnicomplete
+set omnifunc=syntaxcomplete#Complete
 
 " taglist
 nnoremap <silent> <F8> :TlistToggle<CR>
@@ -121,4 +130,4 @@ autocmd BufReadPre ?* silent loadview
 
 " What's a vimrc without a vimline?
 "vim:foldmethod=marker autoindent expandtab shiftwidth=4 filetype=vim
-"
+
