@@ -644,7 +644,7 @@ rprompt_git_status() {
     git status &> /dev/null
     if (( $? != 128 )); then
         GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
-        print -n " git:${GITBRANCH#refs/heads/}"
+        print -n " ±:${GITBRANCH#refs/heads/}"
         if [ ! "`git status | grep clean`" ]; then
             print -n "(*)"
         fi
@@ -654,7 +654,7 @@ rprompt_git_status() {
 rprompt_hg_status() {
     hg status &> /dev/null
     if (( $? != 255 )); then
-        print -n " hg:"
+        print -n " ☿:"
         print -n `hg summary | perl -ne 'if (/^branch: (.*)$/) { print $1; }'`
         if [ ! "`hg summary | grep clean`" ]; then
             print -n "(*)"
