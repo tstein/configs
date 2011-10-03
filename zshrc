@@ -1,6 +1,51 @@
 # .zshrc configured for halberd
 #######################################
 
+# Shell configuration. {{{
+# Set up colors for prompts. This must be done before zlocal gets sourced.
+autoload -U colors
+colors
+for color in RED GREEN BLUE YELLOW MAGENTA CYAN WHITE BLACK; do
+    eval local PR_$color='%{$fg[${(L)color}]%}'
+done
+local PR_NO_COLOR="%{$terminfo[sgr0]%}"
+
+# zsh vars
+WORDCHARS="${WORDCHARS:s#/#}" # consider / as a word separator
+
+# history-related variables
+HISTFILE=~/.zhistfile
+HISTSIZE=5000
+SAVEHIST=1000000
+
+# default programs
+export EDITOR=vim
+export PAGER="less -FRSX"
+
+# How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
+BATT_METER_WIDTH=0
+
+# better to accidentally deny access than grant it
+umask 077
+
+# .zlocal is a file of my creation - contains site-specific anything so I don't have to modify this
+# file for every machine. If needed, default values go first so that the source call overwrites
+# them.
+PR_COLOR=$PR_BLUE
+ssh_key_list=()
+# Save these values so we can tell if they've been changed by zlocal.
+typeset -A old_vals
+old_vals+=("PROMPT" $PROMPT)
+if test ! -e ~/.zlocal; then
+    get-comfy
+fi
+if test -f ~/.zlocal; then
+    source ~/.zlocal
+fi
+####################################### }}}
+
+
+
 # Properties: __prop {{{
 # There are many properties of a system that influence what's appropriate in
 # that environment. Before we do anything else, get the lay of the land and save
@@ -27,11 +72,20 @@ for i in acpi keychain git hg; do
 done
 
 # Laptop? (i.e., Can we access laptop-specific power info?)
-if [ `get_prop have_acpi` ]; then
-    if [ "`acpi -b 2>/dev/null`" ]; then
-        set_prop am_laptop yes
-    fi
-fi
+case `get_prop OS` in
+    'Linux')
+        if [ `get_prop have_acpi` ]; then
+            if [ "`acpi -b 2>/dev/null`" ]; then
+                set_prop am_laptop yes
+            fi
+        fi
+    ;;
+    'Ossix')
+        if [ "`system_profiler SPHardwareDataType | grep 'MacBook'`" ]; then
+            set_prop am_laptop yes
+        fi
+    ;;
+esac
 
 ####################################### }}}
 
@@ -86,14 +140,6 @@ if is-at-least "4.2.0"; then
     autoload -U sticky-note url-quote-magic zcalc zed zmv
     zle -N self-insert url-quote-magic
 fi
-
-# set up colors for prompt
-autoload -U colors
-colors
-for color in RED GREEN BLUE YELLOW MAGENTA CYAN WHITE BLACK; do
-    eval local PR_$color='%{$fg[${(L)color}]%}'
-done
-local PR_NO_COLOR="%{$terminfo[sgr0]%}"
 
 # enable tetris - don't forget to bind it
 autoload -U tetris
@@ -599,12 +645,24 @@ get-comfy() {
 # cornmeter is a visual battery meter meant for a prompt. {{{
 # This function spits out the meter as it should appear at call time.
 drawCornMeter() {
-    for var in WIDTH STEP LEVEL CHARGING; do; eval local $var=""; done
+    for var in WIDTH STEP LEVEL CHARGING SPPOWER CHARGE CAPACITY; do; eval local $var=""; done
     WIDTH=$1
     STEP=$((100.0 / $WIDTH))
-    LEVEL=`acpi -b | perl -ne '/(\d{1,3}\%)/; $LVL = $1; $LVL =~ s/\%//; print $LVL;'`
-    CHARGING=`acpi -a | perl -ne 'if (/on-line/) { print $1; }'`
-    LEVEL=$(($LEVEL * 1.0))
+    case `get_prop OS` in
+        'Linux')
+            LEVEL=`acpi -b | perl -ne '/(\d{1,3}\%)/; $LVL = $1; $LVL =~ s/\%//; print $LVL;'`
+            LEVEL=$(($LEVEL * 1.0))
+            CHARGING=`acpi -a | perl -ne 'if (/on-line/) { print $1; }'`
+        ;;
+        'Ossix')
+            SPPOWER=`system_profiler SPPowerDataType`
+            CHARGE=`print $SPPOWER | perl -ne 'if (/Charge Remaining.* (\d+)/) { print $1; }'`
+            CAPACITY=`print $SPPOWER | perl -ne 'if (/Full Charge Capacity.* (\d+)/) { print $1; }'`
+            LEVEL=$((100.0 * $CHARGE / $CAPACITY))
+            CHARGING=`print $SPPOWER | perl -ne 'if (/Charging: (\w+)/) { if ($1 =~ "Yes") { print "Yes"; } }'`
+        ;;
+    esac
+
     print -n $PR_WHITE"["
     if (($LEVEL <= 30.0)); then
         print -n $PR_RED
@@ -617,7 +675,7 @@ drawCornMeter() {
     for (( i = 0; i < $WIDTH; i++ ))
     do
         if (($(($i + 1)) == $WIDTH)); then
-            if [ `acpi -a | grep -o on-line` ]; then
+            if [ "$CHARGING" ]; then
                 print -n "C"
                 continue
             fi
@@ -703,43 +761,6 @@ case "$TERM" in
         }
     ;;
 esac
-####################################### }}}
-
-
-
-# Shell configuration. {{{
-# zsh vars
-WORDCHARS="${WORDCHARS:s#/#}" # consider / as a word separator
-
-# history-related variables
-HISTFILE=~/.zhistfile
-HISTSIZE=5000
-SAVEHIST=1000000
-
-# default programs
-export EDITOR=vim
-export PAGER="less -FRSX"
-
-# How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
-BATT_METER_WIDTH=0
-
-# better to accidentally deny access than grant it
-umask 077
-
-# .zlocal is a file of my creation - contains site-specific anything so I don't have to modify this
-# file for every machine. If needed, default values go first so that the source call overwrites
-# them.
-PR_COLOR=$PR_BLUE
-ssh_key_list=()
-# Save these values so we can tell if they've been changed by zlocal.
-typeset -A old_vals
-old_vals+=("PROMPT" $PROMPT)
-if test ! -e ~/.zlocal; then
-    get-comfy
-fi
-if test -f ~/.zlocal; then
-    source ~/.zlocal
-fi
 ####################################### }}}
 
 
