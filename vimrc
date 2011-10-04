@@ -37,6 +37,9 @@ set tw=80
 set wrap
 set linebreak
 
+" folding
+set foldmethod=marker
+
 " there is a backspace option
 set backspace=indent,eol,start
 
