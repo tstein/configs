@@ -105,7 +105,8 @@ imap <M-Space> <ESC>
 " vimline on demand
 imap <ESC>v vim:foldmethod=marker autoindent expandtab shiftwidth=4 filetype=
 
-
+" Conflicts with a tic from screen/tmux.
+nnoremap <C-a> <Nop>
 
 """""""""""""""
 " Plugins.
