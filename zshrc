@@ -474,12 +474,12 @@ call-embedded-perl() {
 #automat#
 #automat#   sub hg {
 #automat#       chdir("$ENV{'HOME'}/.root");
-#automat#       `wget -qO- http://mercurial.selenic.com/release/mercurial-1.7.3.tar.gz | tar -xzf-`;
+#automat#       `wget -qO- http://mercurial.selenic.com/release/mercurial-2.0.2.tar | tar -xzf-`;
 #automat#       return $? if ($? != 0);
-#automat#       chdir("mercurial-1.7.3");
+#automat#       chdir("mercurial-2.0.2");
 #automat#       `make local`;
 #automat#       return $? if ($? != 0);
-#automat#       `ln -fs ../.root/mercurial-1.7.3/hg $ENV{'HOME'}/bin/hg`;
+#automat#       `ln -fs ../.root/mercurial-2.0.2/hg $ENV{'HOME'}/bin/hg`;
 #automat#       return $?;
 #automat#   }
 #automat#
