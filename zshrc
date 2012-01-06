@@ -20,7 +20,7 @@ SAVEHIST=1000000
 
 # default programs
 export EDITOR=vim
-export PAGER="less -FRSX"
+export PAGER="less -FRX"
 
 # How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
 BATT_METER_WIDTH=0
@@ -247,6 +247,7 @@ alias emacs='emacs -nw'
 alias fortune='fortune -c'
 alias getpwdfs='getfstype .'
 alias grep='grep --color=auto'
+alias less='less -FRX'
 alias units='units --verbose'
 
 case `get_prop OS` in
