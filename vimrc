@@ -12,6 +12,7 @@ syntax on
 set title
 set cursorline
 set scrolloff=4 "scroll ahead of the cursor
+set laststatus=2
 set number
 set ruler
 set showcmd "enable a couple of useful realtime prints on the status bar
@@ -110,7 +111,7 @@ nnoremap <C-a> <Nop>
 
 """""""""""""""
 " Plugins.
-call pathogen#runtime_append_all_bundles()
+call pathogen#infect()
 
 " miniBufExplorer
 let g:miniBufExplModSelTarget = 1
