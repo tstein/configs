@@ -12,6 +12,7 @@ graphlog =
 mq =
 pager =
 progress =
+transplant =
 hgshelve = ~/.hgext/hgshelve.py
 
 [merge-tools]
@@ -25,3 +26,4 @@ vdiff = vimdiff
 editor = gvim
 tabwidth = 4
 pushafterci = True
+
