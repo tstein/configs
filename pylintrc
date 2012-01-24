@@ -87,7 +87,7 @@ bad-names=foo,bar,baz
 
 # Regular expression which should only match functions or classes name which do
 # not require a docstring
-no-docstring-rgx=__.*__
+no-docstring-rgx=(__.*__|run|shutdown)
 
 
 [DESIGN]
