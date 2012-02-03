@@ -109,22 +109,29 @@ imap <ESC>v vim:foldmethod=marker autoindent expandtab shiftwidth=4 filetype=
 " Conflicts with a tic from screen/tmux.
 nnoremap <C-a> <Nop>
 
+" filetype
+filetype plugin indent on
+"set omnifunc=syntaxcomplete#Complete
+if has("autocmd") && exists("+omnifunc") 
+   autocmd Filetype * 
+       \    if &omnifunc == "" | 
+       \        setlocal omnifunc=syntaxcomplete#Complete | 
+       \    endif 
+endif 
+
+autocmd FileType tex set shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType html set shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType xml set shiftwidth=2 tabstop=2 softtabstop=2
+" Use the following responsibly.
+autocmd FileType gitcommit set nolinebreak
+
+
 """""""""""""""
 " Plugins.
 call pathogen#infect()
 
 " miniBufExplorer
 let g:miniBufExplModSelTarget = 1
-
-" filetype
-filetype plugin indent on
-autocmd FileType tex set shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType xml set shiftwidth=2 tabstop=2 softtabstop=2
-" Use the following responsibly.
-autocmd FileType gitcommit set nolinebreak
-
-" omnicomplete
-set omnifunc=syntaxcomplete#Complete
 
 " taglist
 nnoremap <silent> <F8> :TlistToggle<CR>
