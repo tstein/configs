@@ -42,6 +42,8 @@ fi
 if test -f ~/.zlocal; then
     source ~/.zlocal
 fi
+
+export PATH=~/bin:$PATH
 ####################################### }}}
 
 
@@ -175,7 +177,7 @@ case `get_prop OS` in
                 bindkey '[1;5D'   backward-word
                 bindkey '[1;5C'   forward-word
             ;;
-            "rxvt"*)
+            'rxvt'*)
                 bindkey '[3~'     delete-char
                 bindkey '[7~'     beginning-of-line
                 bindkey '[8~'     end-of-line
@@ -184,7 +186,7 @@ case `get_prop OS` in
                 bindkey 'Od'      backward-word
                 bindkey 'Oc'      forward-word
             ;;
-            'screen')
+            'screen'*)
                 bindkey '[3~'     delete-char
                 bindkey '[1~'     beginning-of-line
                 bindkey '[4~'     end-of-line
