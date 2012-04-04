@@ -122,6 +122,7 @@ endif
 autocmd FileType tex set shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType html set shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType xml set shiftwidth=2 tabstop=2 softtabstop=2
+autocmd FileType python set shiftwidth=2 tabstop=2 softtabstop=2 textwidth=79
 " Use the following responsibly.
 autocmd FileType gitcommit set nolinebreak
 
