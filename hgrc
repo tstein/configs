@@ -15,6 +15,9 @@ progress =
 transplant =
 hgshelve = ~/.hgext/hgshelve.py
 
+[pager]
+pager = LESS='-FRSX' less
+
 [merge-tools]
 filemerge.executable = vimdiff
 filemerge.args = $local $other
