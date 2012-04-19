@@ -56,6 +56,18 @@ typeset -A __prop
 set_prop() { __prop+=($1 $2) }
 get_prop() { print $__prop[$1] }
 
+# Text encoding?
+local ENCODING=`print -n $LANG | grep -oe '[^.]*$'`
+# Need to mangle this a bit to deal with platform differences.
+ENCODING=`print -n $ENCODING | tr '[a-z]' '[A-Z]' | tr -d -`
+if [ ! $ENCODING ]; then
+    ENCODING='UNKNOWN'
+fi
+set_prop encoding $ENCODING
+if [[ `get_prop encoding` == 'UTF8' ]]; then
+    set_prop unicode yes
+fi
+
 # Operating system?
 case `uname -s` in
     'Linux')
@@ -647,7 +659,11 @@ get-comfy() {
 # cornmeter is a visual battery meter meant for a prompt. {{{
 # This function spits out the meter as it should appear at call time.
 drawCornMeter() {
-    for var in WIDTH STEP LEVEL CHARGING SPPOWER CHARGE CAPACITY; do; eval local $var=""; done
+    for var in WIDTH STEP LEVEL CHARGING SPPOWER CHARGE CAPACITY CHRGCHR; do; eval local $var=""; done
+    CHRGCHR='C'
+    if [ `get_prop unicode` ]; then
+        CHRGCHR='⚡'
+    fi
     WIDTH=$1
     STEP=$((100.0 / $WIDTH))
     case `get_prop OS` in
@@ -678,7 +694,7 @@ drawCornMeter() {
     do
         if (($(($i + 1)) == $WIDTH)); then
             if [ "$CHARGING" ]; then
-                print -n "C"
+                print -n $CHRGCHR
                 continue
             fi
         fi
@@ -700,11 +716,15 @@ drawCornMeter() {
 # If we're in a repo, print some info. Intended for use in a prompt. {{{
 # TODO: Switch from precmd_functions to chpwd_functions
 rprompt_git_status() {
-    local GITBRANCH=""
+    local GITBRANCH=''
+    local GITTXT='git'
+    if [ `get_prop unicode` ]; then
+        GITTXT='±'
+    fi
     git status &> /dev/null
     if (( $? != 128 )); then
         GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
-        print -n " ±:${GITBRANCH#refs/heads/}"
+        print -n " $GITTXT:${GITBRANCH#refs/heads/}"
         if [ ! "`git status | grep clean`" ]; then
             print -n "(*)"
         fi
@@ -712,9 +732,13 @@ rprompt_git_status() {
 }
 
 rprompt_hg_status() {
+    local HGTXT='hg'
+    if [ `get_prop unicode` ]; then
+        HGTXT='☿'
+    fi
     hg status &> /dev/null
     if (( $? != 255 )); then
-        print -n " ☿:"
+        print -n " $HGTXT:"
         print -n `hg summary | perl -ne 'if (/^branch: (.*)$/) { print $1; }'`
         if [ ! "`hg summary | grep clean`" ]; then
             print -n "(*)"
