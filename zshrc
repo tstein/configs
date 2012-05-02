@@ -290,6 +290,15 @@ getfstype() {
     done
 }
 
+reify() {
+    # Turn redundant hard links into separate, identical files.
+    for F in $@; do
+        mv $F $F.rfy
+        cp $F.rfy $F
+        rm -f $F.rfy
+    done
+}
+
 update-rc() {
     update-zshrc
     update-vimrc
