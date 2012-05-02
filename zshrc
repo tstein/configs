@@ -763,7 +763,7 @@ update_rprompt() {
 
 # For terms known to support it, print some info to the terminal title.
 case "$TERM" in
-    xterm|xterm*|screen)
+    xterm*|screen*)
         precmd_update_title() {
             print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) (%y)\a"
         }
@@ -776,7 +776,7 @@ esac
 
 
 
-# Finally, let's set up our interface. {{{
+# Set up the interface. {{{
 if [[ "$PROMPT" == "$old_vals[PROMPT]" ]]; then
     PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)\%#%b "
 fi
@@ -793,7 +793,16 @@ if [ `get_prop have_keychain` ]; then
     keychain -Q -q $ssh_key_list
     source ~/.keychain/${HOST}-sh
 fi
+####################################### }}}
 
+
+
+# Finally, source additional configuration.
+if [ -d ~/.zsh ]; then
+    for zfile in `ls ~/.zsh/*.zsh`; do
+        source $zfile
+    done
+fi
 ####################################### }}}
 # ZSH IS GO
 #######################################
