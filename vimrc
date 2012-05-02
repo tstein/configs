@@ -94,6 +94,9 @@ nnoremap <leader><leader> <C-^>
 " clear highlighting on enter
 nnoremap <CR> :noh<CR><CR>
 
+" Fast trailing whitespace cleanup.
+nnoremap <leader>s :%s/\s\+$//<CR>
+
 " vimnav for windows
 map <C-j> <C-W>j
 map <C-k> <C-W>k
@@ -113,12 +116,12 @@ nnoremap <C-a> <Nop>
 " filetype
 filetype plugin indent on
 "set omnifunc=syntaxcomplete#Complete
-if has("autocmd") && exists("+omnifunc") 
-   autocmd Filetype * 
-       \    if &omnifunc == "" | 
-       \        setlocal omnifunc=syntaxcomplete#Complete | 
-       \    endif 
-endif 
+if has("autocmd") && exists("+omnifunc")
+   autocmd Filetype *
+       \    if &omnifunc == "" |
+       \        setlocal omnifunc=syntaxcomplete#Complete |
+       \    endif
+endif
 
 autocmd FileType tex set shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType html set shiftwidth=2 tabstop=2 softtabstop=2
