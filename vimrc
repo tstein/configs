@@ -138,6 +138,9 @@ call pathogen#infect()
 " miniBufExplorer
 let g:miniBufExplModSelTarget = 1
 
+" syntastic
+let g:syntastic_check_on_open=1
+
 " taglist
 nnoremap <silent> <F8> :TlistToggle<CR>
 
