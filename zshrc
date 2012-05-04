@@ -821,7 +821,7 @@ fi
 
 
 
-# Finally, source additional configuration.
+# Finally, source additional configuration. {{{
 if [ -d ~/.zsh ]; then
     for zfile in `ls ~/.zsh/*.zsh`; do
         source $zfile
