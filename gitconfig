@@ -8,4 +8,8 @@
     interactive = auto
     diff = auto
     status = auto
+[alias]
+    lg = log --oneline --decorate=short --graph
 
+[review "review.cyanogenmod.com"]
+    username = ted
