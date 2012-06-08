@@ -1,15 +1,151 @@
 # .zshrc configured for halberd
 #######################################
 
-# Shell configuration. {{{
-# Set up colors for prompts. This must be done before zlocal gets sourced.
+# Set up colors. {{{
 autoload -U colors
 colors
 for color in RED GREEN BLUE YELLOW MAGENTA CYAN WHITE BLACK; do
-    eval local PR_$color='%{$fg[${(L)color}]%}'
+    eval local T_$color='$fg[${(L)color}]'
+    eval local PR_$color='%{$T_'$color'%}'
 done
-local PR_NO_COLOR="%{$terminfo[sgr0]%}"
+local T_NO_COLOR="$terminfo[sgr0]"
+local PR_NO_COLOR="%{$T_NO_COLOR%}"
+####################################### }}}
 
+
+
+# Command functions. {{{
+# These are up here so that other parts of the zshrc can use them.
+oh() {
+    echo "oh $@"
+}
+
+getfstype() {
+    local DIR=$1
+    if [ ! "$DIR" ]; then; return; fi
+    # zsh lacks a do while, so I went with an explicit break from an infinite
+    # loop. This will terminate as long as your cwd is of finite length.
+    while (true); do
+        local FS=`mount | grep " $DIR " | sed 's/.*type //' | sed 's/ .*//'`
+        if [ "$FS" ]; then
+            print $FS
+            break
+        fi
+        if [[ "$DIR" == '/' ]]; then
+            break
+        fi
+        DIR=`dirname $DIR`
+    done
+}
+
+reify() {
+    # Turn redundant hard links into separate, identical files.
+    for F in $@; do
+        mv $F $F.rfy
+        cp $F.rfy $F
+        rm -f $F.rfy
+    done
+}
+
+update-rc() {
+    update-zshrc
+    update-vimrc
+}
+
+update-zshrc() {
+    if [ ! `get_prop have_git` ]; then
+        print -l "git is required to do this, but it is not in your path.";
+        return 1;
+    fi
+
+    local TMPDIR=`uuidgen`-ted
+    pushd
+    mkdir ~/$TMPDIR
+    cd ~/$TMPDIR
+
+    git clone git://github.com/tstein/ted-configs.git
+    cp ted-configs/zshrc ~/.zshrc
+
+    popd
+    rm -rf ~/$TMPDIR
+
+    source ~/.zshrc
+    return 0;
+}
+
+update-vimrc() {
+    rsync -aLze "ssh -p54848" ted@halberd.dyndns.org:~/.vimrc ~/.vimrc
+}
+
+call-embedded-perl() {
+    local DEBUG_CEP
+    if [[ "$1" == "debug" ]]; then
+        DEBUG_CEP="TRUE"
+        shift
+    fi
+
+    if [[ $ARGC -eq 0 ]]; then
+        print -l "Which script would you like to run?"
+        return 0;
+    fi
+    local SCRIPT="$1"
+    shift
+
+    if [[ "$DEBUG_CEP" == "TRUE" ]]; then
+        perl -ne "print $F if s/#$SCRIPT#//" ~/.zshrc
+    else
+        perl -ne "print $F if s/#$SCRIPT#//" ~/.zshrc | perl -w \- $@
+    fi
+}
+
+# Designed to be called on first run, as decided by the presence or absence of a .zlocal.
+get-comfy() {
+    # If this function gets ^C'd, we want to catch it and return so the rest of
+    # this file is sourced properly.
+    trap 'trap 2; return 1' 2
+    if [[ -f ~/.zlocal ]]; then
+        print -l "You have a .zlocal on this machine. If you really intended to run this function,\n
+        delete it manually and try again."
+        return 1
+    fi
+    print -l "Looks like it's your first time here.\n"
+    print -l ".zlocal for "`hostname`" created on `date`" >> ~/.zlocal
+    print -l "configuration:\n" >> ~/.zlocal
+    call-embedded-perl localinfo | tee -a ~/.zlocal
+    sed -i -e 's/.*/# &/' ~/.zlocal
+    print >> ~/.zlocal
+    print -l "\nWhat color would you like your prompt on this machine to be? Pick one."
+    print -n "["
+    print -n $T_RED"red"$T_NO_COLOR"|"
+    print -n $T_GREEN"green"$T_NO_COLOR"|"
+    print -n $T_BLUE"blue"$T_NO_COLOR"|"
+    print -n $T_CYAN"cyan"$T_NO_COLOR"|"
+    print -n $T_MAGENTA"magenta"$T_NO_COLOR"|"
+    print -n $T_YELLOW"yellow"$T_NO_COLOR"|"
+    print -n $T_WHITE"white"$T_NO_COLOR"|none]: "
+    local CHOICE=""
+    read CHOICE
+    case "$CHOICE" in
+        'none')
+            print -l "Really? That's no fun. :/"
+        ;&
+        ('red'|'green'|'blue'|'cyan'|'magenta'|'yellow'|'white'))
+            CHOICE=`echo $CHOICE | tr 'a-z' 'A-Z'`
+            print -l "PR_COLOR=\$PR_$CHOICE\n" >> ~/.zlocal
+        ;;
+        *)
+            print -l "You get blue, wiseguy. Set PR_COLOR later if you want anything else."
+        ;;
+    esac
+    print -l 'All the above information has been saved to ~/.zlocal. Happy zshing!'
+    trap 2
+}
+
+####################################### }}}
+
+
+
+# Shell configuration. {{{
 # zsh vars
 WORDCHARS="${WORDCHARS:s#/#}" # consider / as a word separator
 
@@ -279,92 +415,6 @@ alias rm='rm -i'
 
 
 
-# Command functions. {{{
-oh() {
-    echo "oh $@"
-}
-
-getfstype() {
-    local DIR=$1
-    if [ ! "$DIR" ]; then; return; fi
-    # zsh lacks a do while, so I went with an explicit break from an infinite
-    # loop. This will terminate as long as your cwd is of finite length.
-    while (true); do
-        local FS=`mount | grep " $DIR " | sed 's/.*type //' | sed 's/ .*//'`
-        if [ "$FS" ]; then
-            print $FS
-            break
-        fi
-        if [[ "$DIR" == '/' ]]; then
-            break
-        fi
-        DIR=`dirname $DIR`
-    done
-}
-
-reify() {
-    # Turn redundant hard links into separate, identical files.
-    for F in $@; do
-        mv $F $F.rfy
-        cp $F.rfy $F
-        rm -f $F.rfy
-    done
-}
-
-update-rc() {
-    update-zshrc
-    update-vimrc
-}
-
-update-zshrc() {
-    if [ ! `get_prop have_git` ]; then
-        print -l "git is required to do this, but it is not in your path.";
-        return 1;
-    fi
-
-    local TMPDIR=`uuidgen`-ted
-    pushd
-    mkdir ~/$TMPDIR
-    cd ~/$TMPDIR
-
-    git clone git://github.com/tstein/ted-configs.git
-    cp ted-configs/zshrc ~/.zshrc
-
-    popd
-    rm -rf ~/$TMPDIR
-
-    source ~/.zshrc
-    return 0;
-}
-
-update-vimrc() {
-    rsync -aLze "ssh -p54848" ted@halberd.dyndns.org:~/.vimrc ~/.vimrc
-}
-
-call-embedded-perl() {
-    local DEBUG_CEP
-    if [[ "$1" == "debug" ]]; then
-        DEBUG_CEP="TRUE"
-        shift
-    fi
-
-    if [[ $ARGC -eq 0 ]]; then
-        print -l "Which script would you like to run?"
-        return 0;
-    fi
-    local SCRIPT="$1"
-    shift
-
-    if [[ "$DEBUG_CEP" == "TRUE" ]]; then
-        perl -ne "print $F if s/#$SCRIPT#//" ~/.zshrc
-    else
-        perl -ne "print $F if s/#$SCRIPT#//" ~/.zshrc | perl -w \- $@
-    fi
-}
-####################################### }}}
-
-
-
 # Embedded Perl scripts. {{{
 #
 # To create a new script, write it here, with each line prefixed with #NAME#. It will be callable
@@ -629,42 +679,6 @@ bindkey "^x" no-magic-abbrev-expand
 
 
 # Interface functions. {{{
-# Designed to be called on first run, as decided by the presence or absence of a .zlocal.
-get-comfy() {
-    # If this function gets ^C'd, we want to catch it and return so the rest of
-    # this file is sourced properly.
-    trap 'trap 2; return 1' 2
-    if [[ -f ~/.zlocal ]]; then
-        print -l "You have a .zlocal on this machine. If you really intended to run this function,\n
-        delete it manually and try again."
-        return 1
-    fi
-    print -l "\nLooks like it's your first time here.\n"
-    print -l ".zlocal for "`hostname`" created on `date`" >> ~/.zlocal
-    print -l "configuration:\n" >> ~/.zlocal
-    call-embedded-perl localinfo | tee -a ~/.zlocal
-    sed -i -e 's/.*/# &/' ~/.zlocal
-    print >> ~/.zlocal
-    print -l "\nWhat color would you like your prompt on this machine to be? Pick one."
-    print -n "[red|green|blue|cyan|magenta|yellow|white|black]: "
-    local CHOICE=""
-    read CHOICE
-    case "$CHOICE" in
-        'black')
-            print -l "Really? If you say so..."
-        ;&
-        ('red'|'green'|'blue'|'cyan'|'magenta'|'yellow'|'white'))
-            CHOICE=`echo $CHOICE | tr 'a-z' 'A-Z'`
-            print -l "PR_COLOR=\$PR_$CHOICE\n" >> ~/.zlocal
-        ;;
-        *)
-            print -l "You get blue. Set PR_COLOR later if you want anything else."
-        ;;
-    esac
-    print -l 'All the above information has been saved to ~/.zlocal. Happy zshing!'
-    trap 2
-}
-
 # cornmeter is a visual battery meter meant for a prompt. {{{
 # This function spits out the meter as it should appear at call time.
 drawCornMeter() {
@@ -821,7 +835,7 @@ fi
 
 
 
-# Finally, source additional configuration.
+# Finally, source additional configuration. {{{
 if [ -d ~/.zsh ]; then
     for zfile in `ls ~/.zsh/*.zsh`; do
         source $zfile
