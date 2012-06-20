@@ -5,6 +5,13 @@
     whitespace = blank-at-eol,-blank-at-eof,tab-in-indent,tabwidth=4
 [color]
     ui = auto
+[advice]
+    commitBeforeMerge = false
+    detachedHead = false
+    implicitIdentity = false
+    pushNonFastForward = false
+    resolveConflict = false
+    statusHints = false
 [alias]
     lg = log --graph --pretty=format:\
 '%Cgreen%h %Cred(%cr)%Creset -%C(yellow)%d%Creset %s %Cblue<%an>%Creset'
