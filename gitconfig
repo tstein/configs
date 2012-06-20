@@ -4,10 +4,7 @@
 [core]
     whitespace = blank-at-eol,tab-in-indent,tabwidth=4
 [color]
-    branch = auto
-    interactive = auto
-    diff = auto
-    status = auto
+    ui = auto
 [alias]
     lg = log --oneline --decorate=short --graph
 
