@@ -2,7 +2,7 @@
     name = Ted Stein
     email = karamarisan@gmail.com
 [core]
-    whitespace = blank-at-eol,tab-in-indent,tabwidth=4
+    whitespace = blank-at-eol,-blank-at-eof,tab-in-indent,tabwidth=4
 [color]
     ui = auto
 [alias]
