@@ -6,7 +6,9 @@
 [color]
     ui = auto
 [alias]
-    lg = log --oneline --decorate=short --graph
+    lg = log --graph --pretty=format:\
+'%Cgreen%h %Cred(%cr)%Creset -%C(yellow)%d%Creset %s %Cblue<%an>%Creset'
 
 [review "review.cyanogenmod.com"]
     username = ted
+
