@@ -2,14 +2,20 @@
     name = Ted Stein
     email = karamarisan@gmail.com
 [core]
-    whitespace = blank-at-eol,tab-in-indent,tabwidth=4
+    whitespace = blank-at-eol,-blank-at-eof,tab-in-indent,tabwidth=4
 [color]
-    branch = auto
-    interactive = auto
-    diff = auto
-    status = auto
+    ui = auto
+[advice]
+    commitBeforeMerge = false
+    detachedHead = false
+    implicitIdentity = false
+    pushNonFastForward = false
+    resolveConflict = false
+    statusHints = false
 [alias]
-    lg = log --oneline --decorate=short --graph
+    lg = log --graph --pretty=format:\
+'%Cgreen%h %Cred(%cr)%Creset -%C(yellow)%d%Creset %s %Cblue<%an>%Creset'
 
 [review "review.cyanogenmod.com"]
     username = ted
+

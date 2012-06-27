@@ -57,7 +57,7 @@ dummy-variables-rgx=___
 
 [FORMAT]
 # Maximum number of characters on a single line.
-max-line-length=80
+max-line-length=79
 
 # Maximum number of lines in a module
 max-module-lines=1000
@@ -80,7 +80,7 @@ ignore-docstrings=yes
 
 [BASIC]
 # Good variable names which should always be accepted, separated by a comma
-good-names=i,j,k,f,s
+good-names=i,j,k,f,s,_
 
 # Bad variable names which should always be refused, separated by a comma
 bad-names=foo,bar,baz
