@@ -385,6 +385,7 @@ alias -- \-='cd \-'
 alias absname='readlink -m'
 alias cep='call-embedded-perl'
 alias chrome='google-chrome'
+alias mtmux='tmux new -s main'
 alias no='yes n'
 if [[ `get_prop OS` == 'Linux' ]]; then
     alias open='xdg-open'
