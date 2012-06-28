@@ -126,7 +126,7 @@ endif
 autocmd FileType tex set shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType html set shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType xml set shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType python set shiftwidth=2 tabstop=2 softtabstop=2 textwidth=79
+autocmd FileType python set textwidth=79
 " Use the following responsibly.
 autocmd FileType gitcommit set nolinebreak
 
@@ -140,6 +140,8 @@ let g:miniBufExplModSelTarget = 1
 
 " syntastic
 let g:syntastic_check_on_open=1
+let g:syntastic_cpp_check_header = 1
+let g:syntastic_cpp_auto_refresh_includes = 1
 
 " taglist
 nnoremap <silent> <F8> :TlistToggle<CR>
