@@ -53,6 +53,8 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
     , ((modMask              , xK_q     ), restart "xmonad" True)
     -- Lock the screen
     , ((modMask .|. shiftMask, xK_l     ), spawn "xscreensaver-command -lock")
+    -- Suspend the machine
+    , ((modMask              , xK_Delete), spawn "suspend-laptop")
     ]
     ++
 
