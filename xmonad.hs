@@ -1,6 +1,7 @@
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers
 import System.Exit
 
 import qualified XMonad.StackSet as W
@@ -89,10 +90,19 @@ myLayout = Full ||| tiled ||| Mirror tiled
      ratio   = 1/2
      delta   = 3/100
 
-myManageHook = composeAll
-    [ className =? "MPlayer"        --> doFloat
-    , className =? "Gimp"           --> doFloat
-    , resource  =? "desktop_window" --> doIgnore ]
+myManageHook = composeAll . concat $
+    [ [ className =? name --> doFloat  | name <- floatByClass ]
+    , [ resource  =? name --> doIgnore | name <- ignoreByResource ]
+    , [ fmap not isDialog --> doF avoidMaster ]
+    ]
+    where
+       floatByClass = [ "MPlayer", "Gimp", "vlc" ]
+       ignoreByResource = [ "desktop_window" ]
+
+avoidMaster :: W.StackSet i l a s sd -> W.StackSet i l a s sd
+avoidMaster = W.modify' $ \c -> case c of
+     W.Stack t [] (r:rs) -> W.Stack t [r] rs
+     otherwise           -> c
 
 ------------------------------------------------------------------------
 main = xmonad =<< xmobar myConfig
@@ -108,6 +118,6 @@ myConfig = defaultConfig {
         keys               = myKeys,
         mouseBindings      = myMouseBindings,
         layoutHook         = avoidStruts $ myLayout,
-        manageHook         = manageDocks <+> myManageHook <+> doFloat
+        manageHook         = manageDocks <+> myManageHook
     }
 
