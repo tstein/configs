@@ -120,6 +120,6 @@ myConfig = defaultConfig {
         keys               = myKeys,
         mouseBindings      = myMouseBindings,
         layoutHook         = avoidStruts $ myLayout,
-        manageHook         = manageDocks <+> myManageHook
+        manageHook         = manageDocks <+> myManageHook <+> doFloat
     }
 
