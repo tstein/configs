@@ -75,16 +75,6 @@ myKeys conf@(XConfig {XMonad.modMask = modMask}) = M.fromList $
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
-
-myMouseBindings (XConfig {XMonad.modMask = modMask}) = M.fromList $
-    -- mod-button1, Set the window to floating mode and move by dragging
-    [ ((modMask, button1), (\w -> focus w >> mouseMoveWindow w))
-    -- mod-button2, Raise the window to the top of the stack
-    , ((modMask, button2), (\w -> focus w >> windows W.swapMaster))
-    -- mod-button3, Set the window to floating mode and resize by dragging
-    , ((modMask, button3), (\w -> focus w >> mouseResizeWindow w))
-    ]
-
 myLayout = Full ||| tiled ||| Mirror tiled
   where
      tiled   = Tall nmaster delta ratio
@@ -118,7 +108,6 @@ myConfig = defaultConfig {
         normalBorderColor  = "#ddddff",
         focusedBorderColor = "#0000dd",
         keys               = myKeys,
-        mouseBindings      = myMouseBindings,
         layoutHook         = avoidStruts $ myLayout,
         manageHook         = manageDocks <+> myManageHook <+> doFloat
     }
