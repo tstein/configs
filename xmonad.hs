@@ -1,4 +1,5 @@
 import XMonad
+import XMonad.Actions.CycleWS
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
@@ -8,6 +9,8 @@ import System.Exit
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
+myModMask = mod4Mask
+
 myWorkspaces    = [ "1:chat", "2:web", "3:term", "4:dev", "5:scratch"
                   , "6:scratch", "7:scratch", "8:scratch", "9:scratch" ]
 
@@ -15,6 +18,10 @@ keyBindings = [ ("M-p",        spawn "exec `yeganesh -x`")
               , ("M-S-l",      spawn "xscreensaver-command -lock")
               , ("M-<Delete>", spawn "suspend-laptop")
               ]
+
+myMouseBindings = [ ((mod4Mask, button4), (\_ -> nextWS))
+                , ((mod4Mask, button5), (\_ -> prevWS))
+                ]
 
 myLayout = Full ||| tiled ||| Mirror tiled
   where
@@ -40,7 +47,7 @@ avoidMaster = W.modify' $ \c -> case c of
 ------------------------------------------------------------------------
 main = xmonad =<< xmobar myConfig
 myConfig = defaultConfig {
-        modMask            = mod4Mask,
+        modMask            = myModMask,
         focusFollowsMouse  = False,
         borderWidth        = 1,
         terminal           = "terminator",
@@ -52,4 +59,6 @@ myConfig = defaultConfig {
     }
     `additionalKeysP`
     keyBindings
+    `additionalMouseBindings`
+    myMouseBindings
 
