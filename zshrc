@@ -749,7 +749,7 @@ rprompt_git_status() {
     if (( $? != 128 )); then
         GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
         print -n " $GITTXT:${GITBRANCH#refs/heads/}"
-        if [ ! "`git status | grep clean`" ]; then
+        if [ ! "`git status | grep \"nothing to commit\"`" ]; then
             print -n "(*)"
         fi
     fi
