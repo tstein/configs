@@ -3,8 +3,8 @@ import XMonad.Actions.CycleWS
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
+import XMonad.Layout.NoBorders
 import XMonad.Util.EZConfig
-import System.Exit
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
@@ -18,12 +18,16 @@ keyBindings = [ ("M-p",        spawn "exec `yeganesh -x`")
               , ("M-S-l",      spawn "xscreensaver-command -lock")
               , ("M-<Delete>", spawn "suspend-laptop")
               ]
+              ++
+              [(("M-" ++ m ++ [k]), windows $ f i)
+                  | (i, k) <- zip myWorkspaces "123456789"
+                  , (f, m) <- [(W.view, ""), (W.shift, "S-")]]
 
 myMouseBindings = [ ((mod4Mask, button4), (\_ -> nextWS))
                 , ((mod4Mask, button5), (\_ -> prevWS))
                 ]
 
-myLayout = Full ||| tiled ||| Mirror tiled
+myLayout = noBorders Full ||| tiled ||| Mirror tiled
   where
      tiled   = Tall nmaster delta ratio
      nmaster = 1
