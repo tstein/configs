@@ -1,5 +1,6 @@
 import XMonad
 import XMonad.Actions.CycleWS
+import XMonad.Actions.FloatKeys
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
@@ -22,6 +23,13 @@ keyBindings = [ ("M-p",        spawn "exec `yeganesh -x`")
               [(("M-" ++ m ++ [k]), windows $ f i)
                   | (i, k) <- zip myWorkspaces "123456789"
                   , (f, m) <- [(W.view, ""), (W.shift, "S-")]]
+              ++
+              [(c ++ m ++ k, withFocused $ f (d x))
+                  | (d, k) <- zip [\a -> (a, 0), \a -> (0, a), \a -> (0 - a, 0), \a -> (0, 0 - a)]
+                                  ["<Right>",    "<Down>",     "<Left>",         "<Up>"]
+                  , (f, m) <- zip [keysMoveWindow, \d -> keysResizeWindow d (0, 0)] ["M-", "M-S-"]
+                  , (c, x) <- zip ["", "C-"] [20, 2]
+              ]
 
 myMouseBindings = [ ((mod4Mask, button4), (\_ -> nextWS))
                 , ((mod4Mask, button5), (\_ -> prevWS))
