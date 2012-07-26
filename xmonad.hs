@@ -32,8 +32,8 @@ keyBindings = [ ("M-p",        spawn "exec `yeganesh -x`")
               ]
 
 myMouseBindings = [ ((mod4Mask, button4), (\_ -> nextWS))
-                , ((mod4Mask, button5), (\_ -> prevWS))
-                ]
+                  , ((mod4Mask, button5), (\_ -> prevWS))
+                  ]
 
 myLayout = noBorders Full ||| tiled ||| Mirror tiled
   where
