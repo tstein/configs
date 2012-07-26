@@ -584,9 +584,9 @@ alias rm='rm -i'
 #automat#       $ENV{'CPPFLAGS'} = "-I $ENV{'HOME'}/.root/include";
 #automat#       $ENV{'LDFLAGS'} = "-L $ENV{'HOME'}/.root/include -L $ENV{'HOME'}/.root/lib";
 #automat#       chdir("$ENV{'HOME'}/.src");
-#automat#       `wget -qO- http://downloads.sourceforge.net/project/tmux/tmux/tmux-1.4/tmux-1.4.tar.gz | tar -xzf-`;
+#automat#       `wget -qO- http://downloads.sourceforge.net/project/tmux/tmux/tmux-1.6/tmux-1.6.tar.gz | tar -xzf-`;
 #automat#       return $? if ($? != 0);
-#automat#       chdir("tmux-1.4");
+#automat#       chdir("tmux-1.6");
 #automat#       `./configure`;
 #automat#       return $? if ($? != 0);
 #automat#       `make`;
