@@ -1,2 +1,3 @@
 hgext/*.pyc
 vim/.netrwhist
+vim/tmp
