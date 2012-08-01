@@ -12,8 +12,7 @@ import qualified Data.Map        as M
 
 myModMask = mod4Mask
 
-myWorkspaces    = [ "1:chat", "2:web", "3:term", "4:dev", "5:scratch"
-                  , "6:scratch", "7:scratch", "8:scratch", "9:scratch" ]
+myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 keyBindings = [ ("M-p",        spawn "exec `yeganesh -x`")
               , ("M-S-l",      spawn "xscreensaver-command -lock")
