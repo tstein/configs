@@ -650,6 +650,8 @@ case `get_prop OS` in
             'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command'
             'pacman'            'pacman-color'
             'sudo pacman'       'sudo pacman-color'
+            'yum remove'        'yum remove --remove-leaves'
+            'sudo yum remove'   'sudo yum remove --remove-leaves'
         )
     ;;
     'Ossix')
