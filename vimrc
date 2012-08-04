@@ -57,14 +57,16 @@ set hlsearch
 set hidden
 set switchbuf=usetab
 
-" backup and swap
+" backup, swap, and undo
 set nobackup
-set backupdir=~/.vim-tmp,~/.tmp,/tmp
-set directory=~/.vim-tmp,~/.tmp,/tmp
+set writebackup
+set undofile
+set backupdir=~/.vim/tmp
+set directory=~/.vim/tmp
+set undodir=~/.vim/tmp
 
 " colors
 "colorscheme solarized
-
 
 
 """""""""""""""
