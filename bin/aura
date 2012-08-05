@@ -1,0 +1,30 @@
+#!/usr/bin/env python
+""" aura watches the status of xscreensaver and runs arbitrary programs from
+~/.aura/{lock,unlock} when its state changes. """
+
+from os import listdir, path, system
+from subprocess import PIPE, Popen
+from time import sleep
+
+
+def main():
+    exec_root = path.expanduser("~/.aura")
+    xscr_args = ["xscreensaver-command", "-watch"]
+    xscr = Popen(xscr_args, stdout=PIPE)
+    # Give xscreensaver a chance to get going.
+    sleep(2)
+    while (True):
+        line = xscr.stdout.readline()
+        if line.startswith("LOCK"):
+            mode_dir = path.join(exec_root, "lock")
+        elif line.startswith("UNBLANK"):
+            mode_dir = path.join(exec_root, "unlock")
+        else:
+            continue
+        for item in listdir(mode_dir):
+            system(path.join(mode_dir, item))
+
+
+if __name__ == '__main__':
+    main()
+
