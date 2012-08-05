@@ -9,7 +9,7 @@ def main():
     pr = "purple-remote"
     oldstatus = check_output([pr, "getstatus"]).strip()
     oldmessage = check_output([pr, "getstatusmessage"]).strip()
-    pckl = path.join(path.expanduser("~/.aura"), "pidgin_status.pickle")
+    pckl = path.join(path.expanduser("~/.aura/tmp"), "pidgin_status.pickle")
     with open(pckl, "wb") as f:
         pickle.dump((oldstatus, oldmessage), f)
     # This is way less pain through purple-remote.

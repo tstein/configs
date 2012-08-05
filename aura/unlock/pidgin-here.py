@@ -10,7 +10,7 @@ def main():
     host = gethostname().split(".")[0]
     herestatus = "available"
     heremessage = host
-    pckl = path.join(path.expanduser("~/.aura"), "pidgin_status.pickle")
+    pckl = path.join(path.expanduser("~/.aura/tmp"), "pidgin_status.pickle")
     with open(pckl, "rb") as f:
         try:
             (herestatus, heremessage) = pickle.load(f)
