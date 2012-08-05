@@ -6,6 +6,7 @@ source ~/.fehbg&
 xcompmgr -cfnFD 3&
 
 # Startup programs.
+/usr/libexec/gnome-settings-daemon&
 /usr/lib64/xfce4/notifyd/xfce4-notifyd&
 xscreensaver&
 tint2&
