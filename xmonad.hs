@@ -4,9 +4,12 @@ import XMonad.Actions.FloatKeys
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
+import XMonad.Layout.IM
+import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
+import XMonad.Layout.PerWorkspace
 import XMonad.Util.EZConfig
-
+import Data.Ratio ((%))
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
@@ -34,12 +37,17 @@ myMouseBindings = [ ((mod4Mask, button4), (\_ -> nextWS))
                   , ((mod4Mask, button5), (\_ -> prevWS))
                   ]
 
-myLayout = noBorders Full ||| tiled ||| Mirror tiled
-  where
-     tiled   = Tall nmaster delta ratio
-     nmaster = 1
-     ratio   = 1/2
-     delta   = 3/100
+myLayoutHook = onWorkspace "1" pidgin
+             $ full ||| tiled ||| htiled
+               where
+                   full    = named "F" $ noBorders Full
+                   pidgin  = named "P" $ withIM (1%8) pblist $ tiled
+                   pblist  = And (ClassName "Pidgin") (Role "buddy_list")
+                   tiled   = named "T" $ Tall nmaster delta ratio
+                   htiled  = named "H" $ tiled
+                   nmaster = 1
+                   ratio   = 1/2
+                   delta   = 3/100
 
 myManageHook = composeAll . concat $
     [ [ className =? name --> doFloat  | name <- floatByClass ]
@@ -67,7 +75,7 @@ myConfig = defaultConfig {
         workspaces         = myWorkspaces,
         normalBorderColor  = "#ddddff",
         focusedBorderColor = "#0000dd",
-        layoutHook         = avoidStruts $ myLayout,
+        layoutHook         = avoidStruts $ myLayoutHook,
         manageHook         = manageDocks <+> myManageHook <+> doFloat
     }
     `additionalKeysP`
