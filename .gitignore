@@ -1,3 +1,4 @@
+aura/tmp/*
 hgext/*.pyc
 vim/.netrwhist
 vim/tmp
