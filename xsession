@@ -17,5 +17,5 @@ if [ -e ~/.xsession.local ]; then
     . ~/.xsession.local
 fi
 
-exec ck-launch-session xmonad
+exec dbus-launch ck-launch-session xmonad
 
