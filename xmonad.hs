@@ -8,6 +8,7 @@ import XMonad.Layout.IM
 import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
 import XMonad.Layout.PerWorkspace
+import XMonad.Layout.Reflect
 import XMonad.Util.EZConfig
 import Data.Ratio ((%))
 import qualified XMonad.StackSet as W
@@ -41,7 +42,7 @@ myLayoutHook = onWorkspace "1" pidgin
              $ full ||| tiled ||| htiled
                where
                    full    = named "F" $ noBorders Full
-                   pidgin  = named "P" $ withIM (1%8) pblist $ tiled
+                   pidgin  = named "P" $ reflectHoriz $ withIM (1%8) pblist $ tiled
                    pblist  = And (ClassName "Pidgin") (Role "buddy_list")
                    tiled   = named "T" $ Tall nmaster delta ratio
                    htiled  = named "H" $ tiled
