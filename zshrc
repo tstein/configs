@@ -304,7 +304,7 @@ bindkey TAB expand-or-complete-prefix
 bindkey '^[[Z' reverse-menu-complete
 bindkey '^K' delete-word
 bindkey '^J' backward-delete-word
-bindkey '[20~' tetris     # Press F9 to play.
+bindkey '^[[20~' tetris     # Press F9 to play.
 
 case `get_prop OS` in
     'Linux')
@@ -318,42 +318,42 @@ case `get_prop OS` in
         #   ^<RightArrow>   :   forward-word
         case "$TERM" in
             'xterm'*)
-                bindkey '[3~'     delete-char
-                bindkey 'OH'      beginning-of-line
-                bindkey 'OF'      end-of-line
-                bindkey '[5~'     insert-last-word
-                bindkey '[6~'     end-of-history
-                bindkey '[1;5D'   backward-word
-                bindkey '[1;5C'   forward-word
+                bindkey '^[[3~'     delete-char
+                bindkey '^[OH'      beginning-of-line
+                bindkey '^[OF'      end-of-line
+                bindkey '^[[5~'     insert-last-word
+                bindkey '^[[6~'     end-of-history
+                bindkey '^[[1;5D'   backward-word
+                bindkey '^[[1;5C'   forward-word
             ;;
             'rxvt'*)
-                bindkey '[3~'     delete-char
-                bindkey '[7~'     beginning-of-line
-                bindkey '[8~'     end-of-line
-                bindkey '[5~'     insert-last-word
-                bindkey '[6~'     end-of-history
-                bindkey 'Od'      backward-word
-                bindkey 'Oc'      forward-word
+                bindkey '^[[3~'     delete-char
+                bindkey '^[[7~'     beginning-of-line
+                bindkey '^[[8~'     end-of-line
+                bindkey '^[[5~'     insert-last-word
+                bindkey '^[[6~'     end-of-history
+                bindkey '^[Od'      backward-word
+                bindkey '^[Oc'      forward-word
             ;;
             'screen'*)
-                bindkey '[3~'     delete-char
-                bindkey '[1~'     beginning-of-line
-                bindkey '[4~'     end-of-line
-                bindkey '[5~'     insert-last-word
-                bindkey '[6~'     end-of-history
-                bindkey '[1;5D'   backward-word
-                bindkey 'O5D'     backward-word
-                bindkey 'OD'      backward-word
-                bindkey '[1;5C'   forward-word
-                bindkey 'O5C'     forward-word
-                bindkey 'OC'      forward-word
+                bindkey '^[[3~'     delete-char
+                bindkey '^[[1~'     beginning-of-line
+                bindkey '^[[4~'     end-of-line
+                bindkey '^[[5~'     insert-last-word
+                bindkey '^[[6~'     end-of-history
+                bindkey '^[[1;5D'   backward-word
+                bindkey '^[O5D'     backward-word
+                bindkey '^[OD'      backward-word
+                bindkey '^[[1;5C'   forward-word
+                bindkey '^[O5C'     forward-word
+                bindkey '^[OC'      forward-word
             ;;
             'linux')
-                bindkey '[3~'     delete-char
-                bindkey '[1~'     beginning-of-line
-                bindkey '[4~'     end-of-line
-                bindkey '[5~'     insert-last-word
-                bindkey '[6~'     end-of-history
+                bindkey '^[[3~'     delete-char
+                bindkey '^[[1~'     beginning-of-line
+                bindkey '^[[4~'     end-of-line
+                bindkey '^[[5~'     insert-last-word
+                bindkey '^[[6~'     end-of-history
                 # mingetty doesn't distinguish between ^<LeftArrow> and <LeftArrow>.
             ;;
         esac
@@ -361,8 +361,8 @@ case `get_prop OS` in
     'Ossix')
         bindkey '[D'            backward-word       # option-left
         bindkey '[C'            forward-word        # option-right
-        bindkey '[1;10D'      beginning-of-line   # shift-option-left
-        bindkey '[1;10C'      end-of-line         # shift-option-right
+        bindkey '^[[1;10D'      beginning-of-line   # shift-option-left
+        bindkey '^[[1;10C'      end-of-line         # shift-option-right
     ;;
 esac
 ####################################### }}}
