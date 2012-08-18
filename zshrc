@@ -301,6 +301,7 @@ zle -N tetris
 # Key bindings. {{{
 bindkey -e
 bindkey TAB expand-or-complete-prefix
+bindkey '^[[Z' reverse-menu-complete
 bindkey '^K' delete-word
 bindkey '^J' backward-delete-word
 bindkey '[20~' tetris     # Press F9 to play.
