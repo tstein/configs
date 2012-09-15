@@ -13,6 +13,7 @@ tint2&
 nm-applet&
 gnome-sound-applet&
 dropbox start&
+ibus-daemon&
 if [ -e ~/.xsession.local ]; then
     . ~/.xsession.local
 fi
