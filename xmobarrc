@@ -1,8 +1,5 @@
-Config { commands = [ Run Weather "KORD" [ "-t", "<tempF>F, <rh>%, <skyCondition>, <visibility>"
-                                         , "-L", "55", "-H", "75"
-                                         , "--normal", "white", "--high", "red", "--low", "lightblue"] 18000
-                    , Run StdinReader
+Config { commands = [ Run StdinReader
                     , Run Com "hostname" ["-s"] "" 36000
                     , Run Date "%Y-%m-%d %H:%M" "date" 100 ]
-       , template = "%StdinReader% }{ <fc=#4444ff>%hostname%</fc> | %KORD% | <fc=#666666>%date%</fc>"
+       , template = "%StdinReader% }{ <fc=#0000cc>%hostname%</fc> | <fc=#666666>%date%</fc>"
 
