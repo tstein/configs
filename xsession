@@ -1,6 +1,6 @@
 #!/bin/zsh
 numlockx on&
-setxkbmap -option compose:caps&
+setxkbmap -option compose:caps
 xsetroot -cursor_name left_ptr&
 source ~/.fehbg&
 xcompmgr -cfnFD 3&
