@@ -2,9 +2,17 @@
 """ aura watches the status of xscreensaver and runs arbitrary programs from
 ~/.aura/{lock,unlock} when its state changes. """
 
-from os import listdir, path, system
+from os import listdir, path, stat, system
 from subprocess import PIPE, Popen
+from stat import S_IXUSR
 from time import sleep
+
+
+def executable(filepath):
+    try:
+        return stat(filepath).st_mode & S_IXUSR > 0
+    except OSError:
+        return False
 
 
 def main():
@@ -24,7 +32,9 @@ def main():
         else:
             continue
         for item in listdir(mode_dir):
-            system(path.join(mode_dir, item))
+            prog = path.join(mode_dir, item)
+            if executable(prog):
+                system(prog)
 
 
 if __name__ == '__main__':
