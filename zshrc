@@ -382,7 +382,7 @@ alias getip='curl ifconfig.me'
 alias sudo='sudo '  # This enables alias, but not function, expansion on the next word.
 
 # ... to save keystrokes.
-alias -- \-='cd \-'
+alias -- -='cd -'
 alias absname='readlink -m'
 alias cep='call-embedded-perl'
 alias chrome='google-chrome'
