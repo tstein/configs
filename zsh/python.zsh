@@ -1,9 +1,9 @@
 # Fedora packages pip as pip-python. Using the external /bin/which ensures we
 # get a real path and not a printout of an alias, even in nested zshes.
 if [ `whence pip-python` ]; then
-    local _PIP_PATH=`/bin/which pip-python`
+    _PIP_PATH=`/bin/which pip-python`
 else
-    local _PIP_PATH=`/bin/which pip`
+    _PIP_PATH=`/bin/which pip`
 fi
 
 if [ `whence virtualenvwrapper.sh` ]; then
