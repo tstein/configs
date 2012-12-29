@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+""" Copy the GPS exif data from one file to another. """
+
+
+import argparse
+from subprocess import call, check_output
+from sys import exit
+
+
+def parseargs():
+    """ Set up an argument parser, invoke it, and return its result. """
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("dst", help="A photo without GPS metadata.")
+    parser.add_argument("src", help="A photo with GPS metadata.")
+    return parser.parse_args()
+
+
+def discover_GPS_tags():
+    """ Ask exiftool for all known GPS-related tags. """
+    tags = check_output("exiftool -list | tr ' ' '\\n' | grep -P '^GPS'",
+                        shell=True)
+    tags = tags.decode("utf-8")
+    tags = tags.split("\n")
+    tags = [t for t in tags if t]
+    return tags
+
+
+def extract_tags(photo, tags):
+    """ Given a photo, return a list specifying all present GPS tags and their
+    values in exiftool arg format. """
+    cmd = "exiftool -args "
+    for tag in tags:
+        cmd += "-%s " % tag
+    cmd += "%s" % photo
+    output = check_output(cmd, shell=True).decode("utf-8")
+    lines = output.split("\n")
+    lines = [l for l in lines if l]
+    return lines
+
+
+def write_tags(photo, tags):
+    """ Use exiftool to write tags. """
+    cmd = "exiftool "
+    cmd += " ".join(tags)
+    cmd += " %s" % photo
+    call(["exiftool"] + tags + [photo])
+
+
+def main():
+    devnull = open("/dev/null", "w")
+    args = parseargs()
+    src = args.src
+    dst = args.dst
+
+    # Make sure we can run exiftool.
+    call("exiftool", stdout=devnull)
+
+    tags = discover_GPS_tags()
+    srctags = extract_tags(src, tags)
+    dsttags = extract_tags(dst, tags)
+
+    # Files with no other GPS data may have a GPSVersionID.
+    if len(dsttags) > 1:
+        print("Destination file %s already has GPS data! Bailing out." % dst)
+        exit(1)
+
+    print("Adding tags:")
+    print("\n".join(srctags))
+    write_tags(dst, srctags)
+
+
+if __name__ == "__main__":
+    main()
+
