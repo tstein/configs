@@ -22,7 +22,7 @@ sync() {
     ssh $desthost "mkdir -p '$bottom_dir'"
 
     print "syncing $1..."
-    rsync -ave ssh --delete "$1/" $desthost:"\"$1\""
+    rsync -avze ssh --delete "$1/" $desthost:"\"$1\""
     print
 }
 
