@@ -12,6 +12,8 @@
     pushNonFastForward = false
     resolveConflict = false
     statusHints = false
+[push]
+    default = simple
 [alias]
     lg = log --graph --pretty=format:\
 '%Cgreen%h %Cred(%cr)%Creset -%C(yellow)%d%Creset %s %Cblue<%an>%Creset'
