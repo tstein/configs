@@ -2,8 +2,7 @@
 numlockx on&
 setxkbmap -option compose:caps
 xsetroot -cursor_name left_ptr&
-source ~/.fehbg&
-xcompmgr -cfnFD 3&
+xcompmgr -c&
 
 # Startup programs.
 /usr/libexec/gnome-settings-daemon&
@@ -18,5 +17,11 @@ if [ -e ~/.xsession.local ]; then
     . ~/.xsession.local
 fi
 
+# Gnome will fight over this.
+sleep 2
+source ~/.fehbg
+
+#
+export XDG_CURRENT_DESKTOP=XFCE
 exec dbus-launch ck-launch-session xmonad
 
