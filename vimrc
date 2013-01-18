@@ -152,6 +152,8 @@ nnoremap <silent> <F8> :TlistToggle<CR>
 autocmd BufWritePost, BufLeave, WinLeave ?* mkview
 autocmd BufReadPre ?* silent loadview
 
+" Go
+set rtp+=$GOROOT/misc/vim
 
 " What's a vimrc without a vimline?
 "vim:foldmethod=marker autoindent expandtab shiftwidth=4 filetype=vim
