@@ -5,6 +5,7 @@ xsetroot -cursor_name left_ptr&
 xcompmgr -c&
 
 # Startup programs.
+wmname LG3D     # For Java. (read: Minecraft.)
 /usr/libexec/gnome-settings-daemon&
 /usr/lib64/xfce4/notifyd/xfce4-notifyd&
 xscreensaver&
@@ -21,7 +22,8 @@ fi
 sleep 2
 source ~/.fehbg
 
-#
+# Lie about current desktop for xdg-open. In particular, Chrome opens everything
+# in Firefox(?!) if this isn't set.
 export XDG_CURRENT_DESKTOP=XFCE
 exec dbus-launch ck-launch-session xmonad
 
