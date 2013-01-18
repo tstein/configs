@@ -52,14 +52,15 @@ myLayoutHook = onWorkspace "1" pidgin
                    delta   = 3/100
 
 myManageHook = composeAll . concat $
-    [ [ className =? name --> doFloat  | name <- floatByClass ]
-    , [ className =? name --> doIgnore | name <- ignoreByClass ]
-    , [ resource  =? name --> doIgnore | name <- ignoreByResource ]
+    [ [ isFullscreen      --> doFullFloat ]
+    , [ className =? name --> doFloat       | name <- floatByClass ]
+    , [ className =? name --> doIgnore      | name <- ignoreByClass ]
+    , [ resource  =? name --> doIgnore      | name <- ignoreByResource ]
     , [ fmap not isDialog --> doF avoidMaster ]
     ]
     where
        floatByClass = [ "MPlayer", "Gimp", "vlc" ]
-       ignoreByClass = [ "Xfce4-notifyd" ]
+       ignoreByClass = [ "xfce4-notifyd", "Xfce4-notifyd" ]
        ignoreByResource = [ "desktop_window" ]
 
 avoidMaster :: W.StackSet i l a s sd -> W.StackSet i l a s sd
