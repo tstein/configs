@@ -1,5 +1,5 @@
 [ui]
-username = Ted Stein <karamarisan@gmail.com>
+username = Ted Stein <me@tedstein.net>
 verbose = True
 merge = meld
 editor = vim
