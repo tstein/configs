@@ -155,6 +155,9 @@ autocmd BufReadPre ?* silent loadview
 " Go
 set rtp+=$GOROOT/misc/vim
 
+" powerline
+source ~/.powerline/powerline/bindings/vim/plugin/source_plugin.vim
+
 " What's a vimrc without a vimline?
 "vim:foldmethod=marker autoindent expandtab shiftwidth=4 filetype=vim
 
