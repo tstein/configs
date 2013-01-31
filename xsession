@@ -5,7 +5,6 @@ xsetroot -cursor_name left_ptr&
 
 # Startup programs.
 /usr/libexec/gnome-settings-daemon&
-/usr/lib64/xfce4/notifyd/xfce4-notifyd&
 xscreensaver&
 tint2&
 nm-applet&
@@ -21,9 +20,10 @@ sleep 2
 source ~/.fehbg
 
 # If we're not in another desktop environment, start xmonad.
-if [[ x"$DESKTOP_SESSION" == x ]]; then
+if [[ "$DESKTOP_SESSION" == "xinit-compat" ]]; then
     xcompmgr -c&
     wmname LG3D     # For Java. (read: Minecraft.)
+    /usr/lib64/xfce4/notifyd/xfce4-notifyd&
     # Lie about current desktop for xdg-open. In particular, Chrome opens
     # everything in Firefox(?!) if this isn't set.
     export XDG_CURRENT_DESKTOP=XFCE
