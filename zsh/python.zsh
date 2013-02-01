@@ -1,5 +1,3 @@
-export PYTHONPATH="~/.local/lib/python2.7/site-packages":$PYTHONPATH
-
 # Force virtualenv to use distribute instead of setuptools. This seems more
 # reliable.
 export VIRTUALENV_DISTRIBUTE="true"
