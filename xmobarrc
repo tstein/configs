@@ -1,5 +1,6 @@
-Config { commands = [ Run StdinReader
+Config { commands = [ Run Com "one-line-fortune" [] "" 6000
+                    , Run StdinReader
                     , Run Com "hostname" ["-s"] "" 36000
                     , Run Date "%Y-%m-%d %H:%M" "date" 100 ]
-       , template = "%StdinReader% }{ <fc=#0000cc>%hostname%</fc> | <fc=#666666>%date%</fc>"
+       , template = "%StdinReader% }{ <fc=#5555ff>%hostname%</fc> | <fc=#666666>%date%</fc>"
 
