@@ -178,8 +178,6 @@ fi
 if test -f ~/.zlocal; then
     source ~/.zlocal
 fi
-
-export PATH=~/bin:$PATH
 ####################################### }}}
 
 
