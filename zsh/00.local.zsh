@@ -9,4 +9,5 @@ for DIR in $SUBDIRS; do
         mkdir ~/.local/$DIR
     fi
 done
+unset SUBDIRS
 
