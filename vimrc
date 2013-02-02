@@ -61,9 +61,9 @@ set switchbuf=usetab
 set nobackup
 set writebackup
 set undofile
-set backupdir=~/.vim/tmp
-set directory=~/.vim/tmp
-set undodir=~/.vim/tmp
+set backupdir=~/.local/tmp
+set directory=~/.local/tmp
+set undodir=~/.local/tmp
 
 " colors
 "colorscheme solarized

@@ -2,4 +2,3 @@ aura/tmp/*
 hgext/*.pyc
 vim/.netrwhist
 vim/bundle/*/doc/tags*
-vim/tmp
