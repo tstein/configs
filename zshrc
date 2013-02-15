@@ -506,9 +506,9 @@ alias rm='rm -i'
 #automat#   # automat automates the unprivileged installation of packages from the Internet
 #automat#   # when one cannot or does not want to use system package management. It uses
 #automat#   # the following directories:
-#automat#   #   ~/bin       Binaries or symbolic links, as appropriate.
-#automat#   #   ~/.src      Untarred sources, and as a build directory.
-#automat#   #   ~/.root     Install prefix (as in ./configure --prefix=).
+#automat#   #   ~/.local/bin    Binaries or symbolic links, as appropriate.
+#automat#   #   ~/.local/tmp    Untarred sources, and as a build directory.
+#automat#   #   ~/.local        Install prefix (as in ./configure --prefix=).
 #automat#
 #automat#   if ($#ARGV < 0) {
 #automat#       print("No packages specified.\n");
@@ -520,7 +520,7 @@ alias rm='rm -i'
 #automat#       `wget -qO- http://monkey.org/~provos/libevent-2.0.12-stable.tar.gz | tar -xzf-`;
 #automat#       return $? if ($? != 0);
 #automat#       chdir("libevent-2.0.12-stable");
-#automat#       `./configure --prefix=$ENV{'HOME'}/.root`;
+#automat#       `./configure --prefix=$ENV{'HOME'}/.local`;
 #automat#       return $? if ($? != 0);
 #automat#       `make`;
 #automat#       return $? if ($? != 0);
@@ -529,7 +529,7 @@ alias rm='rm -i'
 #automat#   }
 #automat#
 #automat#   sub ack {
-#automat#       `curl http://betterthangrep.com/ack-standalone > ~/bin/ack && chmod u+x ~/bin/ack #:3`;
+#automat#       `curl http://betterthangrep.com/ack-standalone > ~/.local/bin/ack && chmod u+x ~/.local/bin/ack #:3`;
 #automat#       return $?;
 #automat#   }
 #automat#
@@ -538,7 +538,7 @@ alias rm='rm -i'
 #automat#       `wget -qO- http://www.kernel.org/pub/software/scm/git/git-1.7.3.tar.bz2 | tar -xjf-`;
 #automat#       return $? if ($? != 0);
 #automat#       chdir("git-1.7.3");
-#automat#       `./configure --prefix=$ENV{'HOME'}/.root --bindir=$ENV{'HOME'}/bin`;
+#automat#       `./configure --prefix=$ENV{'HOME'}/.local --bindir=$ENV{'HOME'}/.local/bin`;
 #automat#       return $? if ($? != 0);
 #automat#       `make`;
 #automat#       return $? if ($? != 0);
@@ -547,13 +547,13 @@ alias rm='rm -i'
 #automat#   }
 #automat#
 #automat#   sub hg {
-#automat#       chdir("$ENV{'HOME'}/.root");
+#automat#       chdir("$ENV{'HOME'}/.local");
 #automat#       `wget -qO- http://mercurial.selenic.com/release/mercurial-2.0.2.tar | tar -xzf-`;
 #automat#       return $? if ($? != 0);
 #automat#       chdir("mercurial-2.0.2");
 #automat#       `make local`;
 #automat#       return $? if ($? != 0);
-#automat#       `ln -fs ../.root/mercurial-2.0.2/hg $ENV{'HOME'}/bin/hg`;
+#automat#       `ln -fs ../.local/mercurial-2.0.2/hg $ENV{'HOME'}/.local/bin/hg`;
 #automat#       return $?;
 #automat#   }
 #automat#
@@ -562,7 +562,7 @@ alias rm='rm -i'
 #automat#       `wget -qO- http://downloads.sourceforge.net/project/htop/htop/0.9/htop-0.9.tar.gz | tar -xzf-`;
 #automat#       return $? if ($? != 0);
 #automat#       chdir("htop-0.9");
-#automat#       `./configure --prefix=$ENV{'HOME'}/.root --bindir=$ENV{'HOME'}/bin`;
+#automat#       `./configure --prefix=$ENV{'HOME'}/.local --bindir=$ENV{'HOME'}/.local/bin`;
 #automat#       return $? if ($? != 0);
 #automat#       `make`;
 #automat#       return $? if ($? != 0);
@@ -574,15 +574,15 @@ alias rm='rm -i'
 #automat#       chdir("$ENV{'HOME'}/.src");
 #automat#       `wget -qO- http://www.funtoo.org/archive/keychain/keychain-2.7.1.tar.bz2 | tar -xjf-`;
 #automat#       return $? if ($? != 0);
-#automat#       `ln -fs ../.src/keychain-2.7.1/keychain $ENV{'HOME'}/bin/keychain`;
+#automat#       `ln -fs ../.src/keychain-2.7.1/keychain $ENV{'HOME'}/.local/bin/keychain`;
 #automat#       return $? if ($? != 0);
 #automat#   }
 #automat#
 #automat#   sub tmux {
 #automat#       $ret = libevent();
 #automat#       return $ret if ($ret != 0);
-#automat#       $ENV{'CPPFLAGS'} = "-I $ENV{'HOME'}/.root/include";
-#automat#       $ENV{'LDFLAGS'} = "-L $ENV{'HOME'}/.root/include -L $ENV{'HOME'}/.root/lib";
+#automat#       $ENV{'CPPFLAGS'} = "-I $ENV{'HOME'}/.local/include";
+#automat#       $ENV{'LDFLAGS'} = "-L $ENV{'HOME'}/.local/include -L $ENV{'HOME'}/.local/lib";
 #automat#       chdir("$ENV{'HOME'}/.src");
 #automat#       `wget -qO- http://downloads.sourceforge.net/project/tmux/tmux/tmux-1.6/tmux-1.6.tar.gz | tar -xzf-`;
 #automat#       return $? if ($? != 0);
@@ -591,7 +591,7 @@ alias rm='rm -i'
 #automat#       return $? if ($? != 0);
 #automat#       `make`;
 #automat#       return $? if ($? != 0);
-#automat#       `cp tmux $ENV{'HOME'}/bin`;
+#automat#       `cp tmux $ENV{'HOME'}/.local/bin`;
 #automat#       return $?;
 #automat#   }
 #automat#
@@ -600,7 +600,7 @@ alias rm='rm -i'
 #automat#       `wget -qO- ftp://ftp.vim.org/pub/vim/unix/vim-7.3.tar.bz2 | tar -xjf-`;
 #automat#       return $? if ($? != 0);
 #automat#       chdir("vim73");
-#automat#       `./configure --prefix=$ENV{'HOME'}/.root --bindir=$ENV{'HOME'}/bin`;
+#automat#       `./configure --prefix=$ENV{'HOME'}/.local --bindir=$ENV{'HOME'}/.local/bin`;
 #automat#       return $? if ($? != 0);
 #automat#       `make`;
 #automat#       return $? if ($? != 0);
@@ -619,7 +619,7 @@ alias rm='rm -i'
 #automat#   );
 #automat#
 #automat#   $home = $ENV{'HOME'};
-#automat#   foreach $dir ("$home/bin", "$home/.src", "$home/.root") {
+#automat#   foreach $dir ("$home/.local/bin", "$home/.src", "$home/.local") {
 #automat#       unless (-d $dir) {
 #automat#           mkdir($dir);
 #automat#       }
