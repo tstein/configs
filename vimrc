@@ -154,6 +154,7 @@ autocmd BufReadPre ?* silent loadview
 
 " Go
 set rtp+=$GOROOT/misc/vim
+autocmd BufRead,BufNewFile *.go set filetype=go
 
 " powerline
 source ~/.powerline/powerline/bindings/vim/plugin/source_plugin.vim
