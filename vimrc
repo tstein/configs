@@ -45,7 +45,6 @@ set foldmethod=marker
 set backspace=indent,eol,start
 
 " text selection
-set mouse=a
 set virtualedit=block
 
 " search
