@@ -134,7 +134,11 @@ autocmd FileType gitcommit set nolinebreak
 
 """""""""""""""
 " Plugins.
-call pathogen#infect()
+" vundle
+set rtp+=~/.vim/bundle/vundle
+call vundle#rc()
+Bundle 'gmarik/vundle'
+Bundle 'Valloric/YouCompleteMe'
 
 " miniBufExplorer
 let g:miniBufExplModSelTarget = 1
