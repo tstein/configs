@@ -137,8 +137,19 @@ autocmd FileType gitcommit set nolinebreak
 " vundle
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
+Bundle 'airblade/vim-gitgutter'
+Bundle 'fholgado/minibufexpl.vim'
+Bundle 'fs111/pydoc.vim'
 Bundle 'gmarik/vundle'
+Bundle 'scrooloose/syntastic'
+Bundle 'tpope/vim-fugitive'
+Bundle 'tpope/vim-surround'
 Bundle 'Valloric/YouCompleteMe'
+Bundle 'vim-scripts/file-line'
+Bundle 'vim-scripts/taglist.vim'
+Bundle 'vim-scripts/TaskList.vim'
+Bundle 'vim-scripts/tComment'
+Bundle 'vim-scripts/UltiSnips'
 
 " miniBufExplorer
 let g:miniBufExplModSelTarget = 1

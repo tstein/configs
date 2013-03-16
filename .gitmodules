@@ -1,18 +1,6 @@
-[submodule "vim/bundle/pyflakes"]
-	path = vim/bundle/pyflakes
-	url = https://github.com/mitechie/pyflakes-pathogen
-[submodule "vim/bundle/pydoc"]
-	path = vim/bundle/pydoc
-	url = https://github.com/fs111/pydoc.vim
-[submodule "vim/bundle/pep8"]
-	path = vim/bundle/pep8
-	url = https://github.com/vim-scripts/pep8.git
-[submodule "vim/bundle/TaskList"]
-	path = vim/bundle/TaskList
-	url = https://github.com/vim-scripts/TaskList.vim.git
-[submodule "vim/bundle/snipmate"]
-	path = vim/bundle/snipmate
-	url = https://github.com/msanders/snipmate.vim.git
 [submodule "powerline"]
-	path = powerline
+    path = powerline
 	url = git@github.com:Lokaltog/powerline.git
+[submodule "vim/bundle/vundle"]
+	path = vim/bundle/vundle
+	url = https://github.com/gmarik/vundle.git
