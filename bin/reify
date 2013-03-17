@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import stat
+import subprocess
+
+
+_DESC = "Break hard links, turn symlinks into copies, " \
+        + "and coalesce fragmented files."
+_DRYRUN = False
+_QUIET = False
+
+
+def dprint(*args):
+    if not _QUIET:
+        print(*args)
+
+
+def num_links(path):
+    """ Return the number of hard links to this file. """
+    return os.stat(path)[stat.ST_NLINK]
+
+
+def reify(path):
+    """ Move the file at path to a new location, copy it back to its original
+    location, and unlink the new location. """
+    newpath = path + '.reifying'
+    os.rename(path, newpath)
+    subprocess.call(['cp', newpath, path])
+    os.unlink(newpath)
+
+
+def main():
+    global _DRYRUN, _QUIET
+    parser = argparse.ArgumentParser(description=_DESC)
+    parser.add_argument('-n', '--dryrun', help='All talk and no walk.',
+                        dest='dryrun', default=False, action='store_true')
+    parser.add_argument('-q', '-quiet', help='Suppress output.',
+                        dest='quiet', default=False, action='store_true')
+    parser.add_argument(dest='files', nargs='+', metavar='file',
+                        help='One or more operands.')
+    args = parser.parse_args()
+    _DRYRUN = args.dryrun
+    _QUIET = args.quiet
+
+    for f in args.files:
+        links = num_links(f)
+        dprint("%s has %d link%s" % (f, links, "" if links == 1 else "s"))
+        if not _DRYRUN:
+            reify(f)
+
+
+if __name__ == '__main__':
+    main()
+
