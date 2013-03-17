@@ -18,10 +18,11 @@ myModMask = mod4Mask
 
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
-keyBindings = [ ("M-p",        spawn "exec `yeganesh -x`")
-              , ("M-S-k",      spawn "keepassx")
-              , ("M-S-l",      spawn "xscreensaver-command -lock")
-              , ("M-<Delete>", spawn "suspend-laptop")
+keyBindings = [ ("M-p",          spawn "exec `yeganesh -x`")
+              , ("M-S-k",        spawn "keepassx")
+              , ("M-S-l",        spawn "xscreensaver-command -lock")
+              , ("M-<Delete>",   spawn "suspend-laptop")
+              , ("M-S-<Delete>", spawn "xkill")
               ]
               ++
               [(("M-" ++ m ++ [k]), windows $ f i)
@@ -56,7 +57,6 @@ myManageHook = composeAll . concat $
     , [ className =? name --> doFloat       | name <- floatByClass ]
     , [ className =? name --> doIgnore      | name <- ignoreByClass ]
     , [ resource  =? name --> doIgnore      | name <- ignoreByResource ]
-    , [ fmap not isDialog --> doF avoidMaster ]
     ]
     where
        floatByClass = [ "MPlayer", "Gimp", "vlc" ]
