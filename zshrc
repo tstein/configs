@@ -740,8 +740,20 @@ drawCornMeter() {
 } # }}}
 
 # If we're in a repo, print some info. Intended for use in a prompt. {{{
-# TODO: Switch from precmd_functions to chpwd_functions
-rprompt_git_status() {
+# Updates the variable that contains VCS info. It's a bit slow to do this in
+# precmd, so this goes in chpwd_functions.
+update_rprompt_vcs_status() {
+    if [ `get_prop have_git` ]; then
+        GIT=`git_status`
+    fi
+
+    if [ `get_prop have_hg` ]; then
+        HG=`hg_status`
+    fi
+    _RPROMPT_VCS="$GIT$HG"
+}
+
+git_status() {
     local GITBRANCH=''
     local GITTXT='git'
     if [ `get_prop unicode` ]; then
@@ -757,7 +769,7 @@ rprompt_git_status() {
     fi
 }
 
-rprompt_hg_status() {
+hg_status() {
     local HGTXT='hg'
     if [ `get_prop unicode` ]; then
         HGTXT='☿'
@@ -777,17 +789,7 @@ rprompt_hg_status() {
 update_rprompt() {
     local BOLD_ON BOLD_OFF DIR GIT HG COND_RETVAL CORNMETER
     BOLD_ON='%B'
-
     DIR=`print -P '%~'`
-
-    if [ `get_prop have_git` ]; then
-        GIT=`rprompt_git_status`
-    fi
-
-    if [ `get_prop have_hg` ]; then
-        HG=`rprompt_hg_status`
-    fi
-
     COND_RETVAL='%(?..{%?})'
 
     if [ `get_prop am_laptop` ]; then
@@ -799,7 +801,7 @@ update_rprompt() {
     fi
 
     BOLD_OFF='%b'
-    RPROMPT="$PR_CYAN$BOLD_ON"["$DIR$GIT$HG"]"$COND_RETVAL$CORNMETER$BOLD_OFF"
+    RPROMPT="$PR_CYAN$BOLD_ON"["$DIR$_RPROMPT_VCS"]"$COND_RETVAL$CORNMETER$BOLD_OFF"
 }
 
 # For terms known to support it, print some info to the terminal title.
@@ -822,12 +824,13 @@ if [[ "$PROMPT" == "$old_vals[PROMPT]" ]]; then
     PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)\%#%b "
 fi
 PROMPT2=$PR_GREEN'%B%_>%b '
-RPROMPT=$PR_CYAN'%B[%~]%(?..{%?})%b' # For reference only. This is clobbered by update_rprompt().
+update_rprompt_vcs_status   # update_rprompt will automatically do the rest.
 SPROMPT=$PR_MAGENTA'zsh: correct '%R' to '%r'? '$PR_NO_COLOR
 unset old_vals
 
 precmd_functions=(precmd_update_title update_rprompt)
 preexec_functions=(preexec_update_title)
+chpwd_functions=(update_rprompt_vcs_status)
 
 #TODO: Check if we are a login shell. This could hang a script without that.
 if [ `get_prop have_keychain` ]; then
