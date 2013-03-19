@@ -535,9 +535,9 @@ alias rm='rm -i'
 #automat#
 #automat#   sub git {
 #automat#       chdir("$ENV{'HOME'}/.src");
-#automat#       `wget -qO- http://www.kernel.org/pub/software/scm/git/git-1.7.3.tar.bz2 | tar -xjf-`;
+#automat#       `wget -qO- https://git-core.googlecode.com/files/git-1.8.2.tar.gz | tar -xzf-`;
 #automat#       return $? if ($? != 0);
-#automat#       chdir("git-1.7.3");
+#automat#       chdir("git-1.8.2");
 #automat#       `./configure --prefix=$ENV{'HOME'}/.local --bindir=$ENV{'HOME'}/.local/bin`;
 #automat#       return $? if ($? != 0);
 #automat#       `make`;
