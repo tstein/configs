@@ -377,7 +377,7 @@ alias chrome-get-rss='
     done
     print $CHROME_RSS; unset CHROME_RSS'
 alias getip='curl ifconfig.me'
-alias sudo='sudo '  # This enables alias, but not function, expansion on the next word.
+alias sudo='sudo '  # Enables alias, but not function, expansion on the next word.
 
 # ... to save keystrokes.
 alias -- -='cd -'
