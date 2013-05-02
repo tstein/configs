@@ -10,6 +10,8 @@ from sys import exit
 def parseargs():
     """ Set up an argument parser, invoke it, and return its result. """
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("-f", dest="force", action="store_true",
+                        help="Write even if dst already has GPS metadata.")
     parser.add_argument("dst", help="A photo without GPS metadata.")
     parser.add_argument("src", help="A photo with GPS metadata.")
     return parser.parse_args()
@@ -60,7 +62,7 @@ def main():
     dsttags = extract_tags(dst, tags)
 
     # Files with no other GPS data may have a GPSVersionID.
-    if len(dsttags) > 1:
+    if len(dsttags) > 1 and not args.force:
         print("Destination file %s already has GPS data! Bailing out." % dst)
         exit(1)
 
