@@ -34,6 +34,7 @@ landmines
 mixin
 mixins
 msg
+pidfile
 standalone
 stderr
 stdout
