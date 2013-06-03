@@ -3,13 +3,19 @@
 
 
 import argparse
+from shlex import quote
 from subprocess import call, check_output
 from sys import exit
+
+
+VERBOSE = False
 
 
 def parseargs():
     """ Set up an argument parser, invoke it, and return its result. """
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("-v", dest="verbose", action="store_true",
+                        help="Print extra info.")
     parser.add_argument("-f", dest="force", action="store_true",
                         help="Write even if dst already has GPS metadata.")
     parser.add_argument("dst", help="A photo without GPS metadata.")
@@ -42,17 +48,22 @@ def extract_tags(photo, tags):
 
 def write_tags(photo, tags):
     """ Use exiftool to write tags. """
+    tags = [quote(t) for t in tags]
     cmd = "exiftool "
     cmd += " ".join(tags)
     cmd += " %s" % photo
-    call(["exiftool"] + tags + [photo])
+    if VERBOSE:
+        print("running: {}".format(cmd))
+    call(cmd, shell=True)
 
 
 def main():
+    global VERBOSE
     devnull = open("/dev/null", "w")
     args = parseargs()
-    src = args.src
-    dst = args.dst
+    src = '"{}"'.format(args.src)
+    dst = '"{}"'.format(args.dst)
+    VERBOSE = args.verbose
 
     # Make sure we can run exiftool.
     call("exiftool", stdout=devnull)
