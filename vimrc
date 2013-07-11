@@ -21,6 +21,8 @@ set bg=dark
 set shortmess+=aO
 set visualbell t_vb=
 set ttimeoutlen=0
+set list
+set listchars=tab:»·,trail:·
 
 " wildmenu
 set wildmenu
