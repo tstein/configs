@@ -20,6 +20,7 @@ set showmatch
 set bg=dark
 set shortmess+=aO
 set visualbell t_vb=
+set ttimeoutlen=0
 
 " wildmenu
 set wildmenu
@@ -138,6 +139,7 @@ autocmd FileType gitcommit set nolinebreak
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'airblade/vim-gitgutter'
+Bundle 'bling/vim-airline'
 Bundle 'fholgado/minibufexpl.vim'
 Bundle 'fs111/pydoc.vim'
 Bundle 'gmarik/vundle'
@@ -150,6 +152,9 @@ Bundle 'vim-scripts/taglist.vim'
 Bundle 'vim-scripts/TaskList.vim'
 Bundle 'vim-scripts/tComment'
 Bundle 'vim-scripts/UltiSnips'
+
+" airline
+let g:airline_powerline_fonts=1
 
 " miniBufExplorer
 let g:miniBufExplModSelTarget = 1
@@ -169,9 +174,6 @@ autocmd BufReadPre ?* silent loadview
 " Go
 set rtp+=$GOROOT/misc/vim
 autocmd BufRead,BufNewFile *.go set filetype=go
-
-" powerline
-source ~/.powerline/powerline/bindings/vim/plugin/source_plugin.vim
 
 " What's a vimrc without a vimline?
 "vim:foldmethod=marker autoindent expandtab shiftwidth=4 filetype=vim
