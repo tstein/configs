@@ -23,7 +23,8 @@ myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 -- That monster at the bottom allows moving windows with <M-arrows> and resizing
 -- them with <M-S-arrows>.
-keyBindings = [ ("M-p",          spawn "exec `yeganesh -x`")
+keyBindings = [ ("M-b",          sendMessage ToggleStruts)
+              , ("M-p",          spawn "exec `yeganesh -x`")
               , ("M-S-k",        spawn "keepassx")
               , ("M-S-l",        spawn "xscreensaver-command -lock")
               , ("M-<Delete>",   spawn "suspend-laptop")
