@@ -1,4 +1,5 @@
-Config { commands = [ Run Com "one-line-fortune" [] "" 6000
+Config { font = "xft:Inconsolata for Powerline Medium:size=12:antialias=true"
+       , commands = [ Run Com "one-line-fortune" [] "" 6000
                     , Run StdinReader
                     , Run Com "hostname" ["-s"] "" 36000
                     , Run Date "%Y-%m-%d %H:%M" "date" 100 ]
