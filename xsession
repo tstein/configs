@@ -4,7 +4,7 @@ setxkbmap -option compose:caps
 xsetroot -cursor_name left_ptr&
 
 # Session daemons.
-xscreensaver&
+xscreensaver -no-splash&
 dropbox start&
 ibus-daemon&
 /usr/lib64/xfce4/notifyd/xfce4-notifyd&
