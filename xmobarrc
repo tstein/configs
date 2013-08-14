@@ -1,4 +1,4 @@
-Config { font = "xft:Inconsolata for Powerline Medium:size=12:antialias=true"
+Config { font = "xft:Inconsolata for Powerline:Bold:size=14:antialias=true"
        , commands = [ Run Com "one-line-fortune" [] "" 6000
                     , Run StdinReader
                     , Run Com "hostname" ["-s"] "" 36000
