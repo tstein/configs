@@ -33,9 +33,9 @@ set autoindent
 set smartindent
 
 set expandtab
-set shiftwidth=4
-set tabstop=4
-set softtabstop=4
+set shiftwidth=2
+set tabstop=2
+set softtabstop=2
 
 set tw=80
 set wrap
@@ -112,7 +112,7 @@ map <leader>r <C-W>=<C-W>k<C-W>k<C-W>100-<C-W>j
 imap <M-Space> <ESC>
 
 " vimline on demand
-imap <ESC>v vim:foldmethod=marker autoindent expandtab shiftwidth=4 filetype=
+imap <ESC>v vim:foldmethod=marker autoindent expandtab shiftwidth=2 filetype=
 
 " Conflicts with a tic from screen/tmux.
 nnoremap <C-a> <Nop>
@@ -127,9 +127,6 @@ if has("autocmd") && exists("+omnifunc")
        \    endif
 endif
 
-autocmd FileType tex set shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType html set shiftwidth=2 tabstop=2 softtabstop=2
-autocmd FileType xml set shiftwidth=2 tabstop=2 softtabstop=2
 autocmd FileType python set textwidth=79
 " Use the following responsibly.
 autocmd FileType gitcommit set nolinebreak
@@ -178,5 +175,5 @@ set rtp+=$GOROOT/misc/vim
 autocmd BufRead,BufNewFile *.go set filetype=go
 
 " What's a vimrc without a vimline?
-"vim:foldmethod=marker autoindent expandtab shiftwidth=4 filetype=vim
+"vim:foldmethod=marker autoindent expandtab shiftwidth=2 filetype=vim
 
