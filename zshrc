@@ -241,7 +241,7 @@ esac
 
 # zsh options. Each group corresponds to a heading in the zshoptions manpage. {{{
 # dir opts
-setopt autocd autopushd chaselinks pushd_silent
+setopt autocd autopushd pushd_silent
 
 # completion opts
 setopt autolist autoparamkeys autoparamslash hashlistall listambiguous listpacked listtypes
