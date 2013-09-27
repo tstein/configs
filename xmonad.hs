@@ -48,17 +48,19 @@ myMouseBindings = [ ((mod4Mask, button4), (\_ -> nextWS))
                   ]
 
 -- Give the first desktop a layout that shows a small buddy list.
-myLayoutHook = onWorkspace "1" pidgin
-             $ full ||| tiled ||| htiled
+myLayoutHook = onWorkspace "1" pidginfirst
+             $ normallayouts
                where
-                   full    = named "F" $ noBorders Full
-                   pidgin  = named "P" $ reflectHoriz $ withIM (1%8) pblist $ tiled
-                   pblist  = And (ClassName "Pidgin") (Role "buddy_list")
-                   tiled   = named "T" $ Tall nmaster delta ratio
-                   htiled  = named "H" $ tiled
-                   nmaster = 1
-                   ratio   = 1/2
-                   delta   = 3/100
+                   full          = named "F" $ noBorders Full
+                   pidgin        = named "P" $ reflectHoriz $ withIM (1%8) pblist $ tiled
+                   pblist        = And (ClassName "Pidgin") (Role "buddy_list")
+                   tiled         = named "T" $ Tall nmaster delta ratio
+                   widetiled     = named "W" $ Mirror tiled
+                   nmaster       = 1
+                   ratio         = 1/2
+                   delta         = 3/100
+                   normallayouts = full ||| tiled ||| widetiled
+                   pidginfirst   = pidgin ||| normallayouts
 
 -- Windows are floated by default.
 myManageHook = composeAll . concat $
