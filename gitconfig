@@ -14,6 +14,8 @@
     statusHints = false
 [push]
     default = simple
+[branch]
+    autosetuprebase = always
 [alias]
     gl = log --graph --pretty=format:\
 '%Cgreen%h %Cred(%cr)%Creset -%C(yellow)%d%Creset %s %Cblue<%an>%Creset'
