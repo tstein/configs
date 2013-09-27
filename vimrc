@@ -11,6 +11,8 @@ set shell=/bin/zsh
 syntax on
 set title
 set cursorline
+set colorcolumn=80
+hi ColorColumn ctermbg=darkgrey guibg=lightgrey
 set scrolloff=4 "scroll ahead of the cursor
 set laststatus=2
 set number
@@ -128,6 +130,7 @@ if has("autocmd") && exists("+omnifunc")
 endif
 
 autocmd FileType python set textwidth=79
+autocmd FileType java set textwidth=100 colorcolumn=100
 " Use the following responsibly.
 autocmd FileType gitcommit set nolinebreak
 
@@ -162,6 +165,9 @@ let g:miniBufExplModSelTarget = 1
 let g:syntastic_check_on_open=1
 let g:syntastic_cpp_check_header = 1
 let g:syntastic_cpp_auto_refresh_includes = 1
+let g:syntastic_java_checkers = ['javac']
+let g:syntastic_javascript_checkers = ['gjslint']
+let g:syntastic_ruby_checkers = ['ruby', 'rubocop']
 
 " taglist
 nnoremap <silent> <F8> :TlistToggle<CR>
