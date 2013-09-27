@@ -597,10 +597,10 @@ alias rm='rm -i'
 #automat#
 #automat#   sub vim {
 #automat#       chdir("$ENV{'HOME'}/.src");
-#automat#       `wget -qO- ftp://ftp.vim.org/pub/vim/unix/vim-7.3.tar.bz2 | tar -xjf-`;
+#automat#       `wget -qO- ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2 | tar -xjf-`;
 #automat#       return $? if ($? != 0);
-#automat#       chdir("vim73");
-#automat#       `./configure --prefix=$ENV{'HOME'}/.local --bindir=$ENV{'HOME'}/.local/bin`;
+#automat#       chdir("vim74");
+#automat#       `./configure --prefix=$ENV{'HOME'}/.local --bindir=$ENV{'HOME'}/.local/bin --with-python`;
 #automat#       return $? if ($? != 0);
 #automat#       `make`;
 #automat#       return $? if ($? != 0);
