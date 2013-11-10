@@ -1,0 +1,18 @@
+#!/usr/bin/env python
+
+from random import choice
+from os import listdir, path, system
+
+WALLPAPER_DIR = path.expanduser('~/pictures/wallpapers')
+
+
+def main():
+  wallpapers = [w for w in listdir(WALLPAPER_DIR) if not w.startswith(".")]
+  wallpapers = listdir(WALLPAPER_DIR)
+  chosen_one = path.join(WALLPAPER_DIR, choice(wallpapers))
+  system('feh --bg-fill "%s"' % chosen_one)
+
+
+if __name__ == '__main__':
+  main()
+
