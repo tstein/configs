@@ -3,7 +3,7 @@
 from random import choice
 from os import listdir, path, system
 
-WALLPAPER_DIR = path.expanduser('~/pictures/wallpapers')
+WALLPAPER_DIR = path.expanduser('~/pictures/wallpapers/mix')
 
 
 def main():
