@@ -16,6 +16,13 @@ local PR_NO_COLOR="%{$T_NO_COLOR%}"
 
 # Command functions. {{{
 # These are up here so that other parts of the zshrc can use them.
+map() {
+    local CMD=$@[1]
+    for ARG in $@[2,-1]; do
+        $CMD $ARG
+    done
+}
+
 oh() {
     echo "oh $@"
 }
