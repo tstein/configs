@@ -23,6 +23,7 @@ gusto
 hardcode
 hardcoded
 hostname
+idiomatic
 init
 instantiable
 javadoc
@@ -31,10 +32,12 @@ jitter
 keystore
 landmine
 landmines
+libs
 mixin
 mixins
 msg
 pidfile
+prod
 standalone
 stderr
 stdout
@@ -45,4 +48,6 @@ timeframes
 uncomment
 uncommenting
 webserver
+workflow
+workflows
 zip
