@@ -16,6 +16,8 @@ hi ColorColumn ctermbg=darkgrey guibg=lightgrey
 set scrolloff=4 "scroll ahead of the cursor
 set laststatus=2
 set number
+hi LineNr ctermfg=blue
+hi CursorLineNr ctermfg=cyan
 set ruler
 set showcmd "enable a couple of useful realtime prints on the status bar
 set showmatch
