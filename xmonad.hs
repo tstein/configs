@@ -4,6 +4,7 @@ import XMonad.Actions.FloatKeys
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
+import XMonad.Layout.Gaps
 import XMonad.Layout.IM
 import XMonad.Layout.Named
 import XMonad.Layout.NoBorders
@@ -23,7 +24,7 @@ myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
 -- That monster at the bottom allows moving windows with <M-arrows> and resizing
 -- them with <M-S-arrows>.
-keyBindings = [ ("M-b",          sendMessage ToggleStruts)
+keyBindings = [ ("M-b",          sendMessage ToggleGaps)
               , ("M-p",          spawn "dmenu_run")
               , ("M-S-k",        spawn "keepassx")
               , ("M-S-l",        spawn "xscreensaver-command -lock")
@@ -106,7 +107,7 @@ main = do
                  workspaces         = myWorkspaces,
                  normalBorderColor  = "#ddddff",
                  focusedBorderColor = "#0000dd",
-                 layoutHook         = avoidStruts $ myLayoutHook,
+                 layoutHook         = gaps [(U, 24)] $ myLayoutHook,
                  manageHook         = manageDocks <+> myManageHook <+> doFloat,
                  logHook            = dynamicLogWithPP $ myPP h
              }
