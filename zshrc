@@ -376,7 +376,7 @@ esac
 # ... to add functionality.
 alias chrome-get-rss='
     CHROME_RSS=0
-    for num in `ps axwwo rss,command | grep -P "(google-|)chrome" | grep -v grep | sed "s/^\s*//g" | cut -d " " -f 1`
+    for num in `ps axwwo rss,command | grep -P "(google-|)(chrome|chromium)" | grep -v grep | sed "s/^\s*//g" | cut -d " " -f 1`
     do
         CHROME_RSS=$(($num * 1 + $CHROME_RSS))
     done
