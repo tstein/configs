@@ -16,8 +16,6 @@ hi ColorColumn ctermbg=darkgrey guibg=lightgrey
 set scrolloff=4 "scroll ahead of the cursor
 set laststatus=2
 set number
-hi LineNr ctermfg=blue
-hi CursorLineNr ctermfg=cyan
 set ruler
 set showcmd "enable a couple of useful realtime prints on the status bar
 set showmatch
@@ -73,6 +71,8 @@ set undodir=~/.local/tmp
 
 " colors
 "colorscheme solarized
+hi LineNr ctermfg=blue
+hi CursorLineNr ctermfg=cyan
 
 
 """""""""""""""
@@ -104,16 +104,14 @@ nnoremap <CR> :noh<CR><CR>
 
 " Fast trailing whitespace cleanup.
 nnoremap <leader>s :%s/\s\+$//<CR>
+" Rebalance splits.
+map <leader>r <C-W>=<C-W>k<C-W>k<C-W>100-<C-W>j
 
 " vimnav for windows
 map <C-j> <C-W>j
 map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
-map <leader>r <C-W>=<C-W>k<C-W>k<C-W>100-<C-W>j
-
-" alternate escape - maybe not so useful
-imap <M-Space> <ESC>
 
 " vimline on demand
 imap <ESC>v vim:foldmethod=marker autoindent expandtab shiftwidth=2 filetype=
@@ -142,11 +140,11 @@ autocmd FileType gitcommit set nolinebreak
 " vundle
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
-Bundle 'airblade/vim-gitgutter'
 Bundle 'bling/vim-airline'
 Bundle 'fholgado/minibufexpl.vim'
 Bundle 'fs111/pydoc.vim'
 Bundle 'gmarik/vundle'
+Bundle 'mhinz/vim-signify'
 Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
@@ -162,6 +160,11 @@ let g:airline_powerline_fonts=1
 
 " miniBufExplorer
 let g:miniBufExplModSelTarget = 1
+
+" signify
+hi SignifySignAdd cterm=bold ctermfg=green ctermbg=black
+hi SignifySignDelete cterm=bold ctermfg=red ctermbg=black
+hi SignifySignChange cterm=bold ctermfg=yellow ctermbg=black
 
 " syntastic
 let g:syntastic_check_on_open=1
