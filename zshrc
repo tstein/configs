@@ -16,17 +16,6 @@ local PR_NO_COLOR="%{$T_NO_COLOR%}"
 
 # Command functions. {{{
 # These are up here so that other parts of the zshrc can use them.
-map() {
-    local CMD=$@[1]
-    for ARG in $@[2,-1]; do
-        $CMD $ARG
-    done
-}
-
-oh() {
-    echo "oh $@"
-}
-
 getfstype() {
     local DIR=$1
     if [ ! "$DIR" ]; then; return; fi
@@ -43,45 +32,6 @@ getfstype() {
         fi
         DIR=`dirname $DIR`
     done
-}
-
-reify() {
-    # Turn redundant hard links into separate, identical files.
-    for F in $@; do
-        mv $F $F.rfy
-        cp $F.rfy $F
-        rm -f $F.rfy
-    done
-}
-
-update-rc() {
-    update-zshrc
-    update-vimrc
-}
-
-update-zshrc() {
-    if [ ! `get_prop have_git` ]; then
-        print -l "git is required to do this, but it is not in your path.";
-        return 1;
-    fi
-
-    local TMPDIR=`uuidgen`-ted
-    pushd
-    mkdir ~/$TMPDIR
-    cd ~/$TMPDIR
-
-    git clone git://github.com/tstein/ted-configs.git
-    cp ted-configs/zshrc ~/.zshrc
-
-    popd
-    rm -rf ~/$TMPDIR
-
-    source ~/.zshrc
-    return 0;
-}
-
-update-vimrc() {
-    rsync -aLze "ssh -p54848" ted@halberd.dyndns.org:~/.vimrc ~/.vimrc
 }
 
 call-embedded-perl() {
