@@ -50,6 +50,7 @@ set foldmethod=marker
 set backspace=indent,eol,start
 
 " text selection
+set iskeyword-=_
 set virtualedit=block
 
 " search
