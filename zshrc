@@ -2,8 +2,7 @@
 #######################################
 
 # Set up colors. {{{
-autoload -U colors
-colors
+autoload -U colors; colors
 for color in RED GREEN BLUE YELLOW MAGENTA CYAN WHITE BLACK; do
     eval local T_$color='$fg[${(L)color}]'
     eval local PR_$color='%{$T_'$color'%}'
@@ -104,12 +103,10 @@ get-comfy() {
 
 # Shell configuration. {{{
 # zsh vars
-WORDCHARS="${WORDCHARS:s#/#}" # consider / as a word separator
-
-# history-related variables
 HISTFILE=~/.zhistfile
 HISTSIZE=5000
 SAVEHIST=1000000
+WORDCHARS="${WORDCHARS:s#/#}" # consider / as a word separator
 
 # default programs
 export EDITOR=vim
@@ -117,9 +114,6 @@ export PAGER="less -FRX"
 
 # How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
 BATT_METER_WIDTH=0
-
-# better to accidentally deny access than grant it
-umask 077
 
 # .zlocal is a file of my creation - contains site-specific anything so I don't have to modify this
 # file for every machine. If needed, default values go first so that the source call overwrites
