@@ -132,8 +132,6 @@ endif
 
 autocmd FileType python set textwidth=79
 autocmd FileType java set textwidth=100 colorcolumn=100
-" Use the following responsibly.
-autocmd FileType gitcommit set nolinebreak
 
 
 """""""""""""""
@@ -142,6 +140,7 @@ autocmd FileType gitcommit set nolinebreak
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'bling/vim-airline'
+Bundle 'derekwyatt/vim-scala'
 Bundle 'fholgado/minibufexpl.vim'
 Bundle 'fs111/pydoc.vim'
 Bundle 'gmarik/vundle'
@@ -185,6 +184,9 @@ autocmd BufReadPre ?* silent loadview
 " Go
 set rtp+=$GOROOT/misc/vim
 autocmd BufRead,BufNewFile *.go set filetype=go
+
+" Scala
+autocmd BufRead,BufNewFile *.scala set filetype=scala
 
 " What's a vimrc without a vimline?
 "vim:foldmethod=marker autoindent expandtab shiftwidth=2 filetype=vim
