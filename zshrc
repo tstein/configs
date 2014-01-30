@@ -568,9 +568,8 @@ update_rprompt_vcs_status   # update_rprompt will automatically do the rest.
 SPROMPT=$PR_MAGENTA'zsh: correct '%R' to '%r'? '$PR_NO_COLOR
 unset old_vals
 
-precmd_functions=(precmd_update_title update_rprompt)
+precmd_functions=(precmd_update_title update_rprompt_vcs_status update_rprompt)
 preexec_functions=(preexec_update_title)
-chpwd_functions=(update_rprompt_vcs_status)
 
 #TODO: Check if we are a login shell. This could hang a script without that.
 if [ `get_prop have_keychain` ]; then
