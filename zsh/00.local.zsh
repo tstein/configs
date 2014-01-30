@@ -11,3 +11,4 @@ for DIR in $SUBDIRS; do
 done
 unset SUBDIRS
 
+export LD_LIBRARY_PATH=~/.local/lib64:~/.local/lib:$LD_LIBRARY_PATH
