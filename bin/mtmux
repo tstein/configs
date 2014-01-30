@@ -1,0 +1,14 @@
+#!/bin/zsh
+# Attach-or-create the session called "main" and set its status bar colors to
+# match the prompt.
+
+STATUS_BG=`grep PR_COLOR\= ~/.zlocal | sed 's/PR.*PR_//' | tr '[A-Z]' '[a-z]'`
+STATUS_FG='white'
+case $STATUS_BG in
+  'yellow' | 'cyan' | 'white')
+    STATUS_FG='black'
+esac
+
+tmux -q attach -t main ||
+  tmux new-session -s main\; \
+  set-option status-bg $STATUS_BG\; set-option status-fg $STATUS_FG
