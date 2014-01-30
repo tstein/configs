@@ -1,20 +1,103 @@
 # .zshrc configured for halberd
 #######################################
 
+# Get the lay of the land and setup __prop {{{
+# There are many properties of a system that influence what's appropriate in
+# that environment. Before we do anything else, get the lay of the land and save
+# it in an associative array. Intentionally left global.
+typeset -A __prop
+set_prop() { __prop+=($1 $2) }
+get_prop() { print $__prop[$1] }
+
+# Text encoding?
+local ENCODING=`print -n $LANG | grep -oe '[^.]*$'`
+# Mangle this a bit to deal with platform differences.
+ENCODING=`print -n $ENCODING | tr '[a-z]' '[A-Z]' | tr -d -`
+if [ ! $ENCODING ]; then
+    ENCODING='UNKNOWN'
+fi
+set_prop encoding $ENCODING
+if [[ `get_prop encoding` == 'UTF8' ]]; then
+    set_prop unicode yes
+fi
+
+# Operating system?
+case `uname -s` in
+  'Linux')
+    set_prop OS Linux
+    ;;
+  'Darwin')
+    set_prop OS Ossix
+    ;;
+esac
+
+# Installed programs?
+for i in acpi keychain git hg; do
+  if [ `whence $i` ]; then
+    set_prop "have_$i" yes
+  fi
+done
+
+# Laptop? (i.e., Can we access laptop-specific power info?)
+case `get_prop OS` in
+  'Linux')
+    if [ `get_prop have_acpi` ]; then
+      if [ "`acpi -b 2>/dev/null`" ]; then
+        set_prop am_laptop yes
+      fi
+    fi
+    ;;
+  'Ossix')
+    if [ "`system_profiler SPHardwareDataType | grep 'MacBook'`" ]; then
+      set_prop am_laptop yes
+    fi
+    ;;
+esac
+
+####################################### }}}
+
+# zsh options. {{{
+# Each group corresponds to a heading in the zshoptions manpage.
+# dir opts
+setopt autocd autopushd pushd_silent
+
+# completion opts
+setopt autolist autoparamkeys autoparamslash hashlistall listambiguous listpacked listtypes
+
+# expansion and globbing
+setopt extended_glob glob glob_dots
+
+# history opts
+setopt extendedhistory
+
+# I/O
+setopt aliases clobber correct hashcmds hashdirs ignoreeof rmstarsilent normstarwait
+
+# job control
+setopt autoresume notify
+
+# prompting
+setopt promptpercent
+
+# scripts and functions
+setopt cbases functionargzero localoptions multios
+
+# ZLE
+setopt nobeep zle
+####################################### }}}
+
 # Set up colors. {{{
 autoload -U colors; colors
 for color in RED GREEN BLUE YELLOW MAGENTA CYAN WHITE BLACK; do
-    eval local T_$color='$fg[${(L)color}]'
-    eval local PR_$color='%{$T_'$color'%}'
+  eval local T_$color='$fg[${(L)color}]'
+  eval local PR_$color='%{$T_'$color'%}'
 done
 local T_NO_COLOR="$terminfo[sgr0]"
 local PR_NO_COLOR="%{$T_NO_COLOR%}"
 ####################################### }}}
 
-
-
 # Command functions. {{{
-# These are up here so that other parts of the zshrc can use them.
+# Above shell configuration because that needs get-comfy.
 getfstype() {
     local DIR=$1
     if [ ! "$DIR" ]; then; return; fi
@@ -96,13 +179,10 @@ get-comfy() {
     print -l 'All the above information has been saved to ~/.zlocal. Happy zshing!'
     trap 2
 }
-
 ####################################### }}}
 
-
-
 # Shell configuration. {{{
-# zsh vars
+umask 022
 HISTFILE=~/.zhistfile
 HISTSIZE=5000
 SAVEHIST=1000000
@@ -124,114 +204,21 @@ ssh_key_list=()
 typeset -A old_vals
 old_vals+=("PROMPT" $PROMPT)
 if test ! -e ~/.zlocal; then
-    get-comfy
+  get-comfy
 fi
 if test -f ~/.zlocal; then
-    source ~/.zlocal
+  source ~/.zlocal
 fi
 ####################################### }}}
 
-
-
-# Properties: __prop {{{
-# There are many properties of a system that influence what's appropriate in
-# that environment. Before we do anything else, get the lay of the land and save
-# it in an associative array. Intentionally left global.
-typeset -A __prop
-set_prop() { __prop+=($1 $2) }
-get_prop() { print $__prop[$1] }
-
-# Text encoding?
-local ENCODING=`print -n $LANG | grep -oe '[^.]*$'`
-# Need to mangle this a bit to deal with platform differences.
-ENCODING=`print -n $ENCODING | tr '[a-z]' '[A-Z]' | tr -d -`
-if [ ! $ENCODING ]; then
-    ENCODING='UNKNOWN'
-fi
-set_prop encoding $ENCODING
-if [[ `get_prop encoding` == 'UTF8' ]]; then
-    set_prop unicode yes
-fi
-
-# Operating system?
-case `uname -s` in
-    'Linux')
-        set_prop OS Linux
-    ;;
-    'Darwin')
-        set_prop OS Ossix
-    ;;
-esac
-
-# Installed programs?
-for i in acpi keychain git hg; do
-    if [ `whence $i` ]; then
-        set_prop "have_$i" yes
-    fi
-done
-
-# Laptop? (i.e., Can we access laptop-specific power info?)
-case `get_prop OS` in
-    'Linux')
-        if [ `get_prop have_acpi` ]; then
-            if [ "`acpi -b 2>/dev/null`" ]; then
-                set_prop am_laptop yes
-            fi
-        fi
-    ;;
-    'Ossix')
-        if [ "`system_profiler SPHardwareDataType | grep 'MacBook'`" ]; then
-            set_prop am_laptop yes
-        fi
-    ;;
-esac
-
-####################################### }}}
-
-
-
-# zsh options. Each group corresponds to a heading in the zshoptions manpage. {{{
-# dir opts
-setopt autocd autopushd pushd_silent
-
-# completion opts
-setopt autolist autoparamkeys autoparamslash hashlistall listambiguous listpacked listtypes
-
-# expansion and globbing
-setopt extended_glob glob glob_dots
-
-# history opts
-setopt extendedhistory
-
-# I/O
-setopt aliases clobber correct hashcmds hashdirs ignoreeof rmstarsilent normstarwait
-
-# job control
-setopt autoresume notify
-
-# prompting
-setopt promptpercent
-
-# scripts and functions
-setopt cbases functionargzero localoptions multios
-
-# ZLE
-setopt nobeep zle
-####################################### }}}
-
-
-
-# zle configuration. {{{
+# Line editor configuration. {{{
 # The following lines were added by compinstall a very long time ago.
 zstyle ':completion:*' completer _expand _complete _correct _approximate
 zstyle ':completion:*' matcher-list ''
 zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
 zstyle ':completion:*:*:kill:*:processes' command 'ps -axco pid,user,command'
 zstyle :compinstall filename '/home/ted/.zshrc'
-
-autoload -U compinit
-compinit
-# End of lines added by compinstall
+autoload -U compinit; compinit
 
 # autoload various functions provided with zsh
 autoload -U is-at-least
@@ -245,127 +232,7 @@ autoload -U tetris
 zle -N tetris
 ####################################### }}}
 
-
-
-# Key bindings. {{{
-bindkey -e
-bindkey TAB expand-or-complete-prefix
-bindkey '^[[Z' reverse-menu-complete
-bindkey '^[[20~' tetris     # Press F9 to play.
-
-case `get_prop OS` in
-    'Linux')
-        # Can't count on these keys to be consistent. This switch sets the following:
-        #   <Delete>        :   delete-char
-        #   <Home>          :   beginning-of-line
-        #   <End>           :   end-of-line
-        #   <PageUp>        :   insert-last-word
-        #   <PageDown>      :   end-of-history
-        #   ^<LeftArrow>    :   backward-word
-        #   ^<RightArrow>   :   forward-word
-        case "$TERM" in
-            'xterm'*)
-                bindkey '^[[3~'     delete-char
-                bindkey '^[OH'      beginning-of-line
-                bindkey '^[OF'      end-of-line
-                bindkey '^[[5~'     insert-last-word
-                bindkey '^[[6~'     end-of-history
-                bindkey '^[[1;5D'   backward-word
-                bindkey '^[[1;5C'   forward-word
-            ;;
-            'rxvt'*)
-                bindkey '^[[3~'     delete-char
-                bindkey '^[[7~'     beginning-of-line
-                bindkey '^[[8~'     end-of-line
-                bindkey '^[[5~'     insert-last-word
-                bindkey '^[[6~'     end-of-history
-                bindkey '^[Od'      backward-word
-                bindkey '^[Oc'      forward-word
-            ;;
-            'screen'*)
-                bindkey '^[[3~'     delete-char
-                bindkey '^[[1~'     beginning-of-line
-                bindkey '^[[4~'     end-of-line
-                bindkey '^[[5~'     insert-last-word
-                bindkey '^[[6~'     end-of-history
-                bindkey '^[[1;5D'   backward-word
-                bindkey '^[O5D'     backward-word
-                bindkey '^[OD'      backward-word
-                bindkey '^[[1;5C'   forward-word
-                bindkey '^[O5C'     forward-word
-                bindkey '^[OC'      forward-word
-            ;;
-            'linux')
-                bindkey '^[[3~'     delete-char
-                bindkey '^[[1~'     beginning-of-line
-                bindkey '^[[4~'     end-of-line
-                bindkey '^[[5~'     insert-last-word
-                bindkey '^[[6~'     end-of-history
-                # mingetty doesn't distinguish between ^<LeftArrow> and <LeftArrow>.
-            ;;
-        esac
-    ;;
-    'Ossix')
-        bindkey '[D'            backward-word       # option-left
-        bindkey '[C'            forward-word        # option-right
-        bindkey '^[[1;10D'      beginning-of-line   # shift-option-left
-        bindkey '^[[1;10C'      end-of-line         # shift-option-right
-    ;;
-esac
-####################################### }}}
-
-
-
-# Aliases. {{{
-# ... to add functionality.
-alias chrome-get-rss='
-    CHROME_RSS=0
-    for num in `ps axwwo rss,command | grep -P "(google-|)(chrome|chromium)" | grep -v grep | sed "s/^\s*//g" | cut -d " " -f 1`
-    do
-        CHROME_RSS=$(($num * 1 + $CHROME_RSS))
-    done
-    print $CHROME_RSS; unset CHROME_RSS'
-alias getip='curl ifconfig.me'
-alias sudo='sudo '  # Enables alias, but not function, expansion on the next word.
-
-# ... to save keystrokes.
-alias -- -='cd -'
-alias absname='readlink -m'
-alias cep='call-embedded-perl'
-alias chrome='google-chrome'
-alias dict='dict -d wn'
-alias mtmux='tmux new -s main'
-alias no='yes n'
-if [[ `get_prop OS` == 'Linux' ]]; then
-    alias open='xdg-open'
-fi
-alias rezsh='source ~/.zshrc'
-
-# ... to enable 'default' options.
-alias bc='bc -l'
-alias emacs='emacs -nw'
-alias fortune='fortune -c'
-alias getpwdfs='getfstype .'
-alias grep='grep --color=auto'
-alias less='less -FRX'
-alias units='units --verbose'
-
-case `get_prop OS` in
-    'Linux')
-        alias ls='ls -F --color=auto'
-    ;;
-    'Ossix')
-        alias ls='ls -FG'
-    ;;
-esac
-
-# ... to compensate for me being an idiot.
-alias rm='rm -i'
-####################################### }}}
-
-
-
-# Embedded Perl scripts. {{{
+# Embedded Perl scripts. Hoo boy. {{{
 #
 # To create a new script, write it here, with each line prefixed with #NAME#. It will be callable
 # with `call-embedded-perl NAME`.
@@ -419,37 +286,6 @@ alias rm='rm -i'
 #localinfo#  }
 #localinfo#  print $sysinfo;
 #localinfo#  # }}}
-
-#rpmstats#   # {{{
-#rpmstats#   if (! -e '/bin/rpm') {
-#rpmstats#       print("rpm not found. Are you sure this is an rpm-based system?\n");
-#rpmstats#       exit(1);
-#rpmstats#   }
-#rpmstats#   print "Gathering info on installed rpms... This may take a few.\n";
-#rpmstats#   @rpms = split(/\n/, `/bin/rpm -qa`);
-#rpmstats#   foreach $rpm (@rpms) {
-#rpmstats#       if ($rpm =~ /fc(\d{1,2})\.(\w+)$/) {
-#rpmstats#           $rel = $1;
-#rpmstats#           $arch = $2;
-#rpmstats#           $releases{$rel} = () unless ($releases{$rel});
-#rpmstats#           push(@{$releases{$rel}}, \$rpm);
-#rpmstats#               $arches{$arch} = () unless ($arches{$arch});
-#rpmstats#           push(@{$arches{$arch}}, \$rpm);
-#rpmstats#       } else {
-#rpmstats#           push(@unsortable, \$rpm);
-#rpmstats#       }
-#rpmstats#   }
-#rpmstats#   print("\nFound $#rpms packages.\n");
-#rpmstats#   print("By release:\n");
-#rpmstats#   foreach $rel (sort {$b <=> $a} keys %releases) {
-#rpmstats#       printf("    fc$rel: %d packages\n", $#{$releases{$rel}} + 1);
-#rpmstats#   }
-#rpmstats#   print("\nBy arch:\n");
-#rpmstats#   foreach $arch (sort keys %arches) {
-#rpmstats#       printf("    $arch: %d packages\n", $#{$arches{$arch}} + 1);
-#rpmstats#   }
-#rpmstats#   printf("\n%d packages unsorted.\n", $#unsortable);
-#rpmstats#   # }}}
 
 #automat#   # {{{
 #automat#   # automat automates the unprivileged installation of packages from the Internet
@@ -585,192 +421,147 @@ alias rm='rm -i'
 #automat#   # }}}
 ####################################### }}}
 
-
-
-# Space expansion: cause a space to expand to certain text given what's already on the line. {{{
-typeset -A abbreviations
-abbreviations=(
-    'lame'              'lame -V 0 -q 0 -m j --replaygain-accurate --add-id3v2'
-)
-case `get_prop OS` in
-    'Linux')
-        abbreviations+=(
-            'df'                'df -hT --total'
-            'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command'
-            'pacman'            'pacman-color'
-            'sudo pacman'       'sudo pacman-color'
-            'yum remove'        'yum remove --remove-leaves'
-            'sudo yum remove'   'sudo yum remove --remove-leaves'
-        )
-    ;;
-    'Ossix')
-        abbreviations+=(
-            'df'                'df -h'
-            'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,command'
-        )
-    ;;
-esac
-
-magic-abbrev-expand() {
-    local MATCH
-    LBUFFER=${LBUFFER%%(#m)[_a-zA-Z0-9 ]#}
-    LBUFFER+=${abbreviations[$MATCH]:-$MATCH}
-    zle self-insert
-}
-
-no-magic-abbrev-expand() {
-    LBUFFER+=' '
-}
-
-zle -N magic-abbrev-expand
-zle -N no-magic-abbrev-expand
-bindkey " " magic-abbrev-expand
-bindkey "^x" no-magic-abbrev-expand
-####################################### }}}
-
-
-
 # Interface functions. {{{
 # cornmeter is a visual battery meter meant for a prompt. {{{
 # This function spits out the meter as it should appear at call time.
 drawCornMeter() {
-    for var in WIDTH STEP LEVEL CHARGING SPPOWER CHARGE CAPACITY CHRGCHR; do; eval local $var=""; done
-    CHRGCHR='C'
-    if [ `get_prop unicode` ]; then
-        CHRGCHR='⚡'
-    fi
-    WIDTH=$1
-    STEP=$((100.0 / $WIDTH))
-    case `get_prop OS` in
-        'Linux')
-            LEVEL=`acpi -b | perl -ne '/(\d{1,3}\%)/; $LVL = $1; $LVL =~ s/\%//; print $LVL;'`
-            LEVEL=$(($LEVEL * 1.0))
-            CHARGING=`acpi -a | perl -ne 'if (/on-line/) { print $1; }'`
-        ;;
-        'Ossix')
-            SPPOWER=`system_profiler SPPowerDataType`
-            CHARGE=`print $SPPOWER | perl -ne 'if (/Charge Remaining.* (\d+)/) { print $1; }'`
-            CAPACITY=`print $SPPOWER | perl -ne 'if (/Full Charge Capacity.* (\d+)/) { print $1; }'`
-            LEVEL=$((100.0 * $CHARGE / $CAPACITY))
-            CHARGING=`print $SPPOWER | perl -ne 'if (/Charging: (\w+)/) { if ($1 =~ "Yes") { print "Yes"; } }'`
-        ;;
-    esac
+  for var in WIDTH STEP LEVEL CHARGING SPPOWER CHARGE CAPACITY CHRGCHR; do
+    eval local $var=""
+  done
+  CHRGCHR='C'
+  if [ `get_prop unicode` ]; then
+    CHRGCHR='⚡'
+  fi
+  WIDTH=$1
+  STEP=$((100.0 / $WIDTH))
+  case `get_prop OS` in
+    'Linux')
+      LEVEL=`acpi -b | perl -ne '/(\d{1,3}\%)/; $LVL = $1; $LVL =~ s/\%//; print $LVL;'`
+      LEVEL=$(($LEVEL * 1.0))
+      CHARGING=`acpi -a | perl -ne 'if (/on-line/) { print $1; }'`
+      ;;
+    'Ossix')
+      SPPOWER=`system_profiler SPPowerDataType`
+      CHARGE=`print $SPPOWER | perl -ne 'if (/Charge Remaining.* (\d+)/) { print $1; }'`
+      CAPACITY=`print $SPPOWER | perl -ne 'if (/Full Charge Capacity.* (\d+)/) { print $1; }'`
+      LEVEL=$((100.0 * $CHARGE / $CAPACITY))
+      CHARGING=`print $SPPOWER | perl -ne 'if (/Charging: (\w+)/) { if ($1 =~ "Yes") { print "Yes"; } }'`
+      ;;
+  esac
 
-    print -n $PR_WHITE"["
-    if (($LEVEL <= 30.0)); then
-        print -n $PR_RED
+  print -n $PR_WHITE"["
+  if (($LEVEL <= 30.0)); then
+    print -n $PR_RED
+  else
+    print -n $PR_YELLOW
+  fi
+  if (($LEVEL >= 95.0)); then
+    print -n $PR_WHITE
+  fi
+  for (( i = 0; i < $WIDTH; i++ ))
+  do
+    if (($(($i + 1)) == $WIDTH)); then
+      if [ "$CHARGING" ]; then
+        print -n $CHRGCHR
+        continue
+      fi
+    fi
+
+    if (($LEVEL >= 0.0)); then
+      if (($LEVEL <= $(($STEP / 2.0)))); then
+        print -n "\-"
+      else
+        print -n "="
+      fi
     else
-        print -n $PR_YELLOW
+      print -n " "
     fi
-    if (($LEVEL >= 95.0)); then
-        print -n $PR_WHITE
-    fi
-    for (( i = 0; i < $WIDTH; i++ ))
-    do
-        if (($(($i + 1)) == $WIDTH)); then
-            if [ "$CHARGING" ]; then
-                print -n $CHRGCHR
-                continue
-            fi
-        fi
-
-        if (($LEVEL >= 0.0)); then
-            if (($LEVEL <= $(($STEP / 2.0)))); then
-                print -n "\-"
-            else
-                print -n "="
-            fi
-        else
-            print -n " "
-        fi
-        LEVEL=$(($LEVEL - $STEP))
-    done
-    print -n $PR_WHITE"]"
+    LEVEL=$(($LEVEL - $STEP))
+  done
+  print -n $PR_WHITE"]"
 } # }}}
 
 # If we're in a repo, print some info. Intended for use in a prompt. {{{
 # Updates the variable that contains VCS info. It's a bit slow to do this in
 # precmd, so this goes in chpwd_functions.
 update_rprompt_vcs_status() {
-    if [ `get_prop have_git` ]; then
-        GIT=`git_status`
-    fi
+  if [ `get_prop have_git` ]; then
+    GIT=`git_status`
+  fi
 
-    if [ `get_prop have_hg` ]; then
-        HG=`hg_status`
-    fi
-    _RPROMPT_VCS="$GIT$HG"
+  if [ `get_prop have_hg` ]; then
+    HG=`hg_status`
+  fi
+  _RPROMPT_VCS="$GIT$HG"
 }
 
 git_status() {
-    local GITBRANCH=''
-    local GITTXT='git'
-    if [ `get_prop unicode` ]; then
-        GITTXT='±'
+  local GITBRANCH=''
+  local GITTXT='git'
+  if [ `get_prop unicode` ]; then
+    GITTXT='±'
+  fi
+  git status &> /dev/null
+  if (( $? != 128 )); then
+    GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
+    print -n " $GITTXT:${GITBRANCH#refs/heads/}"
+    if [ ! "`git status | grep \"nothing to commit\"`" ]; then
+      print -n "(*)"
     fi
-    git status &> /dev/null
-    if (( $? != 128 )); then
-        GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
-        print -n " $GITTXT:${GITBRANCH#refs/heads/}"
-        if [ ! "`git status | grep \"nothing to commit\"`" ]; then
-            print -n "(*)"
-        fi
-    fi
+  fi
 }
 
 hg_status() {
-    local HGTXT='hg'
-    if [ `get_prop unicode` ]; then
-        HGTXT='☿'
+  local HGTXT='hg'
+  if [ `get_prop unicode` ]; then
+    HGTXT='☿'
+  fi
+  hg status &> /dev/null
+  if (( $? != 255 )); then
+    print -n " $HGTXT:"
+    print -n `hg summary | perl -ne 'if (/^branch: (.*)$/) { print $1; }'`
+    if [ ! "`hg summary | grep clean`" ]; then
+      print -n "(*)"
     fi
-    hg status &> /dev/null
-    if (( $? != 255 )); then
-        print -n " $HGTXT:"
-        print -n `hg summary | perl -ne 'if (/^branch: (.*)$/) { print $1; }'`
-        if [ ! "`hg summary | grep clean`" ]; then
-            print -n "(*)"
-        fi
-    fi
+  fi
 }
 # }}}
 
 # When on a laptop, enable cornmeter.
 update_rprompt() {
-    local BOLD_ON BOLD_OFF DIR GIT HG COND_RETVAL CORNMETER
-    BOLD_ON='%B'
-    DIR=`print -P '%~'`
-    COND_RETVAL='%(?..{%?})'
+  local BOLD_ON BOLD_OFF DIR GIT HG COND_RETVAL CORNMETER
+  BOLD_ON='%B'
+  DIR=`print -P '%~'`
+  COND_RETVAL='%(?..{%?})'
 
-    if [ `get_prop am_laptop` ]; then
-        if (( $BATT_METER_WIDTH > 0 )); then
-            CORNMETER=`drawCornMeter $BATT_METER_WIDTH`
-        else
-            CORNMETER=`drawCornMeter $(($COLUMNS / 10))`
-        fi
+  if [ `get_prop am_laptop` ]; then
+    if (( $BATT_METER_WIDTH > 0 )); then
+      CORNMETER=`drawCornMeter $BATT_METER_WIDTH`
+    else
+      CORNMETER=`drawCornMeter $(($COLUMNS / 10))`
     fi
+  fi
 
-    BOLD_OFF='%b'
-    RPROMPT="$PR_CYAN$BOLD_ON"["$DIR$_RPROMPT_VCS"]"$COND_RETVAL$CORNMETER$BOLD_OFF"
+  BOLD_OFF='%b'
+  RPROMPT="$PR_CYAN$BOLD_ON"["$DIR$_RPROMPT_VCS"]"$COND_RETVAL$CORNMETER$BOLD_OFF"
 }
 
 # For terms known to support it, print some info to the terminal title.
 case "$TERM" in
-    xterm*|screen*)
-        precmd_update_title() {
-            print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) (%y)\a"
-        }
-        preexec_update_title() {
-            print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) <%30>...>$1%<<> (%y)\a"
-        }
-    ;;
+  xterm*|screen*)
+    precmd_update_title() {
+      print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) (%y)\a"
+    }
+    preexec_update_title() {
+      print -Pn "\e]0;%(!.--==.)%n@%m%(!.==--.) <%30>...>$1%<<> (%y)\a"
+    }
+  ;;
 esac
 ####################################### }}}
 
-
-
 # Set up the interface. {{{
 if [[ "$PROMPT" == "$old_vals[PROMPT]" ]]; then
-    PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)\%#%b "
+  PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)\%#%b "
 fi
 PROMPT2=$PR_GREEN'%B%_>%b '
 update_rprompt_vcs_status   # update_rprompt will automatically do the rest.
@@ -783,24 +574,21 @@ chpwd_functions=(update_rprompt_vcs_status)
 
 #TODO: Check if we are a login shell. This could hang a script without that.
 if [ `get_prop have_keychain` ]; then
-    keychain -Q -q $ssh_key_list
-    source ~/.keychain/${HOST}-sh
+  keychain -Q -q $ssh_key_list
+  source ~/.keychain/${HOST}-sh
 fi
 ####################################### }}}
 
-
-
-# Finally, source additional configuration. {{{
+# Source additional configuration. {{{
 if [ -d ~/.zsh ]; then
-    for zfile in `ls ~/.zsh/*.zsh`; do
-        source $zfile
-    done
+  for zfile in `ls ~/.zsh/*.zsh`; do
+    source $zfile
+  done
 fi
 ####################################### }}}
 # ZSH IS GO
 #######################################
-# vim:filetype=zsh foldmethod=marker autoindent expandtab shiftwidth=4
+# vim:filetype=zsh foldmethod=marker autoindent expandtab shiftwidth=2
 # Local variables:
 # mode: sh
 # End:
-
