@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-# Key bindings. {{{
+# Key bindings.
 bindkey -e
 bindkey TAB expand-or-complete-prefix
 bindkey '^[[Z' reverse-menu-complete    # shift-tab
@@ -65,9 +65,9 @@ case `get_prop OS` in
     bindkey '^[[1;10C'      end-of-line         # shift-option-right
     ;;
 esac
-####################################### }}}
 
-# Magic space expansion {{{
+
+# Magic space expansion.
 # cause a space to expand to certain text given what's already on the line.
 typeset -A abbreviations
 abbreviations=(
@@ -76,7 +76,7 @@ abbreviations=(
 case `get_prop OS` in
   'Linux')
     abbreviations+=(
-    'df'                'df -hT --total'
+    'df'                'df -hT -x tmpfs -x devtmpfs --total'
     'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command'
     'yum remove'        'yum remove --remove-leaves'
     'sudo yum remove'   'sudo yum remove --remove-leaves'
@@ -105,4 +105,3 @@ zle -N magic-abbrev-expand
 zle -N no-magic-abbrev-expand
 bindkey " " magic-abbrev-expand
 bindkey "^x" no-magic-abbrev-expand
-####################################### }}}
