@@ -102,11 +102,11 @@ main = do
     xmonad $ defaultConfig {
                  modMask            = myModMask,
                  focusFollowsMouse  = False,
-                 borderWidth        = 1,
+                 borderWidth        = 3,
                  terminal           = "terminator",
                  workspaces         = myWorkspaces,
                  normalBorderColor  = "#ddddff",
-                 focusedBorderColor = "#0000dd",
+                 focusedBorderColor = "#4444ff",
                  layoutHook         = gaps [(U, 24)] $ myLayoutHook,
                  manageHook         = manageDocks <+> myManageHook <+> doFloat,
                  logHook            = dynamicLogWithPP $ myPP h
