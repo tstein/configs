@@ -369,9 +369,9 @@ zle -N tetris
 #automat#       $ENV{'CPPFLAGS'} = "-I $ENV{'HOME'}/.local/include";
 #automat#       $ENV{'LDFLAGS'} = "-L $ENV{'HOME'}/.local/include -L $ENV{'HOME'}/.local/lib";
 #automat#       chdir("$ENV{'HOME'}/.src");
-#automat#       `wget -qO- http://downloads.sourceforge.net/project/tmux/tmux/tmux-1.6/tmux-1.6.tar.gz | tar -xzf-`;
+#automat#       `wget -qO- http://downloads.sourceforge.net/project/tmux/tmux/tmux-1.9/tmux-1.9a.tar.gz | tar -xzf-`;
 #automat#       return $? if ($? != 0);
-#automat#       chdir("tmux-1.6");
+#automat#       chdir("tmux-1.9a");
 #automat#       `./configure`;
 #automat#       return $? if ($? != 0);
 #automat#       `make`;
@@ -385,7 +385,7 @@ zle -N tetris
 #automat#       `wget -qO- ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2 | tar -xjf-`;
 #automat#       return $? if ($? != 0);
 #automat#       chdir("vim74");
-#automat#       `./configure --prefix=$ENV{'HOME'}/.local --enable-pythoninterp`;
+#automat#       `./configure --prefix=$ENV{'HOME'}/.local --bindir=$ENV{'HOME'}/.local/bin --enable-pythoninterp --enable-perlinterp`;
 #automat#       return $? if ($? != 0);
 #automat#       `make`;
 #automat#       return $? if ($? != 0);

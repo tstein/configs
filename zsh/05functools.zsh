@@ -12,9 +12,12 @@ function apply1() {
   local ARG=$@[2]
   local EXEC=''
   local APPENDARG='yep'
-  for TOKEN in "${(s/ /)COMMAND}"; do
-    if [[ $TOKEN == '_' ]]; then
+  for TOKEN in "${=COMMAND}"; do
+    if [[ $TOKEN == '$_' ]]; then
       EXEC="$EXEC $ARG"
+      APPENDARG='nope'
+    elif [[ $TOKEN =~ '\$\{_\}' ]]; then
+      EXEC="$EXEC ${TOKEN//\$\{_\}/$ARG}"
       APPENDARG='nope'
     else
       EXEC="$EXEC $TOKEN "
