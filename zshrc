@@ -385,7 +385,7 @@ zle -N tetris
 #automat#       `wget -qO- ftp://ftp.vim.org/pub/vim/unix/vim-7.4.tar.bz2 | tar -xjf-`;
 #automat#       return $? if ($? != 0);
 #automat#       chdir("vim74");
-#automat#       `./configure --prefix=$ENV{'HOME'}/.local --bindir=$ENV{'HOME'}/.local/bin --with-python`;
+#automat#       `./configure --prefix=$ENV{'HOME'}/.local --enable-pythoninterp`;
 #automat#       return $? if ($? != 0);
 #automat#       `make`;
 #automat#       return $? if ($? != 0);
