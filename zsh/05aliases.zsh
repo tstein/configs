@@ -14,7 +14,6 @@ alias sudo='sudo '  # Enables alias, but not function, expansion on the next wor
 # Keystroke-savers:
 alias -- -='cd -'
 alias absname='readlink -m'
-alias cep='call-embedded-perl'
 alias chrome='google-chrome'
 alias dict='dict -d wn'
 alias no='yes n'
