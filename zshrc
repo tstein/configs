@@ -43,13 +43,13 @@ case `get_prop OS` in
   'Linux')
     if [ `get_prop have_acpi` ]; then
       if [ "`acpi -b 2>/dev/null`" ]; then
-        set_prop am_laptop yes
+        set_prop have_battery yes
       fi
     fi
     ;;
   'Ossix')
     if [ "`system_profiler SPHardwareDataType | grep 'MacBook'`" ]; then
-      set_prop am_laptop yes
+      set_prop have_battery yes
     fi
     ;;
 esac
@@ -68,7 +68,7 @@ setopt autolist autoparamkeys autoparamslash hashlistall listambiguous listpacke
 setopt extended_glob glob glob_dots
 
 # history opts
-setopt extendedhistory
+setopt extendedhistory hist_ignore_space
 
 # I/O
 setopt aliases clobber correct hashcmds hashdirs ignoreeof rmstarsilent normstarwait
@@ -205,10 +205,10 @@ zstyle ':completion:*:*:kill:*:processes' command 'ps -axco pid,user,command'
 zstyle :compinstall filename '/home/ted/.zshrc'
 autoload -U compinit; compinit
 
-# autoload various functions provided with zsh
+# autoload functions provided with zsh
 autoload -U is-at-least
 if is-at-least "4.2.0"; then
-    autoload -U sticky-note url-quote-magic zcalc zed zmv
+    autoload -U url-quote-magic zmv
     zle -N self-insert url-quote-magic
 fi
 
@@ -232,9 +232,10 @@ drawCornMeter() {
   STEP=$((100.0 / $WIDTH))
   case `get_prop OS` in
     'Linux')
-      LEVEL=`acpi -b | perl -ne '/(\d{1,3}\%)/; $LVL = $1; $LVL =~ s/\%//; print $LVL;'`
+      # acpi -b => "Battery 0: 22%"
+      LEVEL=`acpi -b | cut -d ' ' -f 3 | tr -d '%'`
       LEVEL=$(($LEVEL * 1.0))
-      CHARGING=`acpi -a | perl -ne 'if (/on-line/) { print $1; }'`
+      CHARGING=`acpi -a | grep on-line`
       ;;
     'Ossix')
       SPPOWER=`system_profiler SPPowerDataType`
@@ -330,7 +331,7 @@ update_rprompt() {
   DIR=`print -P '%~'`
   COND_RETVAL='%(?..{%?})'
 
-  if [ `get_prop am_laptop` ]; then
+  if [ `get_prop have_battery` ]; then
     if (( $BATT_METER_WIDTH > 0 )); then
       CORNMETER=`drawCornMeter $BATT_METER_WIDTH`
     else
