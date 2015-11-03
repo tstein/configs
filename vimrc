@@ -5,7 +5,6 @@ set nocompatible
 
 " the outside world
 set encoding=utf8
-set shell=/bin/zsh
 
 " affordances
 syntax on
