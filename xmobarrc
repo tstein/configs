@@ -2,6 +2,5 @@ Config { font = "xft:Inconsolata for Powerline:Bold:size=14:antialias=true"
        , commands = [ Run Com "one-line-fortune" [] "" 6000
                     , Run StdinReader
                     , Run Com "hostname" ["-s"] "" 36000
-                    , Run Date "%A, %B %d %Y, %I:%M %p" "date" 10 ]
-       , template = "%StdinReader% }{ <fc=#5555ff>%hostname%</fc> | <fc=#666666>%date%</fc>"
-
+                    , Run Date "%Y-%m-%d %H:%M" "date" 10 ]
+       , template = "%StdinReader% }{| <fc=#5555ff>%hostname%</fc> | <fc=#666666>%date%</fc>"
