@@ -35,7 +35,7 @@ function in() {
     print 'Run COMMAND with ARGS in DIR.'
     return
   fi
-  local DIR=`readlink -m $@[1]`
+  local DIR="`readlink -m $@[1]`"
   if [ ! -d $DIR ]; then
     print "in: no such directory: $DIR"
     return 255
