@@ -49,16 +49,23 @@ function in() {
 }
 
 function map() {
+  if [[ $1 == -p ]]; then
+    local BG="&"
+    shift
+  fi
   if (( $# < 2 )); then
-    print 'usage: map COMMAND [ARG...]'
-    print 'Apply COMMAND to each ARG in sequence.'
+    print 'usage: map [-p] COMMAND [ARG...]'
+    print 'Apply COMMAND to each ARG. If run with -p, do it in parallel.'
     return
   fi
   local COMMAND=$@[1]
   for ARG in $@[2,-1]; do
-    apply1 $COMMAND $ARG
+    eval "apply1 $COMMAND $ARG | prefix \"$COMMAND $ARG> \" $BG"
   done
+  wait
 }
+
+alias parmap=map -p
 
 function filter() {
   if (( $# < 2 )); then
