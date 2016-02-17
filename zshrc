@@ -373,6 +373,8 @@ if [ `get_prop have_keychain` ]; then
   keychain -Q -q $ssh_key_list
   source ~/.keychain/${HOST}-sh
 fi
+
+stty -ixon
 ####################################### }}}
 
 # Source additional configuration. {{{
