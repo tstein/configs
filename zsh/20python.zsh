@@ -1,6 +1,3 @@
-# Force virtualenv to use distribute instead of setuptools. This seems more
-# reliable.
-export VIRTUALENV_DISTRIBUTE="true"
 if [ `whence virtualenvwrapper.sh` ]; then
     source =virtualenvwrapper.sh
 fi
