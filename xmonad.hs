@@ -107,7 +107,7 @@ main = do
                  workspaces         = myWorkspaces,
                  normalBorderColor  = "#ddddff",
                  focusedBorderColor = "#4444ff",
-                 layoutHook         = gaps [(U, 24)] $ myLayoutHook,
+                 layoutHook         = gaps [(U, 45)] $ myLayoutHook,
                  manageHook         = manageDocks <+> myManageHook <+> doFloat,
                  logHook            = dynamicLogWithPP $ myPP h
              }
