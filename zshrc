@@ -238,11 +238,9 @@ drawCornMeter() {
       CHARGING=`acpi -a | grep on-line`
       ;;
     'Ossix')
-      SPPOWER=`system_profiler SPPowerDataType`
-      CHARGE=`print $SPPOWER | perl -ne 'if (/Charge Remaining.* (\d+)/) { print $1; }'`
-      CAPACITY=`print $SPPOWER | perl -ne 'if (/Full Charge Capacity.* (\d+)/) { print $1; }'`
-      LEVEL=$((100.0 * $CHARGE / $CAPACITY))
-      CHARGING=`print $SPPOWER | perl -ne 'if (/Charging: (\w+)/) { if ($1 =~ "Yes") { print "Yes"; } }'`
+      PMSET=`pmset -g batt`
+      LEVEL=`print $PMSET | perl -ne 'if (/(\d+)%/) { print $1; }'`
+      CHARGING=`print $PMSET | grep 'AC Power'`
       ;;
   esac
 
