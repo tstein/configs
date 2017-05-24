@@ -17,9 +17,10 @@
 [branch]
     autosetuprebase = always
 [alias]
+    br = branch -vv
     gl = log --graph --pretty=format:\
 '%Cgreen%h %Cred(%cr)%Creset -%C(yellow)%d%Creset %s %Cblue<%an>%Creset'
-    st = status -bs
+    st = status --branch --short
 
 [review "review.cyanogenmod.com"]
     username = ted
