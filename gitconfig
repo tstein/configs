@@ -12,16 +12,16 @@
     pushNonFastForward = false
     resolveConflict = false
     statusHints = false
-[push]
-    default = simple
 [branch]
     autosetuprebase = always
+[diff]
+    indentHeuristic = on
+[fetch]
+    prune = true
+[push]
+    default = simple
 [alias]
     br = branch -vv
     gl = log --graph --pretty=format:\
 '%Cgreen%h %Cred(%cr)%Creset -%C(yellow)%d%Creset %s %Cblue<%an>%Creset'
     st = status --branch --short
-
-[review "review.cyanogenmod.com"]
-    username = ted
-
