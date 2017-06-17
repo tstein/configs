@@ -34,9 +34,9 @@ set autoindent
 set smartindent
 
 set expandtab
-set shiftwidth=2
-set tabstop=2
-set softtabstop=2
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
 
 set tw=80
 set wrap
@@ -180,13 +180,15 @@ nnoremap <silent> <F8> :TlistToggle<CR>
 autocmd BufWritePost, BufLeave, WinLeave ?* mkview
 autocmd BufReadPre ?* silent loadview
 
+" C#
+autocmd BufRead,BufNewFile *.cs set filetype=cs colorcolumn=120
+
 " Go
 set rtp+=$GOROOT/misc/vim
 autocmd BufRead,BufNewFile *.go set filetype=go
 
 " Scala
-autocmd BufRead,BufNewFile *.scala set filetype=scala
+autocmd BufRead,BufNewFile *.scala set filetype=scala colorcolumn=120
 
 " What's a vimrc without a vimline?
 "vim:foldmethod=marker autoindent expandtab shiftwidth=2 filetype=vim
-
