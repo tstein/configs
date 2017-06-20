@@ -27,7 +27,7 @@ def reify(path):
     location, and unlink the new location. """
     newpath = path + '.reifying'
     os.rename(path, newpath)
-    subprocess.call(['cp', '-a', newpath, path])
+    subprocess.call(['cp', '-aH', newpath, path])
     os.unlink(newpath)
 
 
