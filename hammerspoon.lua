@@ -25,11 +25,11 @@ end)
 -- screen scaling
 -- list of modes is hand-picked for a 13" rMBP
 local modes = {}
-modes[0] = {w = 1024, h =  640}
-modes[1] = {w = 1280, h =  800}
-modes[2] = {w = 1440, h =  900}
-modes[3] = {w = 1680, h = 1050}
-local modeIndex = 1
+modes[1] = {w = 1024, h =  640}
+modes[2] = {w = 1280, h =  800}
+modes[3] = {w = 1440, h =  900}
+modes[4] = {w = 1680, h = 1050}
+local modeIndex = 2
 
 function setNewMode()
     local newMode = modes[modeIndex]
@@ -41,14 +41,14 @@ function setNewMode()
 end
 
 hs.hotkey.bind({"cmd", "option"}, "down", function()
-    if modeIndex > 0 then
+    if modeIndex > 1 then
         modeIndex = modeIndex - 1
         setNewMode()
     end
 end)
 
 hs.hotkey.bind({"cmd", "option"}, "up", function()
-    if modeIndex < 3 then
+    if modeIndex < #modes then
         modeIndex = modeIndex + 1
         setNewMode()
     end
