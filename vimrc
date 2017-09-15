@@ -24,6 +24,8 @@ set visualbell t_vb=
 set ttimeoutlen=0
 set list
 set listchars=tab:»·,trail:·
+set splitright
+set splitbelow
 
 " wildmenu
 set wildmenu
@@ -147,12 +149,10 @@ Bundle 'mhinz/vim-signify'
 Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
-Bundle 'Valloric/YouCompleteMe'
 Bundle 'vim-scripts/file-line'
 Bundle 'vim-scripts/taglist.vim'
 Bundle 'vim-scripts/TaskList.vim'
 Bundle 'vim-scripts/tComment'
-Bundle 'vim-scripts/UltiSnips'
 
 " airline
 let g:airline_powerline_fonts=1
