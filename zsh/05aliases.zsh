@@ -1,20 +1,12 @@
 #!/bin/zsh
 
 # Didn't-deserve-a-functions:
-alias chrome-get-rss='
-  CHROME_RSS=0
-  for num in `ps axwwo rss,command | grep -P "(google-|)(chrome|chromium)" | grep -v grep | sed "s/^\s*//g" | cut -d " " -f 1`
-  do
-      CHROME_RSS=$(($num * 1 + $CHROME_RSS))
-  done
-  print $CHROME_RSS; unset CHROME_RSS'
 alias getip='curl ifconfig.me'
 alias sudo='sudo '  # Enables alias, but not function, expansion on the next word.
 
 # Keystroke-savers:
 alias -- -='cd -'
 alias absname='readlink -m'
-alias chrome='google-chrome'
 alias dict='dict -d wn'
 alias no='yes n'
 if [[ `get_prop OS` == 'Linux' ]]; then
