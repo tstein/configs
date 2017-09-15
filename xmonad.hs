@@ -2,6 +2,7 @@ import XMonad
 import XMonad.Actions.CycleWS
 import XMonad.Actions.FloatKeys
 import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.EwmhDesktops   -- fullscreenEventHook fixes gtk3 fullscreen
 import XMonad.Hooks.ManageDocks
 import XMonad.Hooks.ManageHelpers
 import XMonad.Layout.Gaps
@@ -14,6 +15,7 @@ import XMonad.Util.EZConfig
 import XMonad.Util.Run
 import Data.Ratio ((%))
 import Text.Printf
+import System.Taffybar.Hooks.PagerHints (pagerHints)
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 
@@ -22,11 +24,13 @@ myModMask = mod4Mask    -- Super.
 
 myWorkspaces = ["1", "2", "3", "4", "5", "6", "7", "8", "9"]
 
+font = "xft:Inconsolata for Powerline:Bold:size=14:antialias=true"
+
 -- That monster at the bottom allows moving windows with <M-arrows> and resizing
 -- them with <M-S-arrows>.
 keyBindings = [ ("M-b",          sendMessage ToggleGaps)
-              , ("M-p",          spawn "dmenu_run")
-              , ("M-S-k",        spawn "keepassx")
+              , ("M-p",          spawn $ "dmenu_run -fn \"" ++ font ++ "\"")
+              , ("M-S-k",        spawn "keepassxc")
               , ("M-S-l",        spawn "xscreensaver-command -lock")
               , ("M-<Delete>",   spawn "suspend-laptop")
               , ("M-S-<Delete>", spawn "xkill")
@@ -75,31 +79,9 @@ myManageHook = composeAll . concat $
 
 
 ------------------------------------------------------------------------
-colorFunc = xmobarColor
-textBg = "black"
-
-formatFunc = \fg -> colorFunc fg textBg
-formatCurrent = formatFunc "#00ffff"           -- "cyan"
-formatVisible = formatFunc "#006666"           -- darker cyan
-formatHidden = formatFunc "#aaaaaa"            -- "grey"
-formatHiddenNoWindows = formatFunc "#444444"   -- darker grey
-formatUrgent = formatFunc "#dd0000"            -- slightly darker red
-formatTitle = formatCurrent
-
-myPP h = xmobarPP {
-           ppOutput = hPutStrLn h,
-           ppCurrent = formatCurrent,
-           ppVisible = formatVisible,
-           ppTitle = formatTitle,
-           ppHidden = formatHidden,
-           ppHiddenNoWindows = formatHiddenNoWindows,
-           ppUrgent = formatUrgent,
-           ppSep = " | "
-       }
-
 main = do
-    h <- spawnPipe "xmobar"
-    xmonad $ defaultConfig {
+    xmonad $ ewmh $ pagerHints $ defaultConfig {
+                 --startupHook        = spawn "taffybar",
                  modMask            = myModMask,
                  focusFollowsMouse  = False,
                  borderWidth        = 3,
@@ -107,9 +89,9 @@ main = do
                  workspaces         = myWorkspaces,
                  normalBorderColor  = "#ddddff",
                  focusedBorderColor = "#4444ff",
-                 layoutHook         = gaps [(U, 45)] $ myLayoutHook,
+                 layoutHook         = gaps [(U, 48)] $ myLayoutHook,
                  manageHook         = manageDocks <+> myManageHook <+> doFloat,
-                 logHook            = dynamicLogWithPP $ myPP h
+                 handleEventHook    = fullscreenEventHook
              }
              `additionalKeysP`
              keyBindings

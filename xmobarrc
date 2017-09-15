@@ -2,5 +2,10 @@ Config { font = "xft:Inconsolata for Powerline:Bold:size=28:antialias=true"
        , commands = [ Run Com "one-line-fortune" [] "" 6000
                     , Run StdinReader
                     , Run Com "hostname" ["-s"] "" 36000
+                    , Run Cpu ["-w", "3",
+                      "-L","20","-H","85", "--normal","orange","--high","red",
+                      "-t","CPU <total>%"] 10
+                    , Run Memory ["-w", "3",
+                      "-t","RAM <usedratio>%"] 10
                     , Run Date "%Y-%m-%d %H:%M" "date" 10 ]
-       , template = "%StdinReader% }{| <fc=#5555ff>%hostname%</fc> | <fc=#666666>%date%</fc>"
+       , template = "%StdinReader% }{| %cpu% | %memory% | <fc=#5555ff>%hostname%</fc> | <fc=#666666>%date%</fc>"
