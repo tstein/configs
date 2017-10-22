@@ -19,7 +19,7 @@ end
 
 -- screen-locking
 hs.hotkey.bind({"cmd", "option"}, "L", function()
-  hs.caffeinate.lockScreen()
+  hs.caffeinate.startScreensaver()
 end)
 
 -- screen scaling
