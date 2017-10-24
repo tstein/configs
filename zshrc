@@ -366,12 +366,16 @@ unset old_vals
 precmd_functions=(precmd_update_title update_rprompt_vcs_status update_rprompt)
 preexec_functions=(preexec_update_title)
 
+# Automatically time long commands.
+REPORTTIME=10
+
 #TODO: Check if we are a login shell. This could hang a script without that.
 if [ `get_prop have_keychain` ]; then
   keychain -Q -q $ssh_key_list
   source ~/.keychain/${HOST}-sh
 fi
 
+# Disable STOP/START for terminal output.
 stty -ixon
 ####################################### }}}
 
