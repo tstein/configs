@@ -107,7 +107,7 @@ nnoremap <CR> :noh<CR><CR>
 " Fast trailing whitespace cleanup.
 nnoremap <leader>s :%s/\s\+$//<CR>
 " Rebalance splits.
-map <leader>r <C-W>=<C-W>k<C-W>k<C-W>100-<C-W>j
+map <leader>r <C-W>=<C-W>j<C-W>j<C-W>100-<C-W>k
 
 " vimnav for windows
 map <C-j> <C-W>j
