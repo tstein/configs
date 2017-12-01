@@ -1,6 +1,7 @@
 #!/bin/zsh
 
 # Didn't-deserve-a-functions:
+alias chomp="sed -e 's/^[[:space:]]*//' | sed -e 's/[[:space:]]*$//'"
 alias getip='curl ifconfig.me'
 alias sudo='sudo '  # Enables alias, but not function, expansion on the next word.
 
