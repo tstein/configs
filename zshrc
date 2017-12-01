@@ -137,7 +137,12 @@ get-comfy() {
         delete it manually and try again."
         return 1
     fi
+
+    survey | prefix '# ' >> ~/.zlocal
+    print >> ~/.zlocal
+
     print -l "Looks like it's your first time here.\n"
+    survey
     print -l "\nWhat color would you like your prompt on this machine to be? Pick one."
     print -n "["
     print -n $T_RED"red"$T_NO_COLOR"|"

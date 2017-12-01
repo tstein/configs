@@ -30,7 +30,7 @@ function survey() {
             local cpu_lines=`grep 'model name' /proc/cpuinfo`
             local cpu_line=`print $cpu_lines | head -n 1`
             local cpu_count=`echo $cpu_lines | wc -l`
-            local cpu=`extract $cpu_line | sed 's/(R)//g'`
+            local cpu=`extract $cpu_line | sed 's/(R)//g' | sed 's/(TM)//g'`
             cpus="${cpu_count}x $cpu"
 
             local meminfo=`cat /proc/meminfo`
