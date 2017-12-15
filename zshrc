@@ -361,7 +361,7 @@ esac
 
 # Set up the interface. {{{
 if [[ "$PROMPT" == "$old_vals[PROMPT]" ]]; then
-  PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)\%#%b "
+  PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)%#%b "
 fi
 PROMPT2=$PR_GREEN'%B%_>%b '
 update_rprompt_vcs_status   # update_rprompt will automatically do the rest.
