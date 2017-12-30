@@ -38,9 +38,17 @@ function survey() {
                 # Intel, AMD, Broadcom
                 local cpu_lines=`grep 'model name' /proc/cpuinfo`
                 local cpu_line=`print $cpu_lines | head -n 1`
-                local cpu_count=`echo $cpu_lines | wc -l`
+                local cpu_count=`print $cpu_lines | wc -l`
                 local cpu=`extract $cpu_line | sed 's/(R)//g' | sed 's/(TM)//g'`
+
                 cpus="${cpu_count}x $cpu"
+
+                local cpu0_freq='/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq'
+                if [[ -r $cpu0_freq ]]; then
+                    local cpu_ghz_raw=$((`cat $cpu0_freq` / 1000000.0))
+                    local cpu_ghz=`printf '%.2f' $cpu_ghz_raw`
+                    cpus=`print $cpus | sed "s/@.*/@ $cpu_ghz GHz/"`
+                fi
             fi
 
             local meminfo=`cat /proc/meminfo`
@@ -78,7 +86,7 @@ function survey() {
                 local hardware=`extract $hardware_line`
                 local cpu=`uname -m`
                 local processor_lines=`grep 'processor' /proc/cpuinfo`
-                local cpu_count=`echo $processor_lines | wc -l`
+                local cpu_count=`print $processor_lines | wc -l`
                 cpus="$hardware with ${cpu_count}x $cpu"
             else
                 cpus='unknown'
