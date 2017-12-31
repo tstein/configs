@@ -11,6 +11,43 @@ function survey() {
         print $line | cut -d : -f 2- | chomp
     }
 
+    function linux_cpus() {
+        local cpus
+        if grep -q 'model name' /proc/cpuinfo; then
+            # Intel, AMD, Broadcom
+            local cpu_lines=`grep 'model name' /proc/cpuinfo`
+            local cpu_line=`print $cpu_lines | head -n 1`
+            local cpu_count=`print $cpu_lines | wc -l`
+            local cpu=`extract $cpu_line | sed 's/(R)//g' | sed 's/(TM)//g'`
+
+            cpus="${cpu_count}x $cpu"
+        elif grep -q 'Hardware' /proc/cpuinfo; then
+            # Qualcomm phone/table SoC
+            local hardware_line=`grep 'Hardware' /proc/cpuinfo`
+            local hardware=`extract $hardware_line`
+            hardware=`print $hardware | sed 's/ Technologies, Inc//'`
+            local arch=`uname -m`
+            local processor_lines=`grep 'processor' /proc/cpuinfo`
+            local cpu_count=`print $processor_lines | wc -l`
+            cpus="$hardware with ${cpu_count}x $arch"
+        else
+            cpus='unknown'
+        fi
+
+        local cpu0_freq='/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq'
+        if [[ -r $cpu0_freq ]]; then
+            local cpu_ghz_raw=$((`cat $cpu0_freq` / 1000000.0))
+            local cpu_ghz=`printf '%.2f' $cpu_ghz_raw`
+            if print $cpus | grep -q ' @ .*Hz'; then
+                cpus=`print $cpus | sed "s/ @.*//"`
+            fi
+            cpus="$cpus @ $cpu_ghz GHz"
+        fi
+
+        print $cpus
+    }
+
+
     local os release model cpus mem swap
 
     local os=`uname -s`
@@ -34,22 +71,24 @@ function survey() {
                 release='unknown'
             fi
 
-            if grep -q 'model name' /proc/cpuinfo; then
-                # Intel, AMD, Broadcom
-                local cpu_lines=`grep 'model name' /proc/cpuinfo`
-                local cpu_line=`print $cpu_lines | head -n 1`
-                local cpu_count=`print $cpu_lines | wc -l`
-                local cpu=`extract $cpu_line | sed 's/(R)//g' | sed 's/(TM)//g'`
+            cpus=`linux_cpus`
 
-                cpus="${cpu_count}x $cpu"
+            local meminfo=`cat /proc/meminfo`
+            local mem_kb=`extract $meminfo 'MemTotal' | sed 's/ kB//'`
+            mem="$(($mem_kb / 1024)) MB"
 
-                local cpu0_freq='/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq'
-                if [[ -r $cpu0_freq ]]; then
-                    local cpu_ghz_raw=$((`cat $cpu0_freq` / 1000000.0))
-                    local cpu_ghz=`printf '%.2f' $cpu_ghz_raw`
-                    cpus=`print $cpus | sed "s/@.*/@ $cpu_ghz GHz/"`
-                fi
+            local swap_kb=`extract $meminfo 'SwapTotal' | sed 's/ kB//'`
+            if [[ $swap_kb != '0' ]]; then
+                swap="$(($swap_kb / 1024)) MB"
             fi
+            ;;
+
+        'Android')
+            release=`getprop ro.build.version.release`
+
+            model=`getprop ro.product.model`
+
+            cpus=`linux_cpus`
 
             local meminfo=`cat /proc/meminfo`
             local mem_kb=`extract $meminfo 'MemTotal' | sed 's/ kB//'`
@@ -74,32 +113,6 @@ function survey() {
 
             mem=`extract $sp_hardware 'Memory'`
             ;;
-
-        'Android')
-            release=`getprop ro.build.version.release`
-
-            model=`getprop ro.product.model`
-
-            if grep -q 'Hardware' /proc/cpuinfo; then
-                # Qualcomm phone/table SoC
-                local hardware_line=`grep 'Hardware' /proc/cpuinfo`
-                local hardware=`extract $hardware_line`
-                local cpu=`uname -m`
-                local processor_lines=`grep 'processor' /proc/cpuinfo`
-                local cpu_count=`print $processor_lines | wc -l`
-                cpus="$hardware with ${cpu_count}x $cpu"
-            else
-                cpus='unknown'
-            fi
-
-            local meminfo=`cat /proc/meminfo`
-            local mem_kb=`extract $meminfo 'MemTotal' | sed 's/ kB//'`
-            mem="$(($mem_kb / 1024)) MB"
-
-            local swap_kb=`extract $meminfo 'SwapTotal' | sed 's/ kB//'`
-            if [[ $swap_kb != '0' ]]; then
-                swap="$(($swap_kb / 1024)) MB"
-            fi
     esac
 
     print "OS:          $os"
