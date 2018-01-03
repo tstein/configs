@@ -34,7 +34,7 @@ function survey() {
             cpus='unknown'
         fi
 
-        local cpu0_freq='/sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq'
+        local cpu0_freq='/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq'
         if [[ -r $cpu0_freq ]]; then
             local cpu_ghz_raw=$((`cat $cpu0_freq` / 1000000.0))
             local cpu_ghz=`printf '%.2f' $cpu_ghz_raw`
