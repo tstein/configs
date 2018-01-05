@@ -13,7 +13,17 @@ function survey() {
 
     function linux_cpus() {
         local cpus
-        if grep -q 'model name' /proc/cpuinfo; then
+        if grep -q 'Hardware' /proc/cpuinfo; then
+            # Qualcomm phone/table SoC
+            # cpuinfo will sometimes have both 'Hardware' and 'model name's.
+            local hardware_line=`grep '^Hardware' /proc/cpuinfo`
+            local hardware=`extract $hardware_line`
+            hardware=`print $hardware | sed 's/ Technologies, Inc//'`
+            local arch=`uname -m`
+            local processor_lines=`grep 'processor' /proc/cpuinfo`
+            local cpu_count=`print $processor_lines | wc -l`
+            cpus="$hardware with ${cpu_count}x $arch"
+        elif grep -q 'model name' /proc/cpuinfo; then
             # Intel, AMD, Broadcom
             local cpu_lines=`grep 'model name' /proc/cpuinfo`
             local cpu_line=`print $cpu_lines | head -n 1`
@@ -21,15 +31,6 @@ function survey() {
             local cpu=`extract $cpu_line | sed 's/(R)//g' | sed 's/(TM)//g'`
 
             cpus="${cpu_count}x $cpu"
-        elif grep -q 'Hardware' /proc/cpuinfo; then
-            # Qualcomm phone/table SoC
-            local hardware_line=`grep 'Hardware' /proc/cpuinfo`
-            local hardware=`extract $hardware_line`
-            hardware=`print $hardware | sed 's/ Technologies, Inc//'`
-            local arch=`uname -m`
-            local processor_lines=`grep 'processor' /proc/cpuinfo`
-            local cpu_count=`print $processor_lines | wc -l`
-            cpus="$hardware with ${cpu_count}x $arch"
         else
             cpus='unknown'
         fi
