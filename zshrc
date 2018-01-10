@@ -189,6 +189,7 @@ BATT_METER_WIDTH=0
 # file for every machine. If needed, default values go first so that the source call overwrites
 # them.
 PR_COLOR=$PR_BLUE
+PR_CHAR='%#'    # uid == 0 ? '%' : '#'
 ssh_key_list=()
 # Save these values so we can tell if they've been changed by zlocal.
 typeset -A old_vals
@@ -361,7 +362,7 @@ esac
 
 # Set up the interface. {{{
 if [[ "$PROMPT" == "$old_vals[PROMPT]" ]]; then
-  PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)%#%b "
+  PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]%(2L.{$SHLVL}.)$PR_CHAR%b "
 fi
 PROMPT2=$PR_GREEN'%B%_>%b '
 update_rprompt_vcs_status   # update_rprompt will automatically do the rest.
