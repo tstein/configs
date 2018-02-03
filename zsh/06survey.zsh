@@ -20,7 +20,7 @@ function survey() {
             local hardware=`extract $hardware_line`
             hardware=`print $hardware | sed 's/ Technologies, Inc//'`
             local arch=`uname -m`
-            local processor_lines=`grep 'processor' /proc/cpuinfo`
+            local processor_lines=`grep '^processor' /proc/cpuinfo`
             local cpu_count=`print $processor_lines | wc -l`
             cpus="$hardware with ${cpu_count}x $arch"
         elif grep -q 'model name' /proc/cpuinfo; then
