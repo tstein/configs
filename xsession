@@ -15,7 +15,6 @@ numlockx on&
 setxkbmap -option compose:caps
 
 # Session daemons and applets.
-taffybar&
 xscreensaver -no-splash&
 /usr/lib64/xfce4/notifyd/xfce4-notifyd&
 nm-applet&
@@ -41,6 +40,5 @@ if [[ "$DESKTOP_SESSION" == "xinit-compat" ]]; then
   # Lie about current desktop for xdg-open. In particular, Chrome opens
   # everything in Firefox(?!) if this isn't set.
   export XDG_CURRENT_DESKTOP=XFCE
-  export _JAVA_AWT_WM_NONREPARENTING=1  # Without this, Java makes grey rectangles.
-  exec xmonad
+  exec i3
 fi
