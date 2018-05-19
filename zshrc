@@ -34,59 +34,12 @@ setopt ksh_arrays
 setopt nobeep zle
 ####################################### }}}
 
-# Get the lay of the land and setup __prop {{{
-# There are many properties of a system that influence what's appropriate in
-# that environment. Before we do anything else, get the lay of the land and save
-# it in an associative array. Intentionally left global.
-typeset -A __prop
-set_prop() { __prop[$1]=$2 }
-get_prop() { print ${__prop[$1]} }
-
-# Text encoding?
-local ENCODING=`print -n $LANG | grep -oe '[^.]*$'`
-# Mangle this a bit to deal with platform differences.
-ENCODING=`print -n $ENCODING | tr '[a-z]' '[A-Z]' | tr -d -`
-if [ ! $ENCODING ]; then
-    ENCODING='UNKNOWN'
+# Load the modular parts. {{{
+if [ -d ~/.zsh ]; then
+  for zfile in `ls ~/.zsh/*.zsh`; do
+    source $zfile
+  done
 fi
-set_prop encoding $ENCODING
-if [[ `get_prop encoding` == 'UTF8' ]]; then
-    set_prop unicode yes
-fi
-
-# Operating system?
-case `uname -s` in
-  'Linux')
-    set_prop OS Linux
-    ;;
-  'Darwin')
-    set_prop OS Ossix
-    ;;
-esac
-
-# Installed programs?
-for i in acpi keychain git hg; do
-  if [ `whence $i` ]; then
-    set_prop "have_$i" yes
-  fi
-done
-
-# Laptop? (i.e., Can we access laptop-specific power info?)
-case `get_prop OS` in
-  'Linux')
-    if [ `get_prop have_acpi` ]; then
-      if [ "`acpi -b 2>/dev/null`" ]; then
-        set_prop have_battery yes
-      fi
-    fi
-    ;;
-  'Ossix')
-    if [ "`system_profiler SPHardwareDataType | grep 'MacBook'`" ]; then
-      set_prop have_battery yes
-    fi
-    ;;
-esac
-
 ####################################### }}}
 
 # Set up colors. {{{
@@ -95,14 +48,13 @@ for c in RED GREEN BLUE YELLOW MAGENTA CYAN WHITE BLACK; do
   eval T_$c='${fg[${(L)c}]}'
   eval PR_$c='%{$T_'$c'%}'
 done
-local T_NO_COLOR="${reset_color}"
-local PR_NO_COLOR="%{$T_NO_COLOR%}"
+T_NO_COLOR="${reset_color}"
+PR_NO_COLOR="%{$T_NO_COLOR%}"
 ####################################### }}}
 
 # Command functions. {{{
-# Above shell configuration because that needs get-comfy.
 getfstype() {
-    local DIR=$1
+    local DIR=`absname $1`
     if [ ! "$DIR" ]; then; return; fi
     # zsh lacks a do while, so I went with an explicit break from an infinite
     # loop. This will terminate as long as your cwd is of finite length.
@@ -119,59 +71,6 @@ getfstype() {
     done
 }
 
-prefix() {
-    local PREFIX=$1
-    if [ ! "$PREFIX" ]; then
-      echo "Usage: prefix str [args]"
-      echo "  Prepend string to each line read and print it. args are passed to cat."
-      return 1;
-    fi
-    shift
-    cat $@ | sed "s/^/$PREFIX/"
-}
-
-# Designed to be called on first run, as decided by the presence or absence of a .zlocal.
-get-comfy() {
-    # If this function gets ^C'd, we want to catch it and return so the rest of
-    # this file is sourced properly.
-    trap 'trap 2; return 1' 2
-    if [[ -f ~/.zlocal ]]; then
-        print -l "You have a .zlocal on this machine. If you really intended to run this function,\n
-        delete it manually and try again."
-        return 1
-    fi
-
-    survey | prefix '# ' >> ~/.zlocal
-    print >> ~/.zlocal
-
-    print -l "Looks like it's your first time here.\n"
-    survey
-    print -l "\nWhat color would you like your prompt on this machine to be? Pick one."
-    print -n "["
-    print -n $T_RED"red"$T_NO_COLOR"|"
-    print -n $T_GREEN"green"$T_NO_COLOR"|"
-    print -n $T_BLUE"blue"$T_NO_COLOR"|"
-    print -n $T_CYAN"cyan"$T_NO_COLOR"|"
-    print -n $T_MAGENTA"magenta"$T_NO_COLOR"|"
-    print -n $T_YELLOW"yellow"$T_NO_COLOR"|"
-    print -n $T_WHITE"white"$T_NO_COLOR"|none]: "
-    local CHOICE=""
-    read CHOICE
-    case "$CHOICE" in
-        'none')
-            print -l "Really? That's no fun. :/"
-        ;&
-        ('red'|'green'|'blue'|'cyan'|'magenta'|'yellow'|'white'))
-            CHOICE=`echo $CHOICE | tr 'a-z' 'A-Z'`
-            print -l "PR_COLOR=\$PR_$CHOICE\n" >> ~/.zlocal
-        ;;
-        *)
-            print -l "You get blue, wiseguy. Set PR_COLOR later if you want anything else."
-        ;;
-    esac
-    print -l 'All the above information has been saved to ~/.zlocal. Happy zshing!'
-    trap 2
-}
 ####################################### }}}
 
 # Shell configuration. {{{
@@ -388,13 +287,6 @@ fi
 stty -ixon
 ####################################### }}}
 
-# Source additional configuration. {{{
-if [ -d ~/.zsh ]; then
-  for zfile in `ls ~/.zsh/*.zsh`; do
-    source $zfile
-  done
-fi
-####################################### }}}
 # ZSH IS GO
 #######################################
 # vim:filetype=zsh foldmethod=marker autoindent expandtab shiftwidth=2

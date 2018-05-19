@@ -1,6 +1,17 @@
 # Higher-order functions for zsh.
 
-function apply1() {
+prefix() {
+    local PREFIX=$1
+    if [ ! "$PREFIX" ]; then
+      echo "Usage: prefix str [args]"
+      echo "  Prepend string to each line read and print it. args are passed to cat."
+      return 1;
+    fi
+    shift
+    cat $@ | sed "s/^/$PREFIX/"
+}
+
+apply1() {
   if (( $# != 2 )); then
     print 'usage: apply1 COMMAND ARG'
     print 'Apply COMMAND to ARG. If COMMAND contains tokens consisting of a'
@@ -29,7 +40,7 @@ function apply1() {
   eval $EXEC
 }
 
-function in() {
+in() {
   if (( $# < 2 )); then
     print 'usage: in DIR COMMAND [ARG...]'
     print 'Run COMMAND with ARGS in DIR.'
@@ -48,7 +59,7 @@ function in() {
   return $RETVAL
 }
 
-function map() {
+map() {
   if [[ $1 == -p ]]; then
     local BG="&"
     shift
@@ -67,7 +78,7 @@ function map() {
 
 alias parmap=map -p
 
-function filter() {
+filter() {
   if (( $# < 2 )); then
     print 'usage: filter COMMAND [ARG...]'
     print 'Apply COMMAND to each ARG and print the ARGs for which COMMAND returned 0, space-separated.'
