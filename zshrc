@@ -1,13 +1,46 @@
 # .zshrc configured for halberd
 #######################################
 
+# zsh options. {{{
+# Each group corresponds to a heading in the zshoptions manpage.
+# dir opts
+setopt autocd autopushd pushd_silent
+
+# completion opts
+setopt autolist autoparamkeys autoparamslash hashlistall listambiguous listpacked listtypes
+
+# expansion and globbing
+setopt extended_glob glob glob_dots
+
+# history opts
+setopt extendedhistory hist_ignore_space
+
+# I/O
+setopt aliases clobber correct hashcmds hashdirs ignoreeof rmstarsilent normstarwait
+
+# job control
+setopt autoresume notify
+
+# prompting
+setopt promptpercent
+
+# scripts and functions
+setopt cbases functionargzero localoptions multios
+
+# shell emulation
+setopt ksh_arrays
+
+# ZLE
+setopt nobeep zle
+####################################### }}}
+
 # Get the lay of the land and setup __prop {{{
 # There are many properties of a system that influence what's appropriate in
 # that environment. Before we do anything else, get the lay of the land and save
 # it in an associative array. Intentionally left global.
 typeset -A __prop
-set_prop() { __prop+=($1 $2) }
-get_prop() { print $__prop[$1] }
+set_prop() { __prop[$1]=$2 }
+get_prop() { print ${__prop[$1]} }
 
 # Text encoding?
 local ENCODING=`print -n $LANG | grep -oe '[^.]*$'`
@@ -56,43 +89,13 @@ esac
 
 ####################################### }}}
 
-# zsh options. {{{
-# Each group corresponds to a heading in the zshoptions manpage.
-# dir opts
-setopt autocd autopushd pushd_silent
-
-# completion opts
-setopt autolist autoparamkeys autoparamslash hashlistall listambiguous listpacked listtypes
-
-# expansion and globbing
-setopt extended_glob glob glob_dots
-
-# history opts
-setopt extendedhistory hist_ignore_space
-
-# I/O
-setopt aliases clobber correct hashcmds hashdirs ignoreeof rmstarsilent normstarwait
-
-# job control
-setopt autoresume notify
-
-# prompting
-setopt promptpercent
-
-# scripts and functions
-setopt cbases functionargzero localoptions multios
-
-# ZLE
-setopt nobeep zle
-####################################### }}}
-
 # Set up colors. {{{
 autoload -U colors; colors
-for color in RED GREEN BLUE YELLOW MAGENTA CYAN WHITE BLACK; do
-  eval local T_$color='$fg[${(L)color}]'
-  eval local PR_$color='%{$T_'$color'%}'
+for c in RED GREEN BLUE YELLOW MAGENTA CYAN WHITE BLACK; do
+  eval T_$c='${fg[${(L)c}]}'
+  eval PR_$c='%{$T_'$c'%}'
 done
-local T_NO_COLOR="$terminfo[sgr0]"
+local T_NO_COLOR="${reset_color}"
 local PR_NO_COLOR="%{$T_NO_COLOR%}"
 ####################################### }}}
 
@@ -361,7 +364,7 @@ esac
 ####################################### }}}
 
 # Set up the interface. {{{
-if [[ "$PROMPT" == "$old_vals[PROMPT]" ]]; then
+if [[ "$PROMPT" == "${old_vals[PROMPT]}" ]]; then
   PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]$PR_CHAR%b "
 fi
 PROMPT2=$PR_GREEN'%B%_>%b '
