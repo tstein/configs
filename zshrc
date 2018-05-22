@@ -95,7 +95,7 @@ PR_CHAR='%#'    # uid == 0 ? '%' : '#'
 ssh_key_list=()
 # Save these values so we can tell if they've been changed by zlocal.
 typeset -A old_vals
-old_vals+=("PROMPT" $PROMPT)
+old_vals["PROMPT"]=$PROMPT
 if test ! -e ~/.zlocal; then
   get-comfy
 fi
@@ -263,7 +263,7 @@ esac
 ####################################### }}}
 
 # Set up the interface. {{{
-if [[ "$PROMPT" == "${old_vals[PROMPT]}" ]]; then
+if [[ "$PROMPT" == "${old_vals["PROMPT"]}" ]]; then
   PROMPT=$PR_COLOR"%B[%n@%m %D{%H:%M}]$PR_CHAR%b "
 fi
 PROMPT2=$PR_GREEN'%B%_>%b '
