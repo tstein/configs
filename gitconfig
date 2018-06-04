@@ -26,4 +26,4 @@
 '%Cgreen%h %Cred(%cr)%Creset -%C(yellow)%d%Creset %s %Cblue<%an>%Creset'
     st = status --branch --short
 [rebase]
-	autosquash = true
+    autosquash = true
