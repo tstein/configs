@@ -4,7 +4,7 @@ function setCaffeineDisplay(state)
     if state then
         caffeine:setTitle("☕️")
     else
-        caffeine:setTitle("〰")
+        caffeine:setTitle("🥛")
     end
 end
 
