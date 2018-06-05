@@ -106,8 +106,6 @@ nnoremap <CR> :noh<CR><CR>
 
 " Fast trailing whitespace cleanup.
 nnoremap <leader>s :%s/\s\+$//<CR>
-" Rebalance splits.
-map <leader>r <C-W>=<C-W>j<C-W>j<C-W>100-<C-W>k
 
 " vimnav for windows
 map <C-j> <C-W>j
@@ -141,24 +139,20 @@ autocmd FileType java set textwidth=100 colorcolumn=100
 set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'bling/vim-airline'
-Bundle 'derekwyatt/vim-scala'
-Bundle 'fholgado/minibufexpl.vim'
+Bundle 'bling/vim-bufferline'
 Bundle 'fs111/pydoc.vim'
 Bundle 'gmarik/vundle'
+Bundle 'majutsushi/tagbar'
 Bundle 'mhinz/vim-signify'
+Bundle 'scrooloose/nerdtree'
 Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
 Bundle 'vim-scripts/file-line'
 Bundle 'vim-scripts/taglist.vim'
-Bundle 'vim-scripts/TaskList.vim'
-Bundle 'vim-scripts/tComment'
 
 " airline
-let g:airline_powerline_fonts=1
-
-" miniBufExplorer
-let g:miniBufExplModSelTarget = 1
+"let g:airline_powerline_fonts=1
 
 " signify
 hi SignifySignAdd cterm=bold ctermfg=green ctermbg=black
@@ -189,6 +183,3 @@ autocmd BufRead,BufNewFile *.go set filetype=go
 
 " Scala
 autocmd BufRead,BufNewFile *.scala set filetype=scala colorcolumn=120
-
-" What's a vimrc without a vimline?
-"vim:foldmethod=marker autoindent expandtab shiftwidth=2 filetype=vim

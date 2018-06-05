@@ -78,7 +78,7 @@ umask 022
 HISTFILE=~/.zhistfile
 HISTSIZE=5000
 SAVEHIST=1000000
-WORDCHARS="${WORDCHARS:s#/#}" # consider / as a word separator
+WORDCHARS="${WORDCHARS:s#/=#}" # consider / as a word separator
 
 # default programs
 export EDITOR=vim
