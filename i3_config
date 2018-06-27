@@ -27,6 +27,8 @@ bindsym $mod+w focus output left
 bindsym $mod+e focus output right
 bindsym $mod+shift+w move output left
 bindsym $mod+shift+e move output right
+bindsym $mod+Mod1+shift+w move workspace to output left
+bindsym $mod+Mod1+shift+e move workspace to output right
 
 # enter fullscreen mode for the focused container
 bindsym $mod+f fullscreen toggle
