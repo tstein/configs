@@ -78,6 +78,7 @@ umask 022
 HISTFILE=~/.zhistfile
 HISTSIZE=5000
 SAVEHIST=1000000
+WORDCHARS="${WORDCHARS:s#/#}"
 
 # default programs
 export EDITOR=vim
