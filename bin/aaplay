@@ -1,4 +1,0 @@
-#!/bin/sh
-
-mplayer -vo aa:driver=X11 -monitorpixelaspect 0.5 "$@"
-
