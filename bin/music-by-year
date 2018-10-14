@@ -1,0 +1,31 @@
+#!/usr/bin/python
+""" Find out when you were aged 14-24! """
+
+import matplotlib
+import eyed3
+from os import listdir, path, stat
+
+def lsr(p):
+    for i in listdir(p):
+        i_path = path.join(p, i)
+        if path.isdir(i_path):
+            for j in lsr(i_path): yield j
+        else:
+            yield i_path
+
+from collections import defaultdict
+by_year = defaultdict(int)
+for f in lsr(path.expanduser("~/music")):
+    try:
+        f_e = eyed3.load(f)
+        by_year[f_e.tag.recording_date.year] += 1
+    except:
+        pass
+
+
+import matplotlib.pyplot as plt
+plt.plot(range(len(by_year)), by_year.values(), 'r--', linewidth=1)
+plt.xticks(range(len(by_year)), map(lambda x: "%02d" % (x % 100), by_year.keys()))
+plt.xlabel("year % 100")
+plt.ylabel("number of songs")
+plt.show()

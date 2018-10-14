@@ -1,0 +1,77 @@
+#!/usr/bin/python3
+""" Munin plugin to help you blame your cable company, assuming you have an
+Arris SURFboard SB6190. """
+
+import sys
+
+import bs4
+import requests
+
+def get_channels():
+    downstream, upstream = [], []
+
+    r = requests.get("http://192.168.100.1/cgi-bin/status")
+    soup = bs4.BeautifulSoup(r.text, 'lxml')
+
+    tables = soup.find_all('table')
+    downstream_table = tables[2]
+    upstream_table = tables[3]
+
+    downstream_rows = downstream_table.find_all('tr')[2:]
+    for d_r in downstream_rows:
+        d_r_tds = d_r.find_all('td')
+        channel = int(d_r_tds[3].text)
+        snr_text = d_r_tds[-3].text
+        snr = snr_text.replace(" dB", "")
+        downstream.append((channel, snr))
+
+    upstream_rows = upstream_table.find_all('tr')[2:]
+    for u_r in upstream_rows:
+        u_r_tds = u_r.find_all('td')
+        channel = int(u_r_tds[3].text)
+        power_text = u_r_tds[-1].text
+        power = power_text.replace(" dBmV", "")
+        upstream.append((channel, power))
+
+    return downstream, upstream
+
+def main():
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "autoconf":
+            print("yes")
+        if sys.argv[1] == "config":
+            print("multigraph surfboard6190_downstream")
+            print("graph_title Surfboard 6190 downstream")
+            print("graph_category other")
+            print("graph_title SnR per channel")
+            print("graph_vlabel SnR (dB)")
+            print("graph_args --lower-limit 0")
+            for i in range(1, 29):
+                print("down{}.label {}".format(i, i))
+                print("down{}.warning 40:50".format(i))
+
+            print("multigraph surfboard6190_upstream")
+            print("graph_title Surfboard 6190 upstream")
+            print("graph_category other")
+            print("graph_title power per channel")
+            print("graph_vlabel power (dBmV)")
+            print("graph_args --lower-limit 0")
+            for i in range(1, 5):
+                print("up{}.label {}".format(i, i))
+                print("up{}.warning 40:50".format(i))
+
+            sys.exit(0)
+
+    downstream, upstream = get_channels()
+
+    print("multigraph surfboard6190_downstream")
+    for chan, snr in downstream:
+        print("down{}.value {}".format(chan, snr))
+
+    print("multigraph surfboard6190_upstream")
+    for chan, power in upstream:
+        print("up{}.value {}".format(chan, power))
+
+
+if __name__ == "__main__":
+    main()
