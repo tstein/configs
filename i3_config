@@ -100,11 +100,9 @@ bindsym $mod+r mode "resize"
 # float all by default
 for_window [class="[.]*"] floating enable
 
+for_window [window_type="normal" class="Signal"] border none
+for_window [window_type="normal" class="Firefox"] border none
+for_window [window_type="normal" class="Kodi"] border none
+
 hide_edge_borders smart
 focus_follows_mouse no
-
-bar {
-    status_command i3status
-    position top
-    tray_output primary
-}
