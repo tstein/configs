@@ -56,6 +56,8 @@ function survey() {
         'Linux')
             if [[ `uname -o` == 'Android' ]]; then
                 os='Android'
+            else
+                os=`uname -sr`
             fi
             ;;
         'Darwin')
@@ -64,7 +66,7 @@ function survey() {
     esac
 
     case $os in
-        'Linux')
+        Linux*)
             if [[ -e /etc/os-release ]]; then
                 source /etc/os-release
                 release=$PRETTY_NAME
