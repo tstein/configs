@@ -28,7 +28,10 @@ function survey() {
             local cpu_lines=`grep 'model name' /proc/cpuinfo`
             local cpu_line=`print $cpu_lines | head -n 1`
             local cpu_count=`print $cpu_lines | wc -l`
+            # Clean up some Intel stuff.
             local cpu=`extract $cpu_line | sed 's/(R)//g' | sed 's/(TM)//g'`
+            # Clean up AMD APU info.
+            cpu=`print $cpu | sed 's/ with .* Graphics//g'`
 
             cpus="${cpu_count}x $cpu"
         else
