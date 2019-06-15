@@ -42,7 +42,6 @@ def main():
     # this'll usually work, except for Bahrain trips
     year = str(datetime.datetime.now().year)
     album_dir = os.path.join(PHOTOS_HOME, year, args.ALBUM)
-    originals_dir = os.path.join(album_dir, "originals")
 
     cli_runs = []
     for raw in raws:
@@ -63,15 +62,17 @@ def main():
                 cli_runs.append((jpg_path, xmp_path, processed_path))
 
     mkdir(album_dir)
-    mkdir(originals_dir)
     for run in cli_runs:
         print("processing {}".format(run[0]))
         cmd = "darktable-cli \"{}\" \"{}\" \"{}\"".format(*run)
+        print("  running {}".format(cmd))
         os.system(cmd)
 
-        # copy raw/jpg and xmp to originals/
-        shutil.copy(run[0], originals_dir)
-        shutil.copy(run[1], originals_dir)
+        if not run[0].endswith(".JPG"):
+            print("  copying {} to {}".format(run[0], album_dir))
+            shutil.copy(run[0], album_dir)
+        shutil.copy(run[1], album_dir)
+        print("  copying {} to {}".format(run[1], album_dir))
 
 
 if __name__ == "__main__":
