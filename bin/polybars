@@ -2,6 +2,7 @@
 
 set +eux
 
+killall polybar
 PRIMARY_MONITOR=`xrandr --query | grep "primary" | cut -d" " -f1 | head -n 1`
 for M in $(xrandr --query | grep " connected" | cut -d" " -f1); do
     if [[ $M == $PRIMARY_MONITOR ]]; then
