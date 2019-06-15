@@ -31,6 +31,7 @@ function survey() {
             # Clean up some Intel stuff.
             local cpu=`extract $cpu_line | sed 's/(R)//g' | sed 's/(TM)//g'`
             # Clean up AMD APU info.
+            cpu=`print $cpu | sed 's/ [A-Za-z]*-Core Processor//'`
             cpu=`print $cpu | sed 's/ with .* Graphics//g'`
 
             cpus="${cpu_count}x $cpu"
