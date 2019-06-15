@@ -11,6 +11,7 @@ bindsym $mod+Shift+c kill
 
 bindsym $mod+Return exec terminator
 bindsym $mod+d exec dmenu_run -b -fn "xft:Bold:size=22"
+bindsym $mod+Shift+l exec xscreensaver-command -lock
 
 # alternatively, you can use the cursor keys:
 bindsym $mod+Left focus left
@@ -65,7 +66,7 @@ bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
 # reload the configuration file
-bindsym $mod+Shift+l reload
+#bindsym $mod+Shift+l reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
@@ -103,6 +104,7 @@ for_window [class="[.]*"] floating enable
 for_window [window_type="normal" class="Signal"] border none
 for_window [window_type="normal" class="Firefox"] border none
 for_window [window_type="normal" class="Kodi"] border none
+for_window [window_type="normal" class="Darktable"] border none
 
 hide_edge_borders smart
 focus_follows_mouse no
