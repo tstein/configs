@@ -78,6 +78,13 @@ function survey() {
                 release='unknown'
             fi
 
+
+            # Raspberry Pi
+            local model_file="/proc/device-tree/model"
+            if [ -e $model_file ]; then
+                model=`cat $model_file`
+            fi
+
             cpus=`linux_cpus`
 
             local meminfo=`cat /proc/meminfo`
