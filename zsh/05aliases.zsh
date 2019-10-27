@@ -22,7 +22,7 @@ alias bc='bc -l'
 alias fortune='fortune -c'
 alias getpwdfs='getfstype .'
 alias grep='grep --color=auto'
-alias less="$PAGER"
+alias less='less -FRX'
 
 case `get_prop OS` in
   'Linux')
