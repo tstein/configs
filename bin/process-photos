@@ -64,7 +64,7 @@ def main():
     mkdir(album_dir)
     for run in cli_runs:
         print("processing {}".format(run[0]))
-        cmd = "darktable-cli \"{}\" \"{}\" \"{}\"".format(*run)
+        cmd = "darktable-cli \"{}\" \"{}\" \"{}\" --core -t 16".format(*run)
         print("  running {}".format(cmd))
         os.system(cmd)
 
