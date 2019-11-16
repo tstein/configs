@@ -2,6 +2,7 @@
 
 export PATH=~/.local/bin:$PATH
 
+export GTK_THEME=Adwaita:dark
 # demand hidpi
 export GDK_SCALE=2
 export QT_SCALE_FACTOR=2
