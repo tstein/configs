@@ -10,6 +10,9 @@ ln -s "$CONFIGS/vimrc" .vimrc
 ln -s "$CONFIGS/zsh" .zsh
 ln -s "$CONFIGS/zshrc" .zshrc
 
+# vim expects this to exist
+mkdir -p ~/.local/tmp
+
 cd $CONFIGS
 git submodule init
 git submodule update
