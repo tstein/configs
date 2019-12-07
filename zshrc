@@ -84,9 +84,6 @@ WORDCHARS="${WORDCHARS:s#/#}"
 export EDITOR=vim
 export PAGER="less -FRX"
 
-# How wide the RPROMPT battery meter should be - for automatic width, set this to 0.
-BATT_METER_WIDTH=0
-
 # .zlocal is a file of my creation - contains site-specific anything so I don't have to modify this
 # file for every machine. If needed, default values go first so that the source call overwrites
 # them.
@@ -126,18 +123,7 @@ zle -N tetris
 ####################################### }}}
 
 # Interface functions. {{{
-# cornmeter is a visual battery meter meant for a prompt. {{{
-# This function spits out the meter as it should appear at call time.
-drawCornMeter() {
-  for var in WIDTH STEP LEVEL CHARGING SPPOWER CHARGE CAPACITY CHRGCHR; do
-    eval local $var=""
-  done
-  CHRGCHR='C'
-  if [ `get_prop unicode` ]; then
-    CHRGCHR='⚡'
-  fi
-  WIDTH=$1
-  STEP=$((100.0 / $WIDTH))
+battery_cornmeter() {
   case `get_prop OS` in
     'Linux')
       # acpi -b => "Battery 0: 22%"
@@ -152,37 +138,24 @@ drawCornMeter() {
       ;;
   esac
 
-  print -n $PR_WHITE"["
-  if (($LEVEL <= 30.0)); then
-    print -n $PR_RED
-  else
-    print -n $PR_YELLOW
-  fi
-  if (($LEVEL >= 95.0)); then
-    print -n $PR_WHITE
-  fi
-  for (( i = 0; i < $WIDTH; i++ ))
-  do
-    if (($(($i + 1)) == $WIDTH)); then
-      if [ "$CHARGING" ]; then
-        print -n $CHRGCHR
-        continue
-      fi
-    fi
-
-    if (($LEVEL >= 0.0)); then
-      if (($LEVEL <= $(($STEP / 2.0)))); then
-        print -n "\-"
-      else
-        print -n "="
-      fi
+  if [ "$CHARGING" ]; then
+    if [ `get_prop unicode` ]; then
+      CHRGCHR='⚡'
     else
-      print -n " "
+      CHRGCHR='C'
     fi
-    LEVEL=$(($LEVEL - $STEP))
-  done
-  print -n $PR_WHITE"]"
-} # }}}
+  else
+    CHRHCHR=''
+  fi
+
+  cornmeter $LEVEL 100 $CHRGCHR 95 30
+}
+
+quota_cornmeter() {
+  local QUOTA_LEVEL=`cat "$QUOTA_FILE"`
+  local QUOTA_LEVEL_TEXT="`printf %.0f $QUOTA_LEVEL` GB"
+  cornmeter $QUOTA_LEVEL $QUOTA_CAP $QUOTA_LEVEL_TEXT 50 20
+}
 
 # If we're in a repo, print some info. Intended for use in a prompt. {{{
 # Updates the variable that contains VCS info. It's a bit slow to do this in
@@ -232,21 +205,21 @@ hg_status() {
 
 # When on a laptop, enable cornmeter.
 update_rprompt() {
-  local BOLD_ON BOLD_OFF DIR GIT HG COND_RETVAL CORNMETER
+  local BOLD_ON BOLD_OFF DIR GIT HG COND_RETVAL BATTERY_METER QUOTA_METER
   BOLD_ON='%B'
   DIR=`print -P '%~'`
   COND_RETVAL='%(?..{%?})'
 
   if [ `get_prop have_battery` ]; then
-    if (( $BATT_METER_WIDTH > 0 )); then
-      CORNMETER=`drawCornMeter $BATT_METER_WIDTH`
-    else
-      CORNMETER=`drawCornMeter $(($COLUMNS / 10))`
-    fi
+    BATTERY_METER=`battery_cornmeter`
+  fi
+  if [[ $QUOTA_FILE && $QUOTA_CAP ]]; then
+    QUOTA_METER=`quota_cornmeter`
   fi
 
   BOLD_OFF='%b'
-  RPROMPT="$PR_CYAN$BOLD_ON"["$DIR$_RPROMPT_VCS"]"$COND_RETVAL$CORNMETER$BOLD_OFF"
+  RPROMPT="$PR_CYAN$BOLD_ON"["$DIR$_RPROMPT_VCS"]"$COND_RETVAL"
+  RPROMPT+="$BATTERY_METER$QUOTA_METER$BOLD_OFF"
 }
 
 # For terms known to support it, print some info to the terminal title.
