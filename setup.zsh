@@ -14,8 +14,11 @@ else
     print "not certain you're ted, skipping gitconfig"
 fi
 
+mkdir -p ~/.local/bin
 # vim expects this to exist
 mkdir -p ~/.local/tmp
+
+ln -s "$CONFIGS/bin/mtmux" ~/.local/bin/
 
 cd $CONFIGS
 git submodule init
