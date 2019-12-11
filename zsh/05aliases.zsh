@@ -3,6 +3,8 @@
 # Didn't-deserve-a-functions:
 alias chomp="sed -e 's/^[[:space:]]*//' | sed -e 's/[[:space:]]*$//'"
 alias getip='curl ifconfig.me'
+alias mirror-recursive='wget --mirror --adjust-extension --convert-links --page-requisites --span-hosts \
+    --user-agent mozilla'
 alias sudo='sudo '  # Enables alias, but not function, expansion on the next word.
 
 # Keystroke-savers:
