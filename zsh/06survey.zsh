@@ -82,7 +82,7 @@ function survey() {
             # Raspberry Pi
             local model_file="/proc/device-tree/model"
             if [ -e $model_file ]; then
-                model=`cat $model_file`
+                model=`cat $model_file | tr -d '\0'`
             fi
 
             cpus=`linux_cpus`
