@@ -148,7 +148,7 @@ battery_cornmeter() {
     CHRHCHR=''
   fi
 
-  cornmeter $LEVEL 100 $CHRGCHR 95 30
+  cornmeter $LEVEL 100 "$CHRGCHR" 95 30
 }
 
 quota_cornmeter() {
