@@ -14,8 +14,9 @@ function survey() {
     function linux_cpus() {
         local cpus
         if grep -q 'Hardware' /proc/cpuinfo; then
-            # Qualcomm phone/table SoC
-            # cpuinfo will sometimes have both 'Hardware' and 'model name's.
+            # Qualcomm phone/tablet SoC
+            # cpuinfo will sometimes have both 'Hardware' and 'model name's, so
+            # check this first.
             local hardware_line=`grep '^Hardware' /proc/cpuinfo`
             local hardware=`extract $hardware_line`
             hardware=`print $hardware | sed 's/ Technologies, Inc//'`
@@ -35,6 +36,11 @@ function survey() {
             cpu=`print $cpu | sed 's/ with .* Graphics//g'`
 
             cpus="${cpu_count}x $cpu"
+        elif grep -q 'system type' /proc/cpuinfo; then
+            # Qualcomm netdev SoC
+            system_line=`grep 'system type' /proc/cpuinfo`
+            system=`extract $system_line | sed -r 's/(ver|rev)\s+\d+//g'`
+            cpus=$system
         else
             cpus='unknown'
         fi
@@ -83,6 +89,9 @@ function survey() {
             local model_file="/proc/device-tree/model"
             if [ -e $model_file ]; then
                 model=`cat $model_file | tr -d '\0'`
+            elif `grep -q 'model' /proc/cpuinfo`; then
+                machine_line=`grep 'machine' /proc/cpuinfo`
+                model=`extract $machine_line`
             fi
 
             cpus=`linux_cpus`
