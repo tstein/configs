@@ -2,6 +2,7 @@
 
 # Didn't-deserve-a-functions:
 alias chomp="sed -e 's/^[[:space:]]*//' | sed -e 's/[[:space:]]*$//'"
+alias dirty-bytes="grep Dirty /proc/meminfo | cut -d: -f2 | sed 's/B/Byte/' | qalc -t | head -n 3 | tail -n 1"
 alias getip='curl ifconfig.me'
 alias mirror-recursive='wget --mirror --adjust-extension --convert-links --page-requisites --span-hosts \
     --user-agent mozilla'
@@ -21,6 +22,7 @@ fi
 
 # Option-setters:
 alias bc='bc -l'
+alias dd='dd status=progress'
 alias fortune='fortune -c'
 alias getpwdfs='getfstype .'
 alias grep='grep --color=auto'
