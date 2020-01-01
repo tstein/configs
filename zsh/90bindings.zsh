@@ -35,7 +35,7 @@ case `get_prop OS` in
         bindkey '^[Od'      backward-word
         bindkey '^[Oc'      forward-word
         ;;
-      'screen'*)
+      'screen'*|'tmux'*)
         bindkey '^[[3~'     delete-char
         bindkey '^[[1~'     beginning-of-line
         bindkey '^[[4~'     end-of-line
