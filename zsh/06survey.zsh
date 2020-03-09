@@ -35,6 +35,8 @@ function survey() {
             # Clean up AMD APU info.
             cpu=`print $cpu | sed 's/ [A-Za-z]*-Core Processor//'`
             cpu=`print $cpu | sed 's/ with .* Graphics//g'`
+            # Clean up spacing.
+            cpu=`print $cpu | sed 's/\s\+/ /g'`
 
             cpus="${cpu_count}x $cpu"
         elif grep -q 'system type' /proc/cpuinfo; then
