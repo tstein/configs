@@ -154,6 +154,11 @@ battery_cornmeter() {
 quota_cornmeter() {
   local QUOTA_LEVEL=`cat "$QUOTA_FILE"`
   local QUOTA_LEVEL_TEXT="`printf %.0f $QUOTA_LEVEL` GB"
+  if [[ $QUOTA_LEVEL -ge 9999 ]]; then
+    # basically infinity
+    QUOTA_LEVEL=$((4 * $QUOTA_CAP))
+    QUOTA_LEVEL_TEXT="∞ GB"
+  fi
   cornmeter $QUOTA_LEVEL $QUOTA_CAP $QUOTA_LEVEL_TEXT 50 20
 }
 
