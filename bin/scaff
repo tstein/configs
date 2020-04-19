@@ -1,0 +1,43 @@
+#!/bin/zsh
+# Create a docker container with a given directory mounted for experimentation.
+
+set -eu
+
+if [[ $#argv < 1 ]]; then
+    print "usage: scaff WORKDIR"
+    exit 1
+fi
+
+if ! docker --version >/dev/null 2>/dev/null; then
+    print "docker not installed"
+    exit 1
+fi
+
+if ! systemctl is-active docker >/dev/null 2>/dev/null; then
+    print "docker not running"
+    exit 1
+fi
+
+WORKDIR=$(readlink -m $1)
+DOCKERDIR=$(mktemp -d)
+pushd $DOCKERDIR
+cat >Dockerfile <<EOF
+FROM fedora:latest
+RUN dnf -y install zsh git tmux htop tree vim ctags util-linux-user
+RUN chsh -s /bin/zsh
+WORKDIR /root
+RUN git clone https://github.com/tstein/configs
+RUN echo 'PR_COLOR=\$PR_CYAN' >> .zlocal
+RUN echo 'PR_CHAR="📦"' >> .zlocal
+RUN cd configs; ./setup.zsh
+VOLUME /work
+WORKDIR /work
+EOF
+
+docker build -t scaff .
+popd
+rm -rf $DOCKERDIR
+
+NAME=scaff_$(date "+%Y-%m-%d_%H.%M.%S")
+docker run --name $NAME -v $WORKDIR:/work -it scaff /bin/zsh
+docker rm $NAME
