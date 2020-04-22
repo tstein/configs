@@ -33,7 +33,7 @@ function survey() {
             local cpu=`extract $cpu_line | sed 's/(R)//g' | sed 's/(TM)//g'`
             cpu=`print $cpu | sed 's/\s\?CPU\s\?/ /'`
             # Clean up AMD APU info.
-            cpu=`print $cpu | sed 's/ [A-Za-z]*-Core Processor//'`
+            cpu=`print $cpu | sed 's/ [A-Za-z0-9]*-Core Processor//'`
             cpu=`print $cpu | sed 's/ with .* Graphics//g'`
             # Clean up spacing.
             cpu=`print $cpu | sed 's/\s\+/ /g'`
