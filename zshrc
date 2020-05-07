@@ -172,20 +172,27 @@ update_rprompt_vcs_status() {
 }
 
 git_status() {
-  if [ ! -d ./.git ]; then; return; fi
+  # This blocks the next prompt. If it takes more than 25 ms to perform the
+  # single IO to tell whether we're in a git repo, forget it.
+  if [ `get_prop have_timeout` ]; then
+    if ! timeout .025s stat .git >/dev/null 2>/dev/null; then
+      return
+    fi
+  else
+    if ! stat .git >/dev/null 2>/dev/null; then
+      return
+    fi
+  fi
 
   local GITBRANCH=''
   local GITTXT='git'
   if [ `get_prop unicode` ]; then
     GITTXT='±'
   fi
-  git status &> /dev/null
-  if (( $? != 128 )); then
-    GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
-    print -n " $GITTXT:${GITBRANCH#refs/heads/}"
-    if [ ! "`git status | grep \"nothing to commit\"`" ]; then
-      print -n "(*)"
-    fi
+  GITBRANCH=$(git symbolic-ref HEAD 2>/dev/null)
+  print -n " $GITTXT:${GITBRANCH#refs/heads/}"
+  if [ ! "`git status | grep \"nothing to commit\"`" ]; then
+    print -n "(*)"
   fi
 }
 # }}}
