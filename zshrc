@@ -163,20 +163,17 @@ quota_cornmeter() {
 }
 
 # If we're in a repo, print some info. Intended for use in a prompt. {{{
-# Updates the variable that contains VCS info. It's a bit slow to do this in
-# precmd, so this goes in chpwd_functions.
+# Updates the variable that contains VCS info.
 update_rprompt_vcs_status() {
   if [ `get_prop have_git` ]; then
     GIT=`git_status`
   fi
-
-  if [ `get_prop have_hg` ]; then
-    HG=`hg_status`
-  fi
-  _RPROMPT_VCS="$GIT$HG"
+  _RPROMPT_VCS="$GIT"
 }
 
 git_status() {
+  if [ ! -d ./.git ]; then; return; fi
+
   local GITBRANCH=''
   local GITTXT='git'
   if [ `get_prop unicode` ]; then
@@ -191,26 +188,11 @@ git_status() {
     fi
   fi
 }
-
-hg_status() {
-  local HGTXT='hg'
-  if [ `get_prop unicode` ]; then
-    HGTXT='☿'
-  fi
-  hg status &> /dev/null
-  if (( $? != 255 )); then
-    print -n " $HGTXT:"
-    print -n `hg summary | perl -ne 'if (/^branch: (.*)$/) { print $1; }'`
-    if [ ! "`hg summary | grep clean`" ]; then
-      print -n "(*)"
-    fi
-  fi
-}
 # }}}
 
 # When on a laptop, enable cornmeter.
 update_rprompt() {
-  local BOLD_ON BOLD_OFF DIR GIT HG COND_RETVAL BATTERY_METER QUOTA_METER
+  local BOLD_ON BOLD_OFF DIR GIT COND_RETVAL BATTERY_METER QUOTA_METER
   BOLD_ON='%B'
   DIR=`print -P '%~'`
   COND_RETVAL='%(?..{%?})'

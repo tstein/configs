@@ -27,7 +27,7 @@ case `uname -s` in
 esac
 
 # Installed programs?
-for i in acpi keychain git hg; do
+for i in acpi keychain git; do
   if [ `whence $i` ]; then
     set_prop "have_$i" yes
   fi
