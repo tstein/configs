@@ -23,7 +23,7 @@ DOCKERDIR=$(mktemp -d)
 pushd $DOCKERDIR
 cat >Dockerfile <<EOF
 FROM fedora:latest
-RUN dnf -y install zsh git tmux htop tree vim ctags util-linux-user
+RUN dnf -y install zsh git tmux htop tree vim ctags util-linux-user python3-pip
 RUN chsh -s /bin/zsh
 WORKDIR /root
 RUN git clone https://github.com/tstein/configs
