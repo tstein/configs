@@ -7,6 +7,7 @@ alias getip='curl ifconfig.me'
 alias mirror-recursive='wget --mirror --adjust-extension --convert-links --page-requisites --span-hosts \
     --user-agent mozilla'
 alias sudo='sudo '  # Enables alias, but not function, expansion on the next word.
+alias watchfreq="watch 'cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq | sort -rn'"
 
 # Keystroke-savers:
 alias -- -='cd -'
