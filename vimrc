@@ -22,8 +22,6 @@ set bg=dark
 set shortmess+=aO
 set visualbell t_vb=
 set ttimeoutlen=0
-set list
-set listchars=tab:»·,trail:·
 set splitright
 set splitbelow
 
@@ -36,9 +34,9 @@ set autoindent
 set smartindent
 
 set expandtab
-set shiftwidth=4
-set tabstop=4
-set softtabstop=4
+set shiftwidth=2
+set tabstop=2
+set softtabstop=2
 
 set tw=80
 set wrap
@@ -129,6 +127,7 @@ if has("autocmd") && exists("+omnifunc")
        \    endif
 endif
 
+map <leader>cf :%!clang-format<CR>
 autocmd FileType python set textwidth=79
 autocmd FileType java set textwidth=100 colorcolumn=100
 
@@ -140,13 +139,13 @@ set rtp+=~/.vim/bundle/vundle
 call vundle#rc()
 Bundle 'bling/vim-airline'
 Bundle 'bling/vim-bufferline'
+Bundle 'dense-analysis/ale'
 Bundle 'fs111/pydoc.vim'
 Bundle 'gmarik/vundle'
 Bundle 'majutsushi/tagbar'
 Bundle 'mhinz/vim-signify'
 Bundle 'qpkorr/vim-renamer'
 Bundle 'scrooloose/nerdtree'
-Bundle 'scrooloose/syntastic'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-surround'
 Bundle 'vim-scripts/file-line'
