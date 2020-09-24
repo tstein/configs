@@ -4,6 +4,7 @@
 set nocompatible
 
 " the outside world
+set autoread
 set encoding=utf8
 
 " affordances
@@ -127,8 +128,12 @@ if has("autocmd") && exists("+omnifunc")
        \    endif
 endif
 
-map <leader>cf :%!clang-format<CR>
+" C/C++
+nmap <leader>cf :%!clang-format<CR>
+" python
+nmap <leader>pf :!yapf -i %<CR><CR>
 autocmd FileType python set textwidth=79
+" java
 autocmd FileType java set textwidth=100 colorcolumn=100
 
 
