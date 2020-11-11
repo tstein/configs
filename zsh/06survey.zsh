@@ -19,11 +19,7 @@ function survey() {
             # check this first.
             local hardware_line=`grep '^Hardware' /proc/cpuinfo`
             local hardware=`extract $hardware_line`
-            hardware=`print $hardware | sed 's/ Technologies, Inc//'`
-            local arch=`uname -m`
-            local processor_lines=`grep '^processor' /proc/cpuinfo`
-            local cpu_count=`print $processor_lines | wc -l`
-            cpus="$hardware with ${cpu_count}x $arch"
+            cpus=`print $hardware | sed 's/ Technologies, Inc//'`
         elif grep -q 'model name' /proc/cpuinfo; then
             # Intel, AMD, Broadcom
             local cpu_lines=`grep 'model name' /proc/cpuinfo`
@@ -48,14 +44,29 @@ function survey() {
             cpus='unknown'
         fi
 
-        local cpu0_freq='/sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq'
-        if [[ -r $cpu0_freq ]]; then
-            local cpu_ghz_raw=$((`cat $cpu0_freq` / 1000000.0))
-            local cpu_ghz=`printf '%.2f' $cpu_ghz_raw`
-            if print $cpus | grep -q ' @ .*Hz'; then
-                cpus=`print $cpus | sed "s/ @.*//"`
-            fi
-            cpus="$cpus @ $cpu_ghz GHz"
+        if print $cpus | grep -q ' @ .*Hz'; then
+            cpus=`print $cpus | sed "s/ @.*//"`
+        fi
+
+        # If we frequency info at all, use it. If we have heterogenous CPUs,
+        # capture that, too.
+        if [ -e /sys/devices/system/cpu/cpu0/cpufreq/cpuinfo_max_freq ]; then
+          local freqs=`sort -rn /sys/devices/system/cpu/cpu*/cpufreq/cpuinfo_max_freq`
+          local uniq_freqs=`print $freqs | uniq`
+
+          function fmt_freq() {
+              printf '%.2f' $(($1 / 1000000.0))
+          }
+
+          if [ $(print $uniq_freqs | wc -l) -gt 1 ]; then
+              for freq in `print $uniq_freqs`; do
+                  local freq_count=`print $freqs | grep $freq | wc -l`
+                  cpus="$cpus, ${freq_count} @ `fmt_freq $freq` GHz"
+              done
+          else
+              # uniq_freqs is the sole frequency
+              cpus="$cpus @ `fmt_freq $uniq_freqs` GHz"
+          fi
         fi
 
         print $cpus
