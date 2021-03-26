@@ -6,6 +6,7 @@ set nocompatible
 " the outside world
 set autoread
 set encoding=utf8
+set modeline
 
 " affordances
 syntax on
