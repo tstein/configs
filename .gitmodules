@@ -1,3 +1,48 @@
 [submodule "vim/bundle/vundle"]
 	path = vim/bundle/vundle
 	url = https://github.com/gmarik/vundle.git
+[submodule "nvim/plugins/start/ale"]
+	path = nvim/plugins/start/ale
+	url = https://github.com/dense-analysis/ale.git
+[submodule "nvim/plugins/start/nvim-bufferline.lua"]
+	path = nvim/plugins/start/nvim-bufferline.lua
+	url = https://github.com/akinsho/nvim-bufferline.lua.git
+[submodule "nvim/plugins/start/vim-airline"]
+	path = nvim/plugins/start/vim-airline
+	url = https://github.com/vim-airline/vim-airline.git
+[submodule "nvim/plugins/start/pydoc.vim"]
+	path = nvim/plugins/start/pydoc.vim
+	url = https://github.com/fs111/pydoc.vim.git
+[submodule "nvim/plugins/start/file-line"]
+	path = nvim/plugins/start/file-line
+	url = https://github.com/bogado/file-line.git
+[submodule "nvim/plugins/start/jedi-vim"]
+	path = nvim/plugins/start/jedi-vim
+	url = https://github.com/davidhalter/jedi-vim.git
+[submodule "nvim/plugins/start/deoplete-clang"]
+	path = nvim/plugins/start/deoplete-clang
+	url = https://github.com/deoplete-plugins/deoplete-clang.git
+[submodule "nvim/plugins/start/deoplete-jedi"]
+	path = nvim/plugins/start/deoplete-jedi
+	url = https://github.com/deoplete-plugins/deoplete-jedi.git
+[submodule "nvim/plugins/start/vim-signify"]
+	path = nvim/plugins/start/vim-signify
+	url = https://github.com/mhinz/vim-signify.git
+[submodule "nvim/plugins/start/completion-nvim"]
+	path = nvim/plugins/start/completion-nvim
+	url = https://github.com/nvim-lua/completion-nvim.git
+[submodule "nvim/plugins/start/tagbar"]
+	path = nvim/plugins/start/tagbar
+	url = https://github.com/preservim/tagbar.git
+[submodule "nvim/plugins/start/vim-renamer"]
+	path = nvim/plugins/start/vim-renamer
+	url = https://github.com/qpkorr/vim-renamer.git
+[submodule "nvim/plugins/start/deoplete.nvim"]
+	path = nvim/plugins/start/deoplete.nvim
+	url = https://github.com/Shougo/deoplete.nvim.git
+[submodule "nvim/plugins/start/vim-fugitive"]
+	path = nvim/plugins/start/vim-fugitive
+	url = https://github.com/tpope/vim-fugitive.git
+[submodule "nvim/plugins/start/vim-surround"]
+	path = nvim/plugins/start/vim-surround
+	url = https://github.com/tpope/vim-surround.git

@@ -81,7 +81,13 @@ SAVEHIST=1000000
 WORDCHARS="${WORDCHARS:s#/#}"
 
 # default programs
-export EDITOR=vim
+if [ `get_prop have_nvim` ]; then
+  export EDITOR=nvim
+  # TODO: Remove after relearning a 15-year habit.
+  alias vim='echo "you mean nvim, right?"; sleep 3; nvim'
+else
+  export EDITOR=vim
+fi
 export PAGER="less -FRX"
 
 # .zlocal is a file of my creation - contains site-specific anything so I don't have to modify this

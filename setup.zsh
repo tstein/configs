@@ -11,18 +11,21 @@ ln -s "$CONFIGS/zshrc" .zshrc
 if [[ "$USER" == "ted" ]]; then
     ln -s "$CONFIGS/gitconfig" .gitconfig
 else
-    print "not certain you're ted, skipping gitconfig"
+    print "you may not be ted. skipping gitconfig."
 fi
 
 mkdir -p ~/.local/bin
 # vim expects this to exist
 mkdir -p ~/.local/tmp
 
+mkdir -p ~/.config/nvim ~/.local/share/nvim/site/pack
+ln -s "$CONFIGS/nvim/init.vim" ~/.config/nvim/init.vim
+ln -s "$CONFIGS/nvim/plugins" ~/.local/share/nvim/site/pack/plugins
+
 ln -s "$CONFIGS/bin/mtmux" ~/.local/bin/
 
 cd $CONFIGS
-git submodule init
-git submodule update
+git submodule update --init --recursive
 vim +BundleInstall +qa
 
 exec zsh
