@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """ Copy the GPS exif data from one file to another. """
 
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 """ aura watches the status of xscreensaver and runs arbitrary programs from
 ~/.aura/{lock,unlock} when its state changes. """
 
