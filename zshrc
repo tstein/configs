@@ -32,6 +32,10 @@ setopt ksh_arrays
 
 # ZLE
 setopt nobeep zle
+
+# emergency file ops
+zmodload zsh/files zsh/stat
+zmodload zsh/sched
 ####################################### }}}
 
 # Load the modular parts. {{{
