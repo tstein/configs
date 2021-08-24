@@ -16,7 +16,7 @@ alias dict='dict -d wn'
 alias no='yes n'
 alias pdfcat='gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=out.pdf'
 alias rezsh='source ~/.zshrc'
-alias vimdir='vim +Renamer '
+alias vimdir='nvim +Renamer '
 if [[ `get_prop OS` == 'Linux' ]]; then
     alias open='xdg-open'
 fi
