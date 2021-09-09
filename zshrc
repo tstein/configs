@@ -34,7 +34,11 @@ setopt ksh_arrays
 setopt nobeep zle
 
 # emergency file ops
-zmodload zsh/files zsh/stat
+# Per zshmodules(1), this form only loads prefixed builtins, which avoids
+# shadowing the more capable external versions.
+zmodload -m -F zsh/files b:zf_\*
+zmodload zsh/stat
+
 zmodload zsh/sched
 ####################################### }}}
 
