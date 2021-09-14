@@ -10,7 +10,7 @@ floating_modifier $mod
 bindsym $mod+Shift+c kill
 
 bindsym $mod+Return exec terminator
-bindsym $mod+d exec dmenu_run -b -fn "xft:Bold:size=22"
+bindsym $mod+d exec bemenu-run --fn "pango:Deja Vu Sans Mono 24"
 bindsym $mod+Shift+l exec xscreensaver-command -lock
 
 # alternatively, you can use the cursor keys:
@@ -71,6 +71,8 @@ bindsym $mod+Shift+0 move container to workspace 10
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+q exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -b 'Yes, exit i3' 'i3-msg exit'"
+# reset monitors
+bindsym $mod+Shift+m exec monitors
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
@@ -98,6 +100,13 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
+# playback controls
+bindsym XF86AudioPrev exec playerctl previous
+bindsym XF86AudioNext exec playerctl next
+# no need for this to be stateful
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioPause exec playerctl play-pause
+
 # float all by default
 for_window [class="[.]*"] floating enable
 
@@ -105,6 +114,7 @@ for_window [window_type="normal" class="Signal"] border none
 for_window [window_type="normal" class="Firefox"] border none
 for_window [window_type="normal" class="Kodi"] border none
 for_window [window_type="normal" class="Darktable"] border none
+for_window [window_type="normal" class="Alacritty"] border none
 
 hide_edge_borders smart
 focus_follows_mouse no
