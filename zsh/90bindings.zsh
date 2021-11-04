@@ -4,6 +4,7 @@
 bindkey -e
 bindkey TAB expand-or-complete-prefix
 bindkey '^[[Z' reverse-menu-complete    # shift-tab
+bindkey '^R' history-incremental-pattern-search-backward  # understands globs
 bindkey '^[[20~' tetris     # Press F9 to play.
 
 case `get_prop OS` in
@@ -78,8 +79,6 @@ case `get_prop OS` in
     abbreviations+=(
     'df'                'df -hT -x tmpfs -x devtmpfs --total'
     'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command'
-    'yum remove'        'yum remove --remove-leaves'
-    'sudo yum remove'   'sudo yum remove --remove-leaves'
     )
     ;;
   'Ossix')
