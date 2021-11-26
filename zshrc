@@ -141,7 +141,7 @@ battery_cornmeter() {
   case `get_prop OS` in
     'Linux')
       # acpi -b => "Battery 0: 22%"
-      LEVEL=`acpi -b | cut -d ' ' -f 3 | tr -d '%'`
+      LEVEL=`acpi -b | grep -oP '\d+%' | tr -d '%'`
       LEVEL=$(($LEVEL * 1.0))
       CHARGING=`acpi -a | grep on-line`
       ;;
