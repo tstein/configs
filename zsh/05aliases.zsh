@@ -20,6 +20,8 @@ alias vimdir='nvim +Renamer '
 if [[ `get_prop OS` == 'Linux' ]]; then
     alias open='xdg-open'
 fi
+# not an alias, but spiritually appropriate for this file
+export FZF_DEFAULT_OPTS='--exact --multi --cycle --border --height=50% --reverse'
 
 # Option-setters:
 alias bc='bc -l'
