@@ -37,7 +37,9 @@ setopt nobeep zle
 # Per zshmodules(1), this form only loads prefixed builtins, which avoids
 # shadowing the more capable external versions.
 zmodload -m -F zsh/files b:zf_\*
-zmodload zsh/stat
+# This only loads the zstat builtin and does not shadow the more capable
+# external stat.
+zmodload -F zsh/stat b:zstat
 
 zmodload zsh/sched
 ####################################### }}}

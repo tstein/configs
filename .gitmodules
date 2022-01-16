@@ -46,3 +46,24 @@
 [submodule "nvim/plugins/start/vim-surround"]
 	path = nvim/plugins/start/vim-surround
 	url = https://github.com/tpope/vim-surround.git
+[submodule "nvim/plugins/start/minimap.vim"]
+	path = nvim/plugins/start/minimap.vim
+	url = https://github.com/wfxr/minimap.vim.git
+[submodule "nvim/plugins/start/nvim-lspconfig"]
+	path = nvim/plugins/start/nvim-lspconfig
+	url = https://github.com/neovim/nvim-lspconfig
+[submodule "nvim/plugins/start/nvim-cmp"]
+	path = nvim/plugins/start/nvim-cmp
+	url = https://github.com/hrsh7th/nvim-cmp
+[submodule "nvim/plugins/start/cmp-nvim-lsp"]
+	path = nvim/plugins/start/cmp-nvim-lsp
+	url = https://github.com/hrsh7th/cmp-nvim-lsp
+[submodule "nvim/plugins/start/cmp-path"]
+	path = nvim/plugins/start/cmp-path
+	url = https://github.com/hrsh7th/cmp-path
+[submodule "nvim/plugins/start/cmp-buffer"]
+	path = nvim/plugins/start/cmp-buffer
+	url = https://github.com/hrsh7th/cmp-buffer
+[submodule "nvim/plugins/start/rust-tools.nvim"]
+	path = nvim/plugins/start/rust-tools.nvim
+	url = https://github.com/simrat39/rust-tools.nvim
