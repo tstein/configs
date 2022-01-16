@@ -13,6 +13,8 @@ alias watchfreq="watch 'cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_fre
 alias -- -='cd -'
 alias absname='readlink -m'
 alias dict='dict -d wn'
+alias ffmpeg='ffmpeg -hide_banner'
+alias ffprobe='ffprobe -hide_banner'
 alias no='yes n'
 alias pdfcat='gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=out.pdf'
 alias rezsh='source ~/.zshrc'
