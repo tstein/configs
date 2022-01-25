@@ -27,6 +27,7 @@ function survey() {
             local cpu_count=`print $cpu_lines | wc -l`
             # Clean up some Intel stuff.
             local cpu=`extract $cpu_line | sed 's/(R)//g' | sed 's/(TM)//g'`
+            cpu=`print $cpu | sed 's/^.* Gen //'`
             cpu=`print $cpu | sed 's/\s\?CPU\s\?/ /'`
             # Clean up AMD APU info.
             cpu=`print $cpu | sed 's/ [A-Za-z0-9]*-Core Processor//'`
