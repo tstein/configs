@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-CONFIGS=`dirname $0`
+CONFIGS=`dirname $(readlink -m $0)`
 cd $CONFIGS
 git submodule update --init --recursive
 
