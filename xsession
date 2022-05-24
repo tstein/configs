@@ -27,7 +27,7 @@ setxkbmap -option compose:caps
 # Restore last random wallpaper.
 source ~/.fehbg
 # Start window management.
-compton --backend glx --vsync drm&
+picom --vsync&
 i3&; I3_PID=$!
 sleep 1     # let i3 get going before polybars
 polybars&
@@ -38,8 +38,7 @@ xscreensaver -no-splash&
 
 ibus-daemon&
 nm-applet&
-pnmixer&
-syncthing-gtk&
+volumeicon&
 xfce4-power-manager&
 
 # Apps that live in the tray.
