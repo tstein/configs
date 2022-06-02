@@ -38,7 +38,7 @@ xscreensaver -no-splash&
 
 ibus-daemon&
 nm-applet&
-volumeicon&
+(sleep 5; volumeicon)&
 xfce4-power-manager&
 
 # Apps that live in the tray.
