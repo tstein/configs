@@ -9,8 +9,8 @@ mkdir -p ~/.local/{bin,tmp}
 
 ln -ns "$CONFIGS/bin/mtmux" ~/.local/bin/mtmux
 ln -ns "$CONFIGS/dir_colors" ~/.dir_colors
-ln -ns "$CONFIGS/nvim/init.vim" ~/.config/nvim/init.vim
-ln -ns "$CONFIGS/nvim/plugins" ~/.local/share/nvim/site/pack/plugins
+ln -ns "$CONFIGS/nvim/init.lua" ~/.config/nvim/init.lua
+ln -ns "$CONFIGS/nvim/lua" ~/.config/nvim/lua
 ln -ns "$CONFIGS/tmux.conf" ~/.tmux.conf
 ln -ns "$CONFIGS/vim" ~/.vim
 ln -ns "$CONFIGS/vimrc" ~/.vimrc
