@@ -3,16 +3,23 @@
 if [[ "$_BASEPATH" == "" ]]; then
     export _BASEPATH=$PATH
 else
-    export PATH=$_BASEPATH
+    PATH=$_BASEPATH
 fi
 
+case ":${PATH}:" in
+  *:/sbin:*|*:/usr/sbin:*)
+    ;;
+  *)
+    PATH=$PATH:/sbin
+    ;;
+esac
+
 if [[ `get_prop OS` == 'Ossix' ]]; then
-  export PATH=/usr/local/bin:$PATH
+  PATH=/usr/local/bin:$PATH
 fi
 
 # Ensure the personal bin/ exists so other scripts can modify it.
 if [ ! -d ~/.local/bin ]; then
     mkdir ~/.local/bin
 fi
-export PATH=~/.local/bin:$PATH
-
+PATH=~/.local/bin:$PATH
