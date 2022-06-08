@@ -1,6 +1,3 @@
-# .zshrc configured for halberd
-#######################################
-
 # zsh options. {{{
 # Each group corresponds to a heading in the zshoptions manpage.
 # dir opts
@@ -272,7 +269,3 @@ stty -ixon
 
 # ZSH IS GO
 #######################################
-# vim:filetype=zsh foldmethod=marker autoindent expandtab shiftwidth=2
-# Local variables:
-# mode: sh
-# End:
