@@ -1,0 +1,14 @@
+#!/bin/zsh
+# Copy a local file to an sshable remote host via a third host.
+
+set -eu
+
+local srcfile=$1
+local fulcrum=$2
+local dst=$3
+local dstfile=${4:-$srcfile}
+local fifo=/tmp/triangle
+
+ssh $fulcrum "if [ ! -e $fifo ]; then; mkfifo $fifo; fi"
+pv $srcfile | ssh $fulcrum "cat >$fifo"&
+ssh -t $dst "ssh $fulcrum cat $fifo | cat >$dstfile"
