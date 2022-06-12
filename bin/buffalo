@@ -1,0 +1,133 @@
+#!/usr/bin/env python
+""" Generate valid buffalo sentences. Written on a flight from Seattle to
+Frankfurt on 2022-05-19. """
+
+import sys
+from random import random
+from dataclasses import dataclass
+from typing import Optional
+
+BUFFALITY = .5
+
+def syn(o):
+    return o.syn()
+
+class Adjective:
+    @staticmethod
+    def gen():
+        return Adjective()
+
+    def __str__(self):
+        return "Buffalo"
+
+    def syn(self):
+        return "the place"
+
+    def __repr__(self):
+        return "Adjective"
+
+class Noun:
+    @staticmethod
+    def gen():
+        noun = Noun()
+        if random() < BUFFALITY:
+            noun.adjective = Adjective.gen()
+        if random() < BUFFALITY:
+            noun.relative_clause = RelativeClause.gen()
+        return noun
+
+    def __init__(self, adjective=None, relative_clause=None):
+        self.adjective: Adjective = adjective
+        self.relative_clause: RelativeClause = relative_clause
+
+    def __str__(self):
+        s = f"{str(self.adjective)} " if self.adjective else ""
+        s += "buffalo"
+        s += f" {str(self.relative_clause)}" if self.relative_clause else ""
+        return s
+
+    def syn(self):
+        s = "the animals"
+        s += f" from {syn(self.adjective)}" if self.adjective else ""
+        s += f" {syn(self.relative_clause)}" if self.relative_clause else ""
+        return s
+
+    def __repr__(self):
+        return f"Noun({repr(self.adjective)}, {repr(self.relative_clause)})"
+
+class Verb:
+    @staticmethod
+    def gen():
+        return Verb()
+
+    def __str__(self):
+        return "buffalo"
+
+    def syn(self):
+        return "bully"
+
+    def __repr__(self):
+        return "Verb"
+
+class RelativeClause:
+    @staticmethod
+    def gen():
+        return RelativeClause(Noun.gen(), Verb.gen())
+
+    def __init__(self, subject, verb):
+        self.subject: Noun = subject
+        self.verb: Verb = verb
+
+    def __str__(self):
+        return f"{str(self.subject)} {str(self.verb)}"
+
+    def syn(self):
+        return f"(whom {syn(self.subject)} {syn(self.verb)})"
+
+    def __repr__(self):
+        return f"RelativeClause({repr(self.subject)}, {repr(self.verb)})"
+
+class Sentence:
+    @staticmethod
+    def gen():
+        sentence = Sentence(Noun.gen(), Verb.gen())
+        if random() < BUFFALITY:
+            sentence.objekt = Noun.gen()
+        return sentence
+
+    def __init__(self, subject, verb, objekt=None):
+        self.subject: Noun = subject
+        self.verb: Verb = verb
+        # Grammatical object, not OOP object.
+        self.objekt: Optional[Noun] = objekt
+
+    def __str__(self):
+        if self.objekt:
+            s = f"{str(self.subject)} {str(self.verb)} {str(self.objekt)}."
+        else:
+            s = f"{str(self.subject)} {str(self.verb)}."
+        return s[0].upper() + s[1:]
+
+    def syn(self):
+        if self.objekt:
+            s = f"{syn(self.subject)} {syn(self.verb)} {syn(self.objekt)}."
+        else:
+            s = f"{syn(self.subject)} {syn(self.verb)}."
+        return s[0].upper() + s[1:]
+
+    def __repr__(self):
+        return f"Sentence({repr(self.subject)}, {repr(self.verb)}, {repr(self.objekt)})"
+
+def main():
+    global BUFFALITY
+    if len(sys.argv) == 2:
+        BUFFALITY = float(sys.argv[1])
+    elif len(sys.argv) != 1:
+        print("you buffaloed wrong!!")
+        sys.exit(255)
+    sentence = Sentence.gen()
+    print(sentence)
+    print(syn(sentence))
+
+if __name__ == "__main__":
+    main()
