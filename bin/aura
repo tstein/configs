@@ -22,7 +22,7 @@ def main():
     # Give xscreensaver a chance to get going.
     sleep(2)
     while (True):
-        line = xscr.stdout.readline()
+        line = xscr.stdout.readline().decode()
         if not line:
             break
         if line.startswith("LOCK"):
