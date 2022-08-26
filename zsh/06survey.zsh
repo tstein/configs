@@ -74,7 +74,7 @@ function survey() {
     }
 
 
-    local os release model cpus mem swap
+    local os release model cpus mem zram swap
 
     local os=`uname -s`
     case $os in
@@ -115,8 +115,19 @@ function survey() {
             local mem_kb=`extract $meminfo 'MemTotal' | sed 's/ kB//'`
             mem="$(($mem_kb / 1024)) MB"
 
+            if which zramctl >/dev/null; then
+                local zram_b=0
+                for zram_dev_size in `zramctl -bn | awk '{print $3}'`; do
+                    zram_b+=$zram_dev_size
+                done
+                if [[ $zram_b > 0 ]]; then
+                    local zram_kb=$(($zram_b / 1024))
+                    zram="$(($zram_b / 1024 / 1024)) MB"
+                fi
+            fi
+
             local swap_kb=`extract $meminfo 'SwapTotal' | sed 's/ kB//'`
-            if [[ $swap_kb != '0' ]]; then
+            if [[ $swap_kb > 0 && $((swap_kb - zram_kb)) > 1024 ]]; then
                 swap="$(($swap_kb / 1024)) MB"
             fi
             ;;
@@ -160,6 +171,9 @@ function survey() {
     fi
     print "CPUs:        $cpus"
     print "RAM:         $mem"
+    if [[ $zram != "" ]]; then
+        print "Zram:        $zram"
+    fi
     if [[ $swap != "" ]]; then
         print "Swap:        $swap"
     fi
