@@ -11,6 +11,12 @@ prefix() {
     cat $@ | sed "s/^/$PREFIX/"
 }
 
+tstamp() {
+  while read line; do
+    print "`date --rfc-3339=ns ` $line"
+  done
+}
+
 apply1() {
   if (( $# != 2 )); then
     print 'usage: apply1 COMMAND ARG'
