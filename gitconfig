@@ -1,29 +1,31 @@
 [user]
-    name = Ted Stein
-    email = me@tedstein.net
+  name = Ted Stein
+  email = me@tedstein.net
 [core]
-    whitespace = blank-at-eol,-blank-at-eof,tab-in-indent,tabwidth=4
+  whitespace = blank-at-eol,-blank-at-eof,tab-in-indent,tabwidth=4
 [color]
-    ui = auto
+  ui = auto
 [advice]
-    commitBeforeMerge = false
-    detachedHead = false
-    implicitIdentity = false
-    pushNonFastForward = false
-    resolveConflict = false
-    statusHints = false
-[branch]
-    autosetuprebase = always
-[diff]
-    indentHeuristic = on
-[fetch]
-    prune = true
-[push]
-    default = simple
+  commitBeforeMerge = false
+  detachedHead = false
+  implicitIdentity = false
+  pushNonFastForward = false
+  resolveConflict = false
+  statusHints = false
 [alias]
-    br = branch -vv
-    gl = log --graph --pretty=format:\
+  br = branch -vv
+  gl = log --graph --pretty=format:\
 '%Cgreen%h %Cred(%cr)%Creset -%C(yellow)%d%Creset %s %Cblue<%an>%Creset'
-    st = status --branch --short
+  st = status --branch --short
+[branch]
+  autosetuprebase = always
+[diff]
+  indentHeuristic = on
+[fetch]
+  prune = true
+[init]
+  defaultBranch = main
 [rebase]
-    autosquash = true
+  autosquash = true
+[push]
+  default = simple
