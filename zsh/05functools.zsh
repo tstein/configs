@@ -1,14 +1,15 @@
 # Higher-order functions for zsh.
 
 prefix() {
-    local PREFIX=$1
-    if [ ! "$PREFIX" ]; then
-      echo "Usage: prefix str [args]"
-      echo "  Prepend string to each line read and print it. args are passed to cat."
-      return 1;
-    fi
-    shift
-    cat $@ | sed "s/^/$PREFIX/"
+  local PREFIX=$1
+  if [ ! "$PREFIX" ]; then
+    echo "Usage: prefix str"
+    echo "  Prepend string to each line read and print it."
+    return 1;
+  fi
+  while read line; do
+    print "$prefix$line"
+  done
 }
 
 tstamp() {
