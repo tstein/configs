@@ -1,0 +1,91 @@
+#!/usr/bin/env python
+""" Munin plugin to help you blame your cable company, assuming you have an
+Arris SURFboard S33. """
+
+import json
+import sys
+from collections import namedtuple
+
+import bs4
+import requests
+
+ModemStatus = namedtuple("ModemStatus",
+                         ["connected", "down_snr", "down_power", "down_freq"])
+
+
+def get_modem_status():
+    # yes, the params are a string of JSON
+    r = requests.post("https://modem/HNAP1/",
+                      verify=False,
+                      headers={
+                          "SOAPACTION":
+                          "http://purenetworks.com/HNAP1/GetMultipleHNAPs"
+                      },
+                      data='{"GetMultipleHNAPs":{"GetArrisDeviceStatus":""}}')
+    j = json.loads(r.text).get("GetArrisDeviceStatusResponse", {})
+    connected = j.get("InternetConnection") == "Connected"
+    snr = j.get("DownstreamSignalSnr")
+    if snr:
+        snr = int(snr.split(" ")[0])
+    power = j.get("DownstreamSignalPower")
+    if power:
+        power = int(power.split(" ")[0])
+    freq = j.get("DownstreamFrequency")
+    if freq:
+        freq = int(int(freq.split(" ")[0]) / 1_000_000)
+
+    return ModemStatus(connected, snr, power, freq)
+
+
+def main():
+    if len(sys.argv) > 1:
+        if sys.argv[1] == "autoconf":
+            print("yes")
+        if sys.argv[1] == "config":
+            print("multigraph surfboard_s33_connected")
+            print(
+                "graph_title Surfboard S33 internet connection self-assessment"
+            )
+            print("graph_category network")
+            print("graph_vlabel thinks it has internet")
+            print("graph_args --lower-limit 0")
+            print("graph_args --upper-limit 0")
+            print("connected.draw AREA")
+            print("connected.label connected")
+
+            print("multigraph surfboard_s33_downstream_snr")
+            print("graph_title Surfboard S33 downstream signal-to-noise ratio")
+            print("graph_category network")
+            print("graph_vlabel dB")
+            print("snr.label SnR")
+
+            print("multigraph surfboard_s33_downstream_power")
+            print("graph_title Surfboard S33 downstream power")
+            print("graph_category network")
+            print("graph_vlabel dBmV")
+            print("power.label power")
+
+            print("multigraph surfboard_s33_downstream_freq")
+            print("graph_title Surfboard S33 downstream frequency")
+            print("graph_category network")
+            print("graph_vlabel MHz")
+            print("freq.label freq")
+
+            sys.exit(0)
+
+    status = get_modem_status()
+    print("multigraph surfboard_s33_connected")
+    print(f"connected.value {int(status.connected)}")
+
+    print("multigraph surfboard_s33_downstream_snr")
+    print(f"snr.value {status.down_snr}")
+
+    print("multigraph surfboard_s33_downstream_power")
+    print(f"power.value {status.down_power}")
+
+    print("multigraph surfboard_s33_downstream_freq")
+    print(f"freq.value {status.down_freq}")
+
+
+if __name__ == "__main__":
+    main()
