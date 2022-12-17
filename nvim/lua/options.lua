@@ -35,7 +35,7 @@ opt.tabstop = 2
 opt.softtabstop = 2
 
 -- treat _ as a word separator
-opt.iskeyword = opt.iskeyword:remove("_", "")
+opt.iskeyword:remove { "_" }
 
 -- enable highlighting of embedded scripts
 g.vimsyn_embed = "lrP"

@@ -42,6 +42,13 @@ return packer.startup(function(use)
   use "hrsh7th/cmp-path"
   use "hrsh7th/cmp-vsnip"
   use "simrat39/rust-tools.nvim"
+  use {
+    'nvim-treesitter/nvim-treesitter',
+    run = function()
+      local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+      ts_update()
+    end,
+  }
 
   use "Shougo/deoplete.nvim"
   use "deoplete-plugins/deoplete-clang"
@@ -57,6 +64,9 @@ return packer.startup(function(use)
   use "qpkorr/vim-renamer"
   use "mhinz/vim-signify"
   use "tpope/vim-surround"
+
+  use "sainnhe/edge"
+  use "xiyaowong/nvim-transparent"
 
   if PACKER_FRESH_INSTALL then
     require("packer").sync()
