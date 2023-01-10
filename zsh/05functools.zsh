@@ -8,10 +8,11 @@ prefix() {
     return 1;
   fi
   while read line; do
-    print "$prefix$line"
+    print "$PREFIX$line"
   done
 }
 
+# more precise than moreutils' ts
 tstamp() {
   while read line; do
     print "`date --rfc-3339=ns ` $line"

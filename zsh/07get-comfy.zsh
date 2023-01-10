@@ -39,6 +39,8 @@ get-comfy() {
             print -l "You get blue, wiseguy. Set PR_COLOR later if you want anything else."
         ;;
     esac
+    print >> ~/.zlocal
+    print "# vim: ft=zsh" >> ~/.zlocal
     print -l 'All the above information has been saved to ~/.zlocal. Happy zshing!'
     trap 2
 }
