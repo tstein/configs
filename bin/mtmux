@@ -9,5 +9,6 @@ case $STATUS_BG in
     STATUS_FG='black'
 esac
 
-tmux new-session -A main\; \
+tmux -q attach -t main ||
+  tmux new-session -s main\; \
   set-option status-bg $STATUS_BG\; set-option status-fg $STATUS_FG
