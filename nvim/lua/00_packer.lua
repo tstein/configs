@@ -57,7 +57,6 @@ return packer.startup(function(use)
 
   use "vim-airline/vim-airline"
   use "akinsho/nvim-bufferline.lua"
-  use "bogado/file-line"
   use "fs111/pydoc.vim"
   use "preservim/tagbar"
   use "tpope/vim-fugitive"
