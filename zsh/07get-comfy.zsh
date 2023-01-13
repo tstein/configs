@@ -11,8 +11,8 @@ get-comfy() {
         return 1
     fi
 
-    survey | prefix '# ' >> ~/.zlocal
-    print >> ~/.zlocal
+    survey | prefix '# ' >>~/.zlocal
+    print >>~/.zlocal
 
     print -l "Looks like it's your first time here.\n"
     survey
@@ -33,14 +33,30 @@ get-comfy() {
         ;&
         ('red'|'green'|'blue'|'cyan'|'magenta'|'yellow'|'white'))
             CHOICE=`echo $CHOICE | tr 'a-z' 'A-Z'`
-            print -l "PR_COLOR=\$PR_$CHOICE\n" >> ~/.zlocal
+            print -l "PR_COLOR=\$PR_$CHOICE\n" >>~/.zlocal
         ;;
         *)
             print -l "You get blue, wiseguy. Set PR_COLOR later if you want anything else."
         ;;
     esac
-    print >> ~/.zlocal
-    print "# vim: ft=zsh" >> ~/.zlocal
+    print >>~/.zlocal
+    AUTO_MTMUX=""
+    while [[ $AUTO_MTMUX != "y" && $AUTO_MTMUX != "n" ]]; do
+      print -n "Would you like to automatically attach to your main tmux session? [yn] "
+      read AUTO_MTMUX
+    done
+    if [[ $AUTO_MTMUX == "y" ]]; then
+      print "# auto-mtmux" >>.zlocal
+      print "if [[ ! -v TMUX ]]; then" >>.zlocal
+      print "  ~/.local/bin/mtmux" >>.zlocal
+      print "fi" >>.zlocal
+      print >>~/.zlocal
+    fi
+    print "# vim: ft=zsh" >>~/.zlocal
+
     print -l 'All the above information has been saved to ~/.zlocal. Happy zshing!'
     trap 2
 }
+
+# do-nothing modeline so vims don't get unhappy about the one this outputs
+# vim
