@@ -1,12 +1,14 @@
 #!/bin/zsh
 
-CONFIGS=`dirname $(readlink -m $0)`
+CONFIGS=`dirname $(realpath -e $0)`
 cd $CONFIGS
 git submodule update --init --recursive
 
+# dirs
 mkdir -p ~/.config/nvim
 mkdir -p ~/.local/{bin,tmp}
 
+# symlinks
 ln -ns "$CONFIGS/bin/mtmux" ~/.local/bin/mtmux
 ln -ns "$CONFIGS/dir_colors" ~/.dir_colors
 ln -ns "$CONFIGS/nvim/init.lua" ~/.config/nvim/init.lua
@@ -22,9 +24,28 @@ else
     print "skipping gitconfig because you may not be ted"
 fi
 
-vim +BundleInstall +qa
-if [ which nvim >/dev/null 2>/dev/null ]; then
-  nvim +PlugInstall
+# ssh config
+if [[ -e ~/.ssh/config ]]; then
+  print "you have an existing .ssh/config. leaving it be."
+else
+  mkdir -p ~/.ssh
+  cat >~/.ssh/config <<EOF
+# only offer the default key by default
+host *
+  identitiesonly yes
+  identityfile ~/.ssh/id_ed25519
+  identityfile ~/.ssh/id_rsa
+
+EOF
+  print "created ~/.ssh/config."
 fi
 
+# vims
+vim +BundleInstall +qa
+if [ which nvim >/dev/null 2>/dev/null ]; then
+  # packer is run automatically on first use
+  nvim
+fi
+
+# go
 exec zsh
