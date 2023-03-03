@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+local -a skip_vims
+zparseopts -skip_vims=skip_vims
+
 CONFIGS=`dirname $(realpath -e $0)`
 cd $CONFIGS
 git submodule update --init --recursive
@@ -41,10 +44,12 @@ EOF
 fi
 
 # vims
-vim +BundleInstall +qa
-if [ which nvim >/dev/null 2>/dev/null ]; then
-  # packer is run automatically on first use
-  nvim
+if [[ ! -n $skip_vims ]]; then
+  vim +BundleInstall +qa
+  if [ which nvim >/dev/null 2>/dev/null ]; then
+    # packer is run automatically on first use
+    nvim
+  fi
 fi
 
 # go
