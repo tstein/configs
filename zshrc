@@ -195,7 +195,7 @@ git_status() {
   # This blocks the next prompt. If it takes a while just to check the branch,
   # bail out.
   if [ `get_prop have_timeout` ]; then
-    GITBRANCH=`timeout .05s git symbolic-ref HEAD 2>/dev/null`
+    GITBRANCH=`timeout .5s git symbolic-ref HEAD 2>/dev/null`
   else
     GITBRANCH=`git symbolic-ref HEAD 2>/dev/null`
   fi
