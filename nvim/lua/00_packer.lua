@@ -35,6 +35,7 @@ return packer.startup(function(use)
 
   -- completion
   use "neovim/nvim-lspconfig"
+  use "nvim-lua/completion-nvim"
   use "hrsh7th/nvim-cmp"
   use "hrsh7th/vim-vsnip"
   use "hrsh7th/cmp-nvim-lsp"
@@ -49,11 +50,6 @@ return packer.startup(function(use)
       ts_update()
     end,
   }
-
-  use "Shougo/deoplete.nvim"
-  use "deoplete-plugins/deoplete-clang"
-  use "deoplete-plugins/deoplete-jedi"
-  use "davidhalter/jedi-vim"
 
   use "vim-airline/vim-airline"
   use "akinsho/nvim-bufferline.lua"
