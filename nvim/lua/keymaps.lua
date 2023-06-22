@@ -8,6 +8,8 @@ vim.g.maplocalleader = vim.g.mapleader
 
 -- save
 map("n", "<leader>w", ":w<CR>", opts)
+-- save like you mean it
+map("c", "w!!", "w !sudo tee % >/dev/null", opts)
 
 -- switch buffers
 map("n", "<leader>1", ":1b<CR>", opts)
@@ -28,5 +30,8 @@ map("n", "<CR>", ":noh<CR><CR>", opts)
 -- cleanup trailing whitespace
 map("n", "<leader>s", ":%s/\\s\\+$//<CR>", opts)
 
--- save like you mean it
-map("c", "w!!", "w !sudo tee % >/dev/null", opts)
+-- make tab/shift-tab cycle through completion
+vim.cmd [[
+  inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+  inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+]]
