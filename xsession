@@ -5,7 +5,8 @@ export PATH=~/.local/bin:$PATH
 export GTK_THEME=Adwaita:dark
 # demand hidpi
 export GDK_SCALE=2
-export QT_SCALE_FACTOR=2
+export GDK_DPI_SCALE=.8
+export QT_AUTO_SCREEN_SCALE_FACTOR=1
 
 # Lie about current desktop for xdg-open. In particular, Chrome opens
 # everything in Firefox(?!) if this isn't set.
@@ -42,7 +43,7 @@ nm-applet&
 xfce4-power-manager&
 
 # Apps that live in the tray.
-clementine&
+strawberry&
 keepassxc&
 
 if [ -e ~/.xsession.local ]; then
