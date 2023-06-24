@@ -24,8 +24,9 @@ for f in lsr(path.expanduser("~/music")):
 
 
 import matplotlib.pyplot as plt
-plt.plot(range(len(by_year)), by_year.values(), 'r--', linewidth=1)
-plt.xticks(range(len(by_year)), map(lambda x: "%02d" % (x % 100), by_year.keys()))
+data = [(y, by_year[y]) for y in sorted(by_year.keys())]
+plt.plot(range(len(data)), [d[1] for d in data], 'r--', linewidth=1)
+plt.xticks(range(len(data)), ["%02d" % (d[0] % 100) for d in data])
 plt.xlabel("year % 100")
 plt.ylabel("number of songs")
 plt.show()
