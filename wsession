@@ -1,0 +1,29 @@
+#!/bin/zsh
+# Made-up in the style of .xsession. Requires a file like
+# /usr/share/wayland-sessions/wsession.desktop
+# with contents (~ must be expanded):
+# [Desktop Entry]
+# Name=wsession shell script
+# Exec=~/.wsession
+# Type=Application
+
+export PATH=~/.local/bin:$PATH
+
+export GTK_THEME=Adwaita:dark
+export MOZ_ENABLE_WAYLAND=1
+export XDG_CURRENT_DESKTOP=Unity
+
+sway >/tmp/sway.log&; WM_PID=$!
+
+# Apps that live in the tray.
+blueman-applet&
+keepassxc&
+nm-applet&
+strawberry&
+syncthing -no-browser&
+
+if [ -e ~/.xsession.local ]; then
+    . ~/.xsession.local
+fi
+
+wait $WM_PID

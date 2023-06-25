@@ -21,6 +21,11 @@ ln -ns "$CONFIGS/vim" ~/.vim
 ln -ns "$CONFIGS/vimrc" ~/.vimrc
 ln -ns "$CONFIGS/zsh" ~/.zsh
 ln -ns "$CONFIGS/zshrc" ~/.zshrc
+
+ln -ns "$CONFIGS/alacritty" ~/.config/alacritty
+ln -ns "$CONFIGS/sway/sway" ~/.config/sway
+ln -ns "$CONFIGS/sway/waybar" ~/.config/waybar
+ln -ns "$CONFIGS/wsession" ~/.wsession
 if [[ "$USER" == "ted" ]]; then
     ln -ns "$CONFIGS/gitconfig" ~/.gitconfig
 else

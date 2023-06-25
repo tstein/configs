@@ -1,0 +1,138 @@
+include /etc/sway/config.d/*
+
+# window management
+for_window [app_id=".*"] floating enable
+for_window [window_type="normal" class="Firefox"] border none
+for_window [window_type="con" app_id="firefox"] border none
+for_window [window_type="normal" class="Signal"] border none
+for_window [window_type="normal" app_id="Kodi"] border none
+for_window [window_type="normal" app_id="Darktable"] border none
+for_window [window_type="con" app_id="terminator"] border none
+hide_edge_borders --i3 smart
+focus_follows_mouse no
+
+# super
+set $mod Mod4
+font pango:DejaVu Sans Mono 12
+
+# mouse+$mod to drag floating windows
+floating_modifier $mod
+
+# kill focused window
+bindsym $mod+Shift+c kill
+
+# program shortcuts
+bindsym $mod+Return exec alacritty
+bindsym $mod+c exec strawberry
+bindsym $mod+d exec bemenu-run --no-overlap --line-height 30
+bindsym $mod+n exec nemo
+bindsym $mod+q exec qalculate-gtk
+set $lock-cmd 'swaylock -c 333333'
+bindsym $mod+Shift+l exec $lock-cmd
+
+bindsym $mod+Left focus left
+bindsym $mod+Down focus down
+bindsym $mod+Up focus up
+bindsym $mod+Right focus right
+
+bindsym $mod+Shift+Left move left
+bindsym $mod+Shift+Down move down
+bindsym $mod+Shift+Up move up
+bindsym $mod+Shift+Right move right
+
+bindsym $mod+w focus output left
+bindsym $mod+e focus output right
+bindsym $mod+shift+w move output left
+bindsym $mod+shift+e move output right
+bindsym $mod+Mod1+shift+w move workspace to output left
+bindsym $mod+Mod1+shift+e move workspace to output right
+
+# enter fullscreen mode for the focused container
+bindsym $mod+f fullscreen toggle
+
+# change container layout (stacked, tabbed, toggle split)
+#bindsym $mod+s layout stacking
+bindsym $mod+space layout toggle tabbed splith splitv
+
+# toggle tiling / floating
+bindsym $mod+t floating toggle
+
+# switch to workspace
+bindsym $mod+1 workspace 1
+bindsym $mod+2 workspace 2
+bindsym $mod+3 workspace 3
+bindsym $mod+4 workspace 4
+bindsym $mod+5 workspace 5
+bindsym $mod+6 workspace 6
+bindsym $mod+7 workspace 7
+bindsym $mod+8 workspace 8
+bindsym $mod+9 workspace 9
+bindsym $mod+0 workspace 10
+
+# move focused container to workspace
+bindsym $mod+Shift+1 move container to workspace 1
+bindsym $mod+Shift+2 move container to workspace 2
+bindsym $mod+Shift+3 move container to workspace 3
+bindsym $mod+Shift+4 move container to workspace 4
+bindsym $mod+Shift+5 move container to workspace 5
+bindsym $mod+Shift+6 move container to workspace 6
+bindsym $mod+Shift+7 move container to workspace 7
+bindsym $mod+Shift+8 move container to workspace 8
+bindsym $mod+Shift+9 move container to workspace 9
+bindsym $mod+Shift+0 move container to workspace 10
+
+bindsym $mod+Shift+r restart
+bindsym $mod+Shift+q exec "swaynag -t warning -e bottom -m 'log out?' -b 'yep, log out' 'swaymsg exit'"
+
+bindsym $mod+r mode "resize"
+mode "resize" {
+  bindsym j resize shrink width 10 px or 10 ppt
+  bindsym k resize grow height 10 px or 10 ppt
+  bindsym l resize shrink height 10 px or 10 ppt
+  bindsym semicolon resize grow width 10 px or 10 ppt
+
+  bindsym Left resize shrink width 10 px or 10 ppt
+  bindsym Down resize grow height 10 px or 10 ppt
+  bindsym Up resize shrink height 10 px or 10 ppt
+  bindsym Right resize grow width 10 px or 10 ppt
+
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+}
+bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym XF86MonBrightnessUp exec brightnessctl set +5%
+bindsym XF86AudioPrev exec playerctl previous
+bindsym XF86AudioPlay exec playerctl play-pause
+bindsym XF86AudioNext exec playerctl next
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+
+# input config
+input type:touchpad {
+  tap enabled
+  natural_scroll enabled
+}
+input type:keyboard {
+  xkb_layout us,ar
+  xkb_options grp:alt_space_toggle
+}
+
+# displays
+output eDP-1 scale 1.7
+output * bg ~/sync/road/wallpaper/current fill
+
+# components and programs
+bar {
+  swaybar_command waybar
+}
+exec blueman-applet
+exec clementine
+exec keepassxc
+exec mako
+exec nm-applet --indicator
+exec swayidle \
+       timeout 300 'swaylock -c 333333' \
+       timeout 600 'swaymsg "output * dpms off"' \
+       resume 'swaymsg "output * dpms on"' \
+       before-sleep $lock-cmd
