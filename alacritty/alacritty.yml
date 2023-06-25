@@ -1,0 +1,53 @@
+draw_bold_text_with_bright_colors: false
+font:
+  normal:
+    family: Inconsolata
+  bold:
+    family: Inconsolata
+  italic:
+    family: Inconsolata
+  size: 10.0
+
+# alacritty can't configure an emoji font here. workaround:
+# /etc/fonts/conf.d/99-alacritty-emoji.conf should read:
+# <?xml version="1.0" encoding="UTF-8"?>
+# <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+# 
+# <!-- Alacritty doesn't support an explicit emoji font. -->
+# <fontconfig>
+#   <match>
+#     <test name="prgname">
+#       <string>alacritty</string>
+#     </test>
+#     <edit name="family" mode="prepend" binding="weak">
+#       <string>Blobmoji</string>
+#     </edit>
+#   </match>
+# </fontconfig>
+
+decorations: none
+window:
+  opacity: .7
+
+colors:
+  primary:
+    foreground: '0xffffff'
+    background: '0x000000'
+  normal:
+      black:   '0x2e3436'
+      red:     '0xcc0000'
+      green:   '0x4e9a06'
+      yellow:  '0xc4a000'
+      blue:    '0x3465a4'
+      magenta: '0x75507b'
+      cyan:    '0x06989a'
+      white:   '0xd3d7cf'
+  bright:
+      black:   '0x555753'
+      red:     '0xef2929'
+      green:   '0x8ae234'
+      yellow:  '0xfce94f'
+      blue:    '0x729fcf'
+      magenta: '0xad7fa8'
+      cyan:    '0x34e2e2'
+      white:   '0xeeeeec'

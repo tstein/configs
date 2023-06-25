@@ -9,7 +9,7 @@ floating_modifier $mod
 # kill focused window
 bindsym $mod+Shift+c kill
 
-bindsym $mod+Return exec terminator
+bindsym $mod+Return exec alacritty
 bindsym $mod+d exec bemenu-run --fn "pango:Deja Vu Sans Mono 24"
 bindsym $mod+Shift+l exec xscreensaver-command -lock
 
