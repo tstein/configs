@@ -18,6 +18,15 @@ case `get_prop OS` in
     #   ^<LeftArrow>    :   backward-word
     #   ^<RightArrow>   :   forward-word
     case "$TERM" in
+      'alacritty')
+        bindkey '^[[3~'     delete-char
+        bindkey '^[[H'      beginning-of-line
+        bindkey '^[[F'      end-of-line
+        bindkey '^[[5~'     insert-last-word
+        bindkey '^[[6~'     end-of-history
+        bindkey '^[[1;5D'   backward-word
+        bindkey '^[[1;5C'   forward-word
+        ;;
       'xterm'*)
         bindkey '^[[3~'     delete-char
         bindkey '^[OH'      beginning-of-line
