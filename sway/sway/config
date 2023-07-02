@@ -1,5 +1,13 @@
 include /etc/sway/config.d/*
 
+########
+# vars #
+########
+# super
+set $mod Mod4
+set $lock-cmd 'swaylock -c 333333'
+font pango:DejaVu Sans Mono 12
+
 # window management
 for_window [app_id=".*"] floating enable
 for_window [window_type="normal" class="Firefox"] border none
@@ -7,29 +15,27 @@ for_window [window_type="con" app_id="firefox"] border none
 for_window [window_type="normal" class="Signal"] border none
 for_window [window_type="normal" app_id="Kodi"] border none
 for_window [window_type="normal" app_id="Darktable"] border none
+for_window [window_type="con" app_id="Alacritty"] border none
 for_window [window_type="con" app_id="terminator"] border none
 hide_edge_borders --i3 smart
 focus_follows_mouse no
-
-# super
-set $mod Mod4
-font pango:DejaVu Sans Mono 12
-
 # mouse+$mod to drag floating windows
 floating_modifier $mod
 
+############
+# bindings #
+############
 # kill focused window
 bindsym $mod+Shift+c kill
 
 # program shortcuts
 bindsym $mod+Return exec alacritty
-bindsym $mod+c exec strawberry
 bindsym $mod+d exec bemenu-run --no-overlap --line-height 30
-bindsym $mod+n exec nemo
-bindsym $mod+q exec qalculate-gtk
-set $lock-cmd 'swaylock -c 333333'
 bindsym $mod+Shift+l exec $lock-cmd
 bindsym $mod+Shift+s exec grim -g "$(slurp)" - | wl-copy
+bindsym $mod+c exec strawberry
+bindsym $mod+n exec nemo
+bindsym $mod+q exec qalculate-gtk
 
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
@@ -82,7 +88,7 @@ bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
 
-bindsym $mod+Shift+r restart
+bindsym $mod+Shift+r reload
 bindsym $mod+Shift+q exec "swaynag -t warning -e bottom -m 'log out?' -b 'yep, log out' 'swaymsg exit'"
 
 bindsym $mod+r mode "resize"
@@ -100,40 +106,41 @@ mode "resize" {
   bindsym Return mode "default"
   bindsym Escape mode "default"
 }
-bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
-bindsym XF86MonBrightnessUp exec brightnessctl set +5%
+
+# media keys
+bindsym $mod+z exec playerctl previous
+bindsym $mod+s exec playerctl play-pause
+bindsym $mod+x exec playerctl next
+bindsym $mod+v exec playerctl stop
 bindsym XF86AudioPrev exec playerctl previous
 bindsym XF86AudioPlay exec playerctl play-pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -5%
 bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +5%
+bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+bindsym XF86MonBrightnessUp exec brightnessctl set +5%
 
-# input config
+# inputs
+input type:keyboard {
+  xkb_layout us,ar
+  xkb_numlock enabled
+  xkb_options grp:alt_space_toggle
+}
 input type:touchpad {
   tap enabled
   natural_scroll enabled
 }
-input type:keyboard {
-  xkb_layout us,ar
-  xkb_options grp:alt_space_toggle
-}
-
-# displays
-output eDP-1 scale 1.7
-output * bg ~/sync/road/wallpaper/current fill
 
 # components and programs
 bar {
   swaybar_command waybar
 }
+exec mako
 exec blueman-applet
 exec clementine
 exec keepassxc
-exec mako
 exec nm-applet --indicator
-exec swayidle \
-       timeout 300 'swaylock -c 333333' \
-       timeout 600 'swaymsg "output * dpms off"' \
-       resume 'swaymsg "output * dpms on"' \
-       before-sleep $lock-cmd
+
+# output config, idler config, and further customization
+include ~/.sway_config_local
