@@ -29,6 +29,7 @@ bindsym $mod+n exec nemo
 bindsym $mod+q exec qalculate-gtk
 set $lock-cmd 'swaylock -c 333333'
 bindsym $mod+Shift+l exec $lock-cmd
+bindsym $mod+Shift+s exec grim -g "$(slurp)" - | wl-copy
 
 bindsym $mod+Left focus left
 bindsym $mod+Down focus down
