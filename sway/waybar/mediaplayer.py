@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+
+# https://github.com/Alexays/Waybar/blob/master/resources/custom_modules/mediaplayer.py
+
 import argparse
 import logging
 import sys
@@ -35,8 +38,8 @@ def on_metadata(player, metadata, manager):
             'mpris:trackid' in metadata.keys() and \
             ':ad:' in player.props.metadata['mpris:trackid']:
         track_info = 'AD PLAYING'
-    elif player.get_artist() != '' and player.get_title() != '':
-        track_info = '{artist} - {title}'.format(artist=player.get_artist(),
+    elif player.get_artist() and player.get_title():
+        track_info = '{title} - {artist}'.format(artist=player.get_artist(),
                                                  title=player.get_title())
     else:
         track_info = player.get_title()
