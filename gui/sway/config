@@ -18,6 +18,7 @@ for_window [window_type="normal" app_id="Kodi"] border none
 for_window [window_type="normal" app_id="Darktable"] border none
 for_window [window_type="con" app_id="Alacritty"] border none
 for_window [window_type="con" app_id="terminator"] border none
+for_window [shell="xwayland"] title_format "[XW] %title"
 hide_edge_borders --i3 smart
 focus_follows_mouse no
 # mouse+$mod to drag floating windows
