@@ -1,24 +1,5 @@
 # Higher-order functions for zsh.
 
-prefix() {
-  local PREFIX=$1
-  if [ ! "$PREFIX" ]; then
-    echo "Usage: prefix str"
-    echo "  Prepend string to each line read and print it."
-    return 1;
-  fi
-  while read line; do
-    print "$PREFIX$line"
-  done
-}
-
-# more precise than moreutils' ts
-tstamp() {
-  while read line; do
-    print "`date --rfc-3339=ns ` $line"
-  done
-}
-
 apply1() {
   if (( $# != 2 )); then
     print 'usage: apply1 COMMAND ARG'
