@@ -10,7 +10,7 @@ setopt autolist autoparamkeys autoparamslash hashlistall listambiguous listpacke
 setopt extended_glob glob glob_dots
 
 # history opts
-setopt extendedhistory hist_ignore_space
+setopt share_history extended_history hist_ignore_space
 
 # I/O
 setopt aliases clobber correct hashcmds hashdirs ignoreeof rmstarsilent normstarwait
