@@ -3,6 +3,7 @@
 for pak in `flatpak list --app --columns=application | grep -v "Application ID"`; do
   local name=`print $pak | rev | cut -d . -f 1 | rev | tr 'A-Z' 'a-z'`
   local runner=~/.local/bin/$name
+  # don't clobber existing runners - they may have options or envvars
   if [[ ! -e $runner ]]; then
     cat >$runner <<EOF
 #!/bin/zsh
