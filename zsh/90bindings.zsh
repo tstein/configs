@@ -19,13 +19,13 @@ case `get_prop OS` in
     #   ^<RightArrow>   :   forward-word
     case "$TERM" in
       'alacritty')
-        bindkey '^[[3~'     delete-char
-        bindkey '^[[H'      beginning-of-line
-        bindkey '^[[F'      end-of-line
-        bindkey '^[[5~'     insert-last-word
-        bindkey '^[[6~'     end-of-history
-        bindkey '^[[1;5D'   backward-word
-        bindkey '^[[1;5C'   forward-word
+        bindkey '<Del>'      delete-char
+        bindkey '<Home>'     beginning-of-line
+        bindkey '<End>'      end-of-line
+        bindkey '<PageUp>'   insert-last-word
+        bindkey '<PageDown>' end-of-history
+        bindkey '<C-Left>'   backward-word
+        bindkey '<C-Right>'  forward-word
         ;;
       'xterm'*)
         bindkey '^[[3~'     delete-char
