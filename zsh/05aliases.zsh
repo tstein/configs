@@ -18,6 +18,7 @@ alias ffprobe='ffprobe -hide_banner'
 alias ncplayer='ncplayer -s scalehi'
 alias no='yes n'
 alias pdfcat='gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=out.pdf'
+alias reset='tput reset'  # same thing without the unnecessary delay
 alias rezsh='source ~/.zshrc'
 alias vimdir='nvim +Renamer '
 if [[ `get_prop OS` == 'Linux' ]]; then
