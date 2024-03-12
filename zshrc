@@ -137,19 +137,20 @@ zle -N tetris
 battery_cornmeter() {
   case `get_prop OS` in
     'Linux')
-      # acpi -b => "Battery 0: 22%"
-      LEVEL=`acpi -b | grep -oP '\d+%' | tr -d '%'`
-      LEVEL=$(($LEVEL * 1.0))
-      CHARGING=`acpi -a | grep on-line`
+      BAT='/sys/class/power_supply/BAT1'
+      LEVEL=$((`cat $BAT/capacity` * 1.0))
+      grep -q '^Charging$' $BAT/status
+      CHARGING=$?
       ;;
     'Ossix')
       PMSET=`pmset -g batt`
       LEVEL=`print $PMSET | perl -ne 'if (/(\d+)%/) { print $1; }'`
-      CHARGING=`print $PMSET | grep 'AC Power'`
+      print $PMSET | grep -q 'AC Power'
+      CHARGING=$?
       ;;
   esac
 
-  if [ "$CHARGING" ]; then
+  if [[ $CHARGING == 0 ]]; then
     if [ `get_prop unicode` ]; then
       CHRGCHR='⚡'
     else

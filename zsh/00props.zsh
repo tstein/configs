@@ -36,10 +36,8 @@ done
 # Laptop? (i.e., Can we access laptop-specific power info?)
 case `get_prop OS` in
   'Linux')
-    if [ `get_prop have_acpi` ]; then
-      if [ "`acpi -b 2>/dev/null`" ]; then
-        set_prop have_battery yes
-      fi
+    if [ -d /sys/class/power_supply/BAT1 ]; then
+      set_prop have_battery yes
     fi
     ;;
   'Ossix')
