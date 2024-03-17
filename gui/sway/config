@@ -6,16 +6,15 @@ include /etc/sway/config.d/*
 # super
 set $mod Mod4
 set $lock-cmd 'swaylock -c 132a4d'
-set $volstep 4
+set $volstep 2
 font pango:DejaVu Sans Mono 12
 
 # window management
 for_window [app_id=".*"] floating enable
-for_window [window_type="normal" class="Firefox"] border none
 for_window [window_type="con" app_id="firefox"] border none
-for_window [window_type="normal" class="Signal"] border none
-for_window [window_type="normal" app_id="Kodi"] border none
-for_window [window_type="normal" app_id="Darktable"] border none
+for_window [window_type="con" class="signal"] border none
+for_window [window_type="con" app_id="kodi"] border none
+for_window [window_type="con" app_id="darktable"] border none
 for_window [window_type="con" app_id="Alacritty"] border none
 for_window [window_type="con" app_id="terminator"] border none
 for_window [shell="xwayland"] title_format "[XW] %title"
@@ -125,7 +124,7 @@ bindsym XF86MonBrightnessUp exec brightnessctl set +$volstep%
 
 # inputs
 input type:keyboard {
-  xkb_layout us,ar
+  xkb_layout us,ara
   xkb_numlock enabled
   xkb_options grp:alt_space_toggle,compose:caps
 }
