@@ -49,13 +49,16 @@ get-comfy() {
     print "PR_CHAR=\"$CHOICE \"" >>~/.zlocal
   fi
 
-  AUTO_MTMUX=""
-  while [[ $AUTO_MTMUX != "y" && $AUTO_MTMUX != "n" ]]; do
-    print -n "Would you like to automatically attach to your main tmux session? [yn] "
-    read AUTO_MTMUX
-  done
-  if [[ $AUTO_MTMUX == "y" ]]; then
-    cat >>~/.zlocal <<EOF
+  # skip this for root - if you didn't auto-mtmux as your login user, it doesn't
+  # make sense to do it when you get a root shell
+  if [[ $USER != "root" ]]; then
+    AUTO_MTMUX=""
+    while [[ $AUTO_MTMUX != "y" && $AUTO_MTMUX != "n" ]]; do
+      print -n "Would you like to automatically attach to your main tmux session? [yn] "
+      read AUTO_MTMUX
+    done
+    if [[ $AUTO_MTMUX == "y" ]]; then
+      cat >>~/.zlocal <<EOF
 
 # auto-mtmux
 # TMUX isn't passed by default, but TERM is. Check both to prevent nesting when
@@ -64,6 +67,7 @@ if [[ ! -v TMUX && \$TERM != tmux-* ]]; then
   ~/.local/bin/mtmux
 fi
 EOF
+    fi
   fi
 
   print "Wrote those config changes into ~/.zlocal."
