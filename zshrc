@@ -24,9 +24,6 @@ setopt promptpercent
 # scripts and functions
 setopt cbases functionargzero localoptions multios
 
-# shell emulation
-setopt ksh_arrays
-
 # ZLE
 setopt nobeep zle
 
@@ -284,6 +281,12 @@ preexec_functions=(preexec_update_title)
 
 # Automatically time long commands.
 REPORTTIME=10
+
+# Enable highlighting if it's installed.
+HI_FILE=/usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+if [[ -e $HI_FILE ]]; then
+  source $HI_FILE
+fi
 
 #TODO: Check if we are a login shell. This could hang a script without that.
 if [ `get_prop have_keychain` ]; then
