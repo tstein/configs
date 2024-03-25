@@ -38,6 +38,8 @@ if [[ -e ~/.ssh/config ]]; then
 else
   mkdir -p ~/.ssh
   cat >~/.ssh/config <<EOF
+EnableEscapeCommandline yes
+
 # only offer the default key by default
 host *
   identitiesonly yes
