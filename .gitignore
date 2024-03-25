@@ -1,5 +1,6 @@
 .DS_Store
 aura/tmp/*
+fonts/.uuid
 hgext/*.pyc
-vim/.netrwhist
 vim/bundle/*/doc/tags*
+vim/.netrwhist
