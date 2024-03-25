@@ -137,6 +137,7 @@ input type:touchpad {
 bar {
   swaybar_command waybar
 }
+exec kanshi >/tmp/kanshi.log 2>&1
 exec swaync || mako
 exec blueman-applet
 exec clementine
