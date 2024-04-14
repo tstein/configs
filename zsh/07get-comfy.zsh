@@ -64,7 +64,16 @@ get-comfy() {
 # TMUX isn't passed by default, but TERM is. Check both to prevent nesting when
 # sshing in from another tmux.
 if [[ ! -v TMUX && \$TERM != tmux-* ]]; then
-  ~/.local/bin/mtmux
+  if [[ -v DISPLAY ]]; then
+    # If we're sitting in front of a GUI, only auto-attach if there are no
+    # clients: the second and later terminals are likely for one-offs or ssh.
+    if [[ \$(tmux list-clients -t main 2>/dev/null) != *main* ]]; then
+      ~/.local/bin/mtmux
+    fi
+  else
+    # Otherwise, do it unconditionally: we're probably a server.
+    ~/.local/bin/mtmux
+  fi
 fi
 EOF
     fi
