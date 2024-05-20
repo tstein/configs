@@ -1,4 +1,6 @@
 {
+  "ipc": true,
+
   "modules-left": ["sway/workspaces", "sway/window"],
   "modules-center": ["custom/media"],
   "modules-right": ["sway/language", "idle_inhibitor", "pulseaudio", "backlight", "battery", "tray", "clock"],

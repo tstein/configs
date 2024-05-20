@@ -133,7 +133,7 @@ label:focus {
   background-color: #f53c3c;
   color: #ffffff;
   animation-name: blink;
-  animation-duration: 0.5s;
+  animation-duration: 2s;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
   animation-direction: alternate;
