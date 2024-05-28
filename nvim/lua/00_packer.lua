@@ -37,11 +37,9 @@ return packer.startup(function(use)
   use "neovim/nvim-lspconfig"
   use "nvim-lua/completion-nvim"
   use "hrsh7th/nvim-cmp"
-  use "hrsh7th/vim-vsnip"
   use "hrsh7th/cmp-nvim-lsp"
   use "hrsh7th/cmp-buffer"
   use "hrsh7th/cmp-path"
-  use "hrsh7th/cmp-vsnip"
   use "simrat39/rust-tools.nvim"
   use {
     'nvim-treesitter/nvim-treesitter',
@@ -51,8 +49,9 @@ return packer.startup(function(use)
     end,
   }
 
-  use "vim-airline/vim-airline"
   use "akinsho/nvim-bufferline.lua"
+  use "vim-airline/vim-airline"
+  use "vim-airline/vim-airline"
   use "fs111/pydoc.vim"
   use "preservim/tagbar"
   use "tpope/vim-fugitive"
