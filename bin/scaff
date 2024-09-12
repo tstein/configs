@@ -1,43 +1,42 @@
 #!/bin/zsh
-# Create a docker container with a given directory mounted for experimentation.
+# Create a container with a given directory mounted for experimentation.
 
 set -eu
 
-if [[ $#argv < 1 ]]; then
-    print "usage: scaff WORKDIR"
-    exit 1
-fi
+IMAGE="fedora:latest"
+NAME=scaff_$(date "+%Y-%m-%d_%H.%M.%S")
+# Mount the dir in the first positional arg rw at /work, defaulting to $PWD.
+WORKDIR=$(readlink -m ${1:-.})
 
-if ! docker --version >/dev/null 2>/dev/null; then
-    print "docker not installed"
-    exit 1
-fi
+TEMPDIR=$(mktemp -d)
+trap "rm -rf ${TEMPDIR}" EXIT
 
-if ! systemctl is-active docker >/dev/null 2>/dev/null; then
-    print "docker not running"
-    exit 1
-fi
-
-WORKDIR=$(readlink -m $1)
-DOCKERDIR=$(mktemp -d)
-pushd $DOCKERDIR
+# Define the container, install some necessities, and set up a user.
+pushd ${TEMPDIR}
 cat >Dockerfile <<EOF
-FROM fedora:latest
-RUN dnf -y install zsh git tmux htop tree neovim vim ctags python3-pip python3-bpython util-linux-user
-RUN chsh -s /bin/zsh
-WORKDIR /root
-RUN git clone https://github.com/tstein/configs
-RUN echo 'PR_COLOR=\$PR_CYAN' >> .zlocal
-RUN echo 'PR_CHAR="📦"' >> .zlocal
-RUN cd configs; ./setup.zsh
+FROM ${IMAGE}
+RUN dnf -y install zsh git tmux htop tree neovim vim ctags file \
+util-linux-user \
+golang npm python3-pip python3-bpython rubygems
+RUN useradd -s /bin/zsh ${USER}
+RUN echo "${USER} ALL=(ALL) ALL, NOPASSWD: ALL" >>/etc/sudoers
 VOLUME /work
 WORKDIR /work
 EOF
-
-docker build -t scaff .
+podman pull ${IMAGE}
+buildah build --format=docker -t scaff .
 popd
-rm -rf $DOCKERDIR
 
-NAME=scaff_$(date "+%Y-%m-%d_%H.%M.%S")
-docker run --name $NAME -v $WORKDIR:/work -it scaff /bin/zsh
-docker rm $NAME
+# Create a replacement zlocal. This sets up a distinct prompt but also disables
+# auto-mtmux, which can't see if it's already in tmux across container
+# boundaries and doesn't make sense in this context anyway.
+echo 'PR_COLOR=$PR_CYAN' >>${TEMPDIR}/.zlocal
+echo 'PR_CHAR=📦' >>${TEMPDIR}/.zlocal
+
+# Run it!
+podman run --rm --rmi --name ${NAME} -h "scaff(${HOST})" \
+  -v /etc/localtime:/etc/localtime:ro \
+  -v ${HOME}:/home/${USER}:O \
+  -v ${TEMPDIR}/.zlocal:/home/${USER}/.zlocal \
+  -v ${WORKDIR}:/work \
+  -i -t scaff /bin/zsh
