@@ -38,9 +38,25 @@ zmodload -F zsh/stat b:zstat
 zmodload zsh/sched
 ####################################### }}}
 
-# Load the modular parts. {{{
+# Load the modular parts of this config. {{{
+# Migrate from my made-up ~/.zsh to my less-made-up ~/.config/zsh.
 if [ -d ~/.zsh ]; then
-  for zfile in `ls ~/.zsh/*.zsh`; do
+  if [ -d ~/.config/zsh ]; then
+    print "~/.zsh exists, but so does ~/.config/zsh. Ignoring ~/.zsh."
+  else
+    mkdir -p ~/.config
+    mv ~/.zsh ~/.config/zsh
+    print "Migrated ~/.zsh to ~/.config/zsh."
+  fi
+fi
+
+_user_funcs=~/.config/zsh/functions
+if ! (($fpath[(Ie)$_user_funcs])); then
+  fpath=($_user_funcs $fpath)
+fi
+
+if [ -d ~/.config/zsh/conf.d ]; then
+  for zfile in ~/.config/zsh/conf.d/*.zsh; do
     source $zfile
   done
 fi

@@ -16,10 +16,10 @@ ln -ns "$CONFIGS/bin/mtmux" ~/.local/bin/mtmux
 ln -ns "$CONFIGS/dir_colors" ~/.dir_colors
 ln -ns "$CONFIGS/nvim/init.lua" ~/.config/nvim/init.lua
 ln -ns "$CONFIGS/nvim/lua" ~/.config/nvim/lua
-ln -ns "$CONFIGS/tmux.conf" ~/.tmux.conf
+ln -ns "$CONFIGS/tmux.conf" ~/.config/tmux/tmux.conf
 ln -ns "$CONFIGS/vim" ~/.vim
 ln -ns "$CONFIGS/vimrc" ~/.vimrc
-ln -ns "$CONFIGS/zsh" ~/.zsh
+ln -ns "$CONFIGS/zsh" ~/config/zsh
 ln -ns "$CONFIGS/zshrc" ~/.zshrc
 
 ln -ns "$CONFIGS/alacritty" ~/.config/alacritty
