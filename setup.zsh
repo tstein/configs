@@ -8,7 +8,7 @@ cd $CONFIGS
 git submodule update --init --recursive
 
 # dirs
-mkdir -p ~/.config/nvim
+mkdir -p ~/.config/{nvim,tmux}
 mkdir -p ~/.local/{bin,tmp}
 
 # symlinks
@@ -19,7 +19,7 @@ ln -ns "$CONFIGS/nvim/lua" ~/.config/nvim/lua
 ln -ns "$CONFIGS/tmux.conf" ~/.config/tmux/tmux.conf
 ln -ns "$CONFIGS/vim" ~/.vim
 ln -ns "$CONFIGS/vimrc" ~/.vimrc
-ln -ns "$CONFIGS/zsh" ~/config/zsh
+ln -ns "$CONFIGS/zsh" ~/.config/zsh
 ln -ns "$CONFIGS/zshrc" ~/.zshrc
 
 ln -ns "$CONFIGS/alacritty" ~/.config/alacritty
