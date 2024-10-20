@@ -8,7 +8,7 @@ cd $CONFIGS
 git submodule update --init --recursive
 
 # dirs
-mkdir -p ~/.config/{nvim,tmux}
+mkdir -p ~/.config/{environment.d,nvim,tmux}
 mkdir -p ~/.local/{bin,tmp}
 
 # symlinks
@@ -31,6 +31,10 @@ if [[ "$USER" == "ted" ]]; then
 else
     print "skipping gitconfig because you may not be ted"
 fi
+
+# systemd --user
+# No ~ expansion here, so we have to do it now.
+print "PATH=$HOME/.local/bin:\$PATH" >~/.config/environment.d/00_localbin.conf
 
 # ssh config
 if [[ -e ~/.ssh/config ]]; then
