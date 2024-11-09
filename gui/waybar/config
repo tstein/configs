@@ -19,7 +19,7 @@
     "return-type": "json",
     "max-length": 40,
     "escape": true,
-    "format": "{icon} {}",
+    "format": "{icon} {0}",
     "format-icons": {
       "default": "🎜",
       "firefox": "🦊",
@@ -55,7 +55,8 @@
       "car": "",
       "default": ["", "", ""]
     },
-    "on-click": "pavucontrol"
+    "on-click": "pavucontrol",
+    "ignored-sinks": ["Easy Effects Sink"],
   },
   "backlight": {
     "format": "{percent}% {icon}",
