@@ -18,6 +18,9 @@ export MOZ_ENABLE_WAYLAND=1
 
 export XDG_CURRENT_DESKTOP=sway
 dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+# required for swaymsg output '*' color_profile icc whatever.icc
+# https://github.com/swaywm/sway/issues/1486#issuecomment-2344740148
+export WLR_RENDERER=vulkan
 sway&; WM_PID=$!
 
 # Apps that live in the tray.
