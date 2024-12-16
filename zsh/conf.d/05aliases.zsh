@@ -34,6 +34,7 @@ alias fortune='fortune -c'
 alias getpwdfs='getfstype .'
 alias grep='grep --color=auto'
 alias less='less -FRX'
+export MANPAGER='nvim +Man!'
 
 case `get_prop OS` in
   'Linux')
