@@ -21,6 +21,7 @@ alias pdfcat='gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=out.pdf'
 alias reset='tput reset'  # same thing without the unnecessary delay
 alias rezsh='source ~/.zshrc'
 alias vimdir='nvim +Renamer '
+alias watch-dirty='watch grep -i dirty /proc/meminfo'
 if [[ `get_prop OS` == 'Linux' ]]; then
     alias open='xdg-open'
 fi
