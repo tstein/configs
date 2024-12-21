@@ -18,7 +18,7 @@ case `get_prop OS` in
     #   ^<LeftArrow>    :   backward-word
     #   ^<RightArrow>   :   forward-word
     case "$TERM" in
-      'alacritty')
+      'alacritty'|'foot')
         bindkey '^[[3~'     delete-char
         bindkey '^[[H'      beginning-of-line
         bindkey '^[[F'      end-of-line
@@ -35,15 +35,6 @@ case `get_prop OS` in
         bindkey '^[[6~'     end-of-history
         bindkey '^[[1;5D'   backward-word
         bindkey '^[[1;5C'   forward-word
-        ;;
-      'rxvt'*)
-        bindkey '^[[3~'     delete-char
-        bindkey '^[[7~'     beginning-of-line
-        bindkey '^[[8~'     end-of-line
-        bindkey '^[[5~'     insert-last-word
-        bindkey '^[[6~'     end-of-history
-        bindkey '^[Od'      backward-word
-        bindkey '^[Oc'      forward-word
         ;;
       'screen'*|'tmux'*)
         bindkey '^[[3~'     delete-char
