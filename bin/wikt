@@ -1,0 +1,108 @@
+#!/usr/bin/env python
+
+import io
+import json
+import os
+import urllib
+import re
+import sys
+import textwrap
+import warnings
+from collections import defaultdict
+
+import requests
+from bs4 import BeautifulSoup, MarkupResemblesLocatorWarning
+from termcolor import colored
+
+
+MAX_WIDTH = 80
+POS_COLORS = defaultdict(lambda: "light_magenta", {
+    "noun": "light_blue",
+    "proper noun": "blue",
+    "verb": "light_red",
+    "adjective": "light_green",
+    "adverb": "light_yellow",
+})
+
+
+def bail(code, errmsg):
+    sys.stderr.write(errmsg)
+    sys.stderr.write("\n")
+    sys.exit(code)
+
+
+def url(query: str) -> str:
+    return ("https://en.wiktionary.org/api/rest_v1/page/definition/"
+            f"{urllib.parse.quote(query)}"
+            "?redirect=true")
+
+
+def request_definition(query: str) -> dict:
+    """Return a dict describing the definition if there was one, or bail() if
+    there wasn't."""
+    headers = {
+        "accept": "application/json",
+        "charset": "utf-8",
+        "profile": "https://www.mediawiki.org/wiki/Specs/definition/0.8.0",
+    }
+    r = requests.get(url(query), headers=headers)
+    if r.status_code != 200:
+        bail(1, "lookup failed!")
+
+    return json.loads(r.text)
+
+
+def extract_definition(definitions: dict) -> str:
+    """Convert the complete definition into the interesting bits, formatted for
+    the terminal."""
+    if "en" not in definitions:
+        bail(1, "there was a definition, but not in English!")
+
+    try:
+        wrap_width = min(MAX_WIDTH, os.get_terminal_size().columns)
+    except OSError:
+        # Throws if stdout isn't a terminal.
+        wrap_width = MAX_WIDTH
+    dedup_space = re.compile(r"\s{2,}")
+
+    buffer = io.StringIO()
+    for definitions in definitions["en"]:
+        part_of_speech = definitions["partOfSpeech"].lower()
+        part_of_speech = colored(
+            part_of_speech,
+            POS_COLORS[part_of_speech],
+            attrs=["bold"])
+        buffer.write(f"{part_of_speech}:\n")
+        # A bit needlessly nested here, maybe?
+        defs = [
+            d["definition"]
+            for d in definitions["definitions"]
+            if d["definition"]
+        ]
+        for n, d in enumerate(defs, start=1):
+            n = colored(f"{n:2}", "white", "on_dark_grey", attrs=["bold"])
+            text = dedup_space.sub(" ", BeautifulSoup(d, "lxml").text.strip())
+            wrapped = textwrap.fill(
+                text,
+                width=wrap_width - 5, subsequent_indent=" " * 5)
+            buffer.write(f"  {n} {wrapped}\n")
+        buffer.write("\n")
+    return buffer.getvalue().strip()
+
+
+def main():
+    if len(sys.argv) == 1:
+        print("usage: wikt QUERY...")
+        print("  QUERY is multiple tokens. Each invocation does one lookup.")
+        sys.exit(255)
+
+    # bs4 complains if you try to parse something that doesn't look like XML.
+    # Some definitions will have markup, some won't. Cleaner to silence the
+    # warning than try to replicate its heuristic there.
+    warnings.filterwarnings("ignore", category=MarkupResemblesLocatorWarning)
+    query = " ".join(sys.argv[1:])
+    print(extract_definition(request_definition(query)))
+
+
+if __name__ == "__main__":
+    main()
