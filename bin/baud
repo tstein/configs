@@ -1,10 +1,10 @@
-#!/usr/bin/python3
-""" Printing slower-downer. Results not guaranteed outside ASCII. """
+#!/usr/bin/env python
+"""Printing slower-downer. Results not guaranteed outside ASCII."""
 
 from sys import argv, stdin, stdout
 from time import sleep, time
 
-if __name__ == '__main__':
+try:
     rate = int(argv[1]) if len(argv) > 1 else 300
     delay = 1.0 / (rate / 7)  # 7 bits for ASCII
     text = "".join([l for l in stdin])
@@ -14,3 +14,6 @@ if __name__ == '__main__':
         stdout.flush()
         sleep(delay)
     seconds = time() - start
+except KeyboardInterrupt:
+    stdout.write("\n")
+    stdout.flush()
