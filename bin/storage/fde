@@ -1,0 +1,54 @@
+#!/bin/zsh
+
+set -eu
+
+PROG=$(basename $0)
+if [[ $# != 1 ]]; then
+  print "usage: ${PROG} DEVICE"
+  exit 255
+fi
+DEVICE=$1
+if [[ $DEVICE != /* ]]; then
+  DEVICE=$(pwd)/${DEVICE}
+fi
+# suffix so the layering is clear in `zpool status`, etc.
+CRYPT_DEVICE_NAME=$(basename ${DEVICE})-crypt
+
+# checks: only meant to be used on block devices, and unlikely to be worth
+# trying anything without being root
+if [[ $(id -u) != 0 ]]; then
+  print "${PROG} must be run as root!"
+  exit 255
+fi
+if [[ ! -b ${DEVICE} ]]; then
+  print "${DEVICE} does not appear to be a block device!"
+  exit 1
+fi
+
+print "##########"
+print "#  setting up encryption on ${DEVICE}"
+print "#  current contents:"
+print -n "# "
+file -sL ${DEVICE}
+print "##########"
+print
+
+print "# ENTER A KEY STRING"
+read -s KEYSTR
+if [[ ! ${KEYSTR} ]]; then
+  print "empty key string!"
+fi
+
+print "# FORMATTING DEVICE"
+echo ${KEYSTR} | cryptsetup luksFormat ${DEVICE}
+
+print "# ADDING KEYFILE"
+umask 077
+KEYFILE=/etc/cryptsetup-keys.d/${CRYPT_DEVICE_NAME}.key
+dd if=/dev/random of=${KEYFILE} bs=4096 count=1
+echo ${KEYSTR} | cryptsetup luksAddKey ${DEVICE} ${KEYFILE}
+
+print "# UPDATING CRYPTTAB"
+# A keyfile of - here causes cryptsetup to assume $KEYFILE.
+print "${CRYPT_DEVICE_NAME} ${DEVICE} - nofail" >>/etc/crypttab
+print "# DONE!"
