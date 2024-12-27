@@ -50,5 +50,7 @@ echo ${KEYSTR} | cryptsetup luksAddKey ${DEVICE} ${KEYFILE}
 
 print "# UPDATING CRYPTTAB"
 # A keyfile of - here causes cryptsetup to assume $KEYFILE.
+# Doing this unconditionally isn't right, but cryptsetup seems happy to ignore
+# all but the last line referencing each encrypted device.
 print "${CRYPT_DEVICE_NAME} ${DEVICE} - nofail" >>/etc/crypttab
 print "# DONE!"
