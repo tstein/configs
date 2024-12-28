@@ -53,4 +53,8 @@ print "# UPDATING CRYPTTAB"
 # Doing this unconditionally isn't right, but cryptsetup seems happy to ignore
 # all but the last line referencing each encrypted device.
 print "${CRYPT_DEVICE_NAME} ${DEVICE} - nofail" >>/etc/crypttab
+
+print "# OPENING ENCRYPTED DEVICE"
+cryptsetup open ${DEVICE} ${CRYPT_DEVICE_NAME} --key-file ${KEYFILE}
+
 print "# DONE!"
