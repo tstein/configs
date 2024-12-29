@@ -1,0 +1,146 @@
+#!/usr/bin/env python
+"""A minimal prometheus exporter for systemd services (and not other unit
+types). Exports services from both the system daemon and the user daemon of the
+user running this exporter. Intended to be run from the user daemon of the user
+you want user service health from."""
+
+import argparse
+import enum
+import http.server
+import io
+import logging
+import os
+import subprocess
+import sys
+from typing import Dict, List, Tuple
+
+
+class Daemon(enum.Enum):
+    SYSTEM = enum.auto()
+    USER = enum.auto()
+
+
+def collect_services(daemon: Daemon) -> List[Dict[str, str]]:
+    systemctl_argv = ["systemctl", "show", "--no-pager", "*.service"]
+    if daemon == Daemon.USER:
+        systemctl_argv.insert(1, "--user")
+    systemctl = subprocess.run(systemctl_argv, capture_output=True)
+    if systemctl.returncode != 0:
+        print(f"invoking systemctl went bad: ret={systemctl.returncode}\n"
+              f"stdout={systemctl.stdout}\n"
+              f"stderr={systemctl.stderr}")
+        return []
+
+    services = []
+    current_service = {}
+    for line in systemctl.stdout.decode().split("\n"):
+        # one key=value per line, services separated by blank lines
+        # output is \n-terminated, so no need to explicitly handle the last
+        # service
+        if not line:
+            services.append(current_service)
+            current_service = {}
+            continue
+
+        split_i = line.index("=")
+        key = line[:split_i]
+        val = line[split_i + 1:]
+        current_service[key] = val
+    return services
+
+
+def collect_service_status() -> List[Tuple[str, str, str]]:
+    system_services = collect_services(Daemon.SYSTEM)
+    user_services = collect_services(Daemon.USER)
+
+    def chew(daemon, service):
+        return (service["Id"], str(daemon), service["ActiveState"])
+
+    return ([chew("system", s) for s in system_services] +
+            [chew("user", s) for s in user_services])
+
+
+def prometheize_service_status(services: List[Tuple[str, str, str]]) -> str:
+    resp = io.StringIO()
+    resp.write("\n".join(("# HELP systemd_service_up systemd service",
+                          "# TYPE systemd_service_up gauge", "")))
+    for service, daemon, state in services:
+        # ignoring anything besides failed for this implementation
+        up_int = int(state != "failed")
+        resp.write("systemd_service_up{name=\"")
+        resp.write(service)
+        resp.write("\",daemon=\"")
+        resp.write(daemon)
+        resp.write("\"} ")
+        resp.write(str(up_int))
+        resp.write("\n")
+    return resp.getvalue()
+
+
+class RequestHandler(http.server.BaseHTTPRequestHandler):
+    def do_GET(self):
+        if self.path != "/metrics":
+            self.send_response(404)
+            self.end_headers()
+            self.wfile.write("not found".encode("utf-8"))
+            return
+
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(
+            prometheize_service_status(collect_service_status())
+            .encode("utf-8"))
+
+
+def install():
+    """Create, enable, and start a user unit running this service, clobbering
+    any such unit that already exists."""
+    service_path = os.path.abspath(sys.argv[0])
+    service_name = os.path.basename(service_path)
+    unit_name = f"{service_name}.service"
+    unit_path = os.path.expanduser(f"~/.config/systemd/user/{unit_name}")
+
+    os.makedirs(os.path.dirname(unit_path), exist_ok=True)
+    with open(unit_path, "w") as f:
+        f.write(f"""
+[Unit]
+Description=Service health metrics exporter
+
+[Service]
+ExecStart={service_path}
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+                """.strip())
+    os.system("systemctl --user daemon-reload")
+    os.system(f"systemctl --user enable --now {service_name}")
+
+
+def export_forever():
+    logging.basicConfig(level=logging.INFO)
+    # 1000 + sum(map(ord, "systemd-service-health-exporter"))
+    server_address = ("0.0.0.0", 4184)
+    logging.info(f"starting server on {server_address[0]}:{server_address[1]}")
+    httpd = http.server.ThreadingHTTPServer(server_address, RequestHandler)
+    httpd.serve_forever()
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--install",
+        default=False,
+        action="store_true",
+        help="install this program as a user service, overwriting any "
+        "existing service, and exit")
+    args = parser.parse_args()
+    if args.install:
+        install()
+        sys.exit(0)
+    else:
+        export_forever()
+
+
+if __name__ == "__main__":
+    main()
