@@ -1,0 +1,25 @@
+#!/bin/bash
+# Run a process and TERM it after a given number of seconds pass without
+# passing any input to it.
+
+_term_proc_tree() {
+  PGRP=$(cut -d " " -f 5 /proc/self/stat)
+  trap "exit 124" SIGTERM
+  kill -TERM -"${PGRP}"
+}
+trap _term_proc_tree SIGINT SIGTERM
+
+if (( $# < 2 )); then
+  echo "usage: $(basename "${0}") TIMEOUT_SECONDS COMMAND [ARG]..."
+fi
+timeout_s="$1"
+shift
+eval "$*" < <(while true; do
+   read -srt "$timeout_s" -N 1 CHAR 2>/dev/null
+   case $? in
+      0) echo -n "$CHAR";;
+      1) break;;
+      *) _term_proc_tree;;
+   esac
+ done)
+exit "${PIPESTATUS[0]}"
