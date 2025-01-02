@@ -1,0 +1,9 @@
+#compdef timeout_input
+
+# Completions for timeout_input in configs/bin.
+
+_arguments -S -A "-" \
+  '1: :_numbers -f -u seconds duration' \
+  '*:::command:_normal'
+
+# vim: ft=zsh
