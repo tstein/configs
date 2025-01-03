@@ -7,6 +7,7 @@ include /etc/sway/config.d/*
 set $mod Mod4
 set $lock-cmd 'swaylock -c 132a4d'
 set $volstep 2
+set $brightstep 4
 font pango:DejaVu Sans Mono 12
 
 # window management
@@ -109,18 +110,22 @@ mode "resize" {
 }
 
 # media keys
-bindsym $mod+z exec playerctl previous
-bindsym $mod+s exec playerctl play-pause
-bindsym $mod+x exec playerctl next
-bindsym $mod+v exec playerctl stop
+# control whichver player playctl picks
 bindsym XF86AudioPrev exec playerctl previous
 bindsym XF86AudioPlay exec playerctl play-pause
 bindsym XF86AudioNext exec playerctl next
-bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -$volstep%
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +$volstep%
-bindsym XF86MonBrightnessDown exec brightnessctl set $volstep%-
-bindsym XF86MonBrightnessUp exec brightnessctl set +$volstep%
+bindsym XF86AudioStop exec playerctl stop
+# control strawberry explicitly
+bindsym Shift+XF86AudioPrev exec playerctl -p strawberry previous
+bindsym Shift+XF86AudioPlay exec playerctl -p strawberry play-pause
+bindsym Shift+XF86AudioNext exec playerctl -p strawberry next
+bindsym Shift+XF86AudioStop exec playerctl -p strawberry stop
+
+bindsym XF86AudioMute         exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioLowerVolume  exec pactl set-sink-volume @DEFAULT_SINK@ -$volstep%
+bindsym XF86AudioRaiseVolume  exec pactl set-sink-volume @DEFAULT_SINK@ +$volstep%
+bindsym XF86MonBrightnessDown exec brightnessctl set $brightstep%-
+bindsym XF86MonBrightnessUp   exec brightnessctl set +$brightstep%
 
 # inputs
 input type:keyboard {
@@ -133,16 +138,18 @@ input type:touchpad {
   natural_scroll enabled
 }
 
-# components and programs
+# assemble a DE
 bar {
   swaybar_command waybar
 }
-exec kanshi >/tmp/kanshi.log 2>&1
+exec kanshi
 exec swaync || mako
 exec blueman-applet
-exec clementine
-exec keepassxc
 exec nm-applet --indicator
 
-# output config, idler config, and further customization
+# programs
+exec keepassxc
+exec strawberry
+
+# output config, idler config and further customization
 include ~/.sway_config_local
