@@ -4,7 +4,6 @@ include /etc/sway/config.d/*
 # vars #
 ########
 # super
-set $mod Mod4
 set $lock-cmd 'swaylock -c 132a4d'
 set $volstep 2
 set $brightstep 4
@@ -21,79 +20,79 @@ for_window [window_type="con" app_id="terminator"] border none
 for_window [shell="xwayland"] title_format "[XW] %title"
 hide_edge_borders --i3 smart
 focus_follows_mouse no
-# mouse+$mod to drag floating windows
-floating_modifier $mod
+# mouse+Super to drag floating windows
+floating_modifier Super
 
 ############
 # bindings #
 ############
 # kill focused window
-bindsym $mod+Shift+c kill
+bindsym Super+Shift+c kill
 
 # program shortcuts
-bindsym $mod+Return exec alacritty
-bindsym $mod+d exec bemenu-run --no-overlap --line-height 30
-bindsym $mod+Shift+l exec $lock-cmd
-bindsym $mod+Shift+s exec grim -g "$(slurp)" - | wl-copy
-bindsym $mod+c exec strawberry
-bindsym $mod+n exec nemo
-bindsym $mod+q exec qalculate-gtk
+bindsym Super+Return exec alacritty
+bindsym Super+d exec bemenu-run --no-overlap --line-height 30
+bindsym Super+Shift+l exec $lock-cmd
+bindsym Super+Shift+s exec grim -g "$(slurp)" - | wl-copy
+bindsym Super+Alt+c exec strawberry
+bindsym Super+Alt+n exec nemo
+bindsym Super+Alt+q exec qalculate-gtk
 
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
-bindsym $mod+Right focus right
+bindsym Super+Left focus left
+bindsym Super+Down focus down
+bindsym Super+Up focus up
+bindsym Super+Right focus right
 
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
+bindsym Super+Shift+Left move left
+bindsym Super+Shift+Down move down
+bindsym Super+Shift+Up move up
+bindsym Super+Shift+Right move right
 
-bindsym $mod+w focus output left
-bindsym $mod+e focus output right
-bindsym $mod+shift+w move output left
-bindsym $mod+shift+e move output right
-bindsym $mod+Mod1+shift+w move workspace to output left
-bindsym $mod+Mod1+shift+e move workspace to output right
+bindsym Super+w focus output left
+bindsym Super+e focus output right
+bindsym Super+shift+w move output left
+bindsym Super+shift+e move output right
+bindsym Super+Mod1+shift+w move workspace to output left
+bindsym Super+Mod1+shift+e move workspace to output right
 
 # enter fullscreen mode for the focused container
-bindsym $mod+f fullscreen toggle
+bindsym Super+f fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
-#bindsym $mod+s layout stacking
-bindsym $mod+space layout toggle tabbed splith splitv
+#bindsym Super+s layout stacking
+bindsym Super+space layout toggle tabbed splith splitv
 
 # toggle tiling / floating
-bindsym $mod+t floating toggle
+bindsym Super+t floating toggle
 
 # switch to workspace
-bindsym $mod+1 workspace 1
-bindsym $mod+2 workspace 2
-bindsym $mod+3 workspace 3
-bindsym $mod+4 workspace 4
-bindsym $mod+5 workspace 5
-bindsym $mod+6 workspace 6
-bindsym $mod+7 workspace 7
-bindsym $mod+8 workspace 8
-bindsym $mod+9 workspace 9
-bindsym $mod+0 workspace 10
+bindsym Super+1 workspace 1
+bindsym Super+2 workspace 2
+bindsym Super+3 workspace 3
+bindsym Super+4 workspace 4
+bindsym Super+5 workspace 5
+bindsym Super+6 workspace 6
+bindsym Super+7 workspace 7
+bindsym Super+8 workspace 8
+bindsym Super+9 workspace 9
+bindsym Super+0 workspace 10
 
 # move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace 1
-bindsym $mod+Shift+2 move container to workspace 2
-bindsym $mod+Shift+3 move container to workspace 3
-bindsym $mod+Shift+4 move container to workspace 4
-bindsym $mod+Shift+5 move container to workspace 5
-bindsym $mod+Shift+6 move container to workspace 6
-bindsym $mod+Shift+7 move container to workspace 7
-bindsym $mod+Shift+8 move container to workspace 8
-bindsym $mod+Shift+9 move container to workspace 9
-bindsym $mod+Shift+0 move container to workspace 10
+bindsym Super+Shift+1 move container to workspace 1
+bindsym Super+Shift+2 move container to workspace 2
+bindsym Super+Shift+3 move container to workspace 3
+bindsym Super+Shift+4 move container to workspace 4
+bindsym Super+Shift+5 move container to workspace 5
+bindsym Super+Shift+6 move container to workspace 6
+bindsym Super+Shift+7 move container to workspace 7
+bindsym Super+Shift+8 move container to workspace 8
+bindsym Super+Shift+9 move container to workspace 9
+bindsym Super+Shift+0 move container to workspace 10
 
-bindsym $mod+Shift+r reload
-bindsym $mod+Shift+q exec "swaynag -t warning -e bottom -m 'log out?' -b 'yep, log out' 'swaymsg exit'"
+bindsym Super+Shift+r reload
+bindsym Super+Shift+q exec "swaynag -t warning -e bottom -m 'log out?' -b 'yep, log out' 'swaymsg exit'"
 
-bindsym $mod+r mode "resize"
+bindsym Super+r mode "resize"
 mode "resize" {
   bindsym j resize shrink width 10 px or 10 ppt
   bindsym k resize grow height 10 px or 10 ppt
