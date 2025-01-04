@@ -1,13 +1,17 @@
+// vim: ft=json
 {
   "ipc": true,
 
-  "modules-left": ["sway/workspaces", "sway/window"],
+  "modules-left": ["sway/workspaces", "sway/mode", "sway/window"],
   "modules-center": ["custom/media"],
   "modules-right": ["sway/language", "idle_inhibitor", "pulseaudio", "backlight", "battery", "tray", "clock"],
 
   // modules-left
   "sway/workspaces": {
     "disable-scroll-wraparound": true,
+  },
+  "sway/mode": {
+    "format": "<span style=\"italic\">{}</span>"
   },
   "sway/window": {
     "tooltip": false,
