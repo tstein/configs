@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import argparse
 import io
 import json
 import os
@@ -91,17 +92,26 @@ def extract_definition(definitions: dict) -> str:
 
 
 def main():
-    if len(sys.argv) == 1:
-        print("usage: wikt QUERY...")
-        print("  QUERY is multiple tokens. Each invocation does one lookup.")
-        sys.exit(255)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--raw", action="store_true",
+        help="Print the raw API response instead of formatting it.")
+    parser.add_argument(
+        "TOKEN", nargs="+",
+        help="One or more tokens to look up. Each invocation does one lookup.")
+
+    args = parser.parse_args()
 
     # bs4 complains if you try to parse something that doesn't look like XML.
     # Some definitions will have markup, some won't. Cleaner to silence the
     # warning than try to replicate its heuristic there.
     warnings.filterwarnings("ignore", category=MarkupResemblesLocatorWarning)
-    query = " ".join(sys.argv[1:])
-    print(extract_definition(request_definition(query)))
+    query = " ".join(args.TOKEN)
+    response = request_definition(query)
+    if args.raw:
+        print(json.dumps(response, indent=2))
+    else:
+        print(extract_definition(response))
 
 
 if __name__ == "__main__":
