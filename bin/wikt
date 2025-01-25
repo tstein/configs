@@ -74,15 +74,28 @@ def extract_definition(definitions: dict) -> str:
             POS_COLORS[part_of_speech],
             attrs=["bold"])
         buffer.write(f"{part_of_speech}:\n")
+
         # A bit needlessly nested here, maybe?
         defs = [
             d["definition"]
             for d in definitions["definitions"]
             if d["definition"]
         ]
-        for n, d in enumerate(defs, start=1):
+        # Extract the plaintext from the SSR'd HTML.
+        defs = [dedup_space.sub(" ", BeautifulSoup(d, "lxml").text.strip())
+                for d in defs]
+
+        # The API occasionally returns unexpectedly-duplicated results. Filter
+        # those out. (This happened in the response for "giddy" in 2025-01.)
+        unique_defs = []
+        seen_defs = set()
+        for d in defs:
+            if d not in seen_defs:
+                unique_defs.append(d)
+                seen_defs.add(d)
+
+        for n, text in enumerate(unique_defs, start=1):
             n = colored(f"{n:2}", "white", "on_dark_grey", attrs=["bold"])
-            text = dedup_space.sub(" ", BeautifulSoup(d, "lxml").text.strip())
             wrapped = textwrap.fill(
                 text,
                 width=wrap_width - 5, subsequent_indent=" " * 5)
