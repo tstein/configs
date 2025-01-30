@@ -12,7 +12,6 @@ alias watchfreq="watch -n .5 'cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_c
 # Keystroke-savers:
 alias -- -='cd -'
 alias absname='readlink -m'
-alias dict='dict -d wn'
 alias ffmpeg='ffmpeg -hide_banner'
 alias ffprobe='ffprobe -hide_banner'
 alias ncplayer='ncplayer -s scalehi'
