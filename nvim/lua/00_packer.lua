@@ -49,8 +49,12 @@ return packer.startup(function(use)
     end,
   }
 
+  use {
+    'nvim-telescope/telescope.nvim', branch = '0.1.x',
+    requires = { {'nvim-lua/plenary.nvim'} }
+  }
+
   use "akinsho/nvim-bufferline.lua"
-  use "vim-airline/vim-airline"
   use "vim-airline/vim-airline"
   use "fs111/pydoc.vim"
   use "preservim/tagbar"

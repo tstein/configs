@@ -6,6 +6,12 @@ end
 vim.g.mapleader = ","
 vim.g.maplocalleader = vim.g.mapleader
 
+-- telescope pickers
+map("n", "<leader>pf", ":lua require'telescope.builtin'.find_files{}<CR>")
+map("n", "<leader>pg", ":lua require'telescope.builtin'.git_files{}<CR>")
+map("n", "<leader>pd", ":lua require'telescope.builtin'.lsp_document_symbols{}<CR>")
+map("n", "<leader>ps", ":lua require'telescope.builtin'.lsp_dynamic_workspace_symbols{}<CR>")
+
 -- save
 map("n", "<leader>w", ":w<CR>", opts)
 -- save like you mean it
