@@ -1,0 +1,47 @@
+#!/usr/bin/env python
+"""Connect to multiple hosts' instances of nvme_health_server and insert their metrics
+into postgres. One-and-done, so run it regularly."""
+
+import json
+import logging
+import sys
+
+import psycopg2
+import requests
+
+# 1000 + sum(map(ord, "nvme_health"))
+PORT = 2163
+
+
+def main():
+  logging.basicConfig(level=logging.INFO)
+  conn = psycopg2.connect("user=ted")
+  cursor = conn.cursor()
+
+  for host in sys.argv[1:]:
+    req = requests.get(f"http://{host}:{PORT}")
+    if req.status_code != 200:
+      logging.warning(
+        f"something went wrong retrieving from {host}, "
+        f"code={req.status_code}, text={req.text}"
+      )
+      continue
+    try:
+      smart_map = json.loads(req.text)
+    except ValueError:
+      logging.warning(f"couldn't parse result from {host}, text={req.text}")
+      continue
+
+    for device, smart_data in smart_map.items():
+      cursor.execute(
+        "INSERT INTO nvme_health VALUES (%s, %s, now(), %s)",
+        (host, device, json.dumps(smart_data)),
+      )
+  conn.commit()
+
+
+if __name__ == "__main__":
+  if len(sys.argv) == 1:
+    print("usage: nvme_health_scraper HOST...")
+    sys.exit(255)
+  main()

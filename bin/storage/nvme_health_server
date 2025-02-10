@@ -1,0 +1,81 @@
+#!/usr/bin/env python
+"""A trivial HTTP server that returns a JSON object with SMART metrics from all NVMe
+devices on this machine, identified by their model+serial. Must be run as root to access
+those metrics."""
+
+import http.server
+import json
+import os
+import re
+import subprocess
+
+NVME_NS_RE = re.compile(r"^nvme\d+n\d+$")
+
+device_map = {}
+
+
+def smarts() -> tuple[bool, str]:
+  """Returns whether we collected smart info successfully, and the json string
+  representing it (if we did) or an error message (if we did not)."""
+  os.chdir("/dev/disk/by-id")
+  for symlink in sorted(os.listdir()):
+    if not symlink.startswith("nvme-"):
+      continue
+
+    # There are three symlink styles and counting. We want the one with model
+    # names and serials.
+    if any((symlink.startswith("nvme-eui."), symlink.startswith("nvme-nvme."))):
+      continue
+
+    device_file = os.path.basename(os.readlink(symlink))
+    if NVME_NS_RE.match(device_file):
+      # And even within this style, there's redundant links.
+      if device_file in device_map:
+        continue
+
+      device_map[device_file] = symlink
+
+  smart_map = {}
+  for dev, name in device_map.items():
+    nvme_smart = subprocess.run(
+      f"nvme smart-log -o json /dev/{dev}", capture_output=True, shell=True
+    )
+    if nvme_smart.returncode != 0:
+      return (
+        False,
+        f"failed to retrieve smart-log for {name}: " f"{nvme_smart.stdout}",
+      )
+    smart_map[name] = json.loads(nvme_smart.stdout.decode("utf-8"))
+  return True, json.dumps(smart_map)
+
+
+class RequestHandler(http.server.BaseHTTPRequestHandler):
+  def do_GET(self):
+    if self.path != "/":
+      self.send_response(404)
+      self.end_headers()
+      return
+
+    success, value = smarts()
+    if success:
+      smart_map_text = value
+      self.send_response(200)
+      self.send_header("Content-Type", "application/json")
+      self.end_headers()
+      self.wfile.write(smart_map_text.encode("utf-8"))
+    else:
+      errmsg = value
+      self.send_response(500)
+      self.end_headers()
+      self.wfile.write(errmsg.encode("utf-8"))
+
+
+def main():
+  # 1000 + sum(map(ord, "nvme_health"))
+  server_address = ("0.0.0.0", 2163)
+  httpd = http.server.ThreadingHTTPServer(server_address, RequestHandler)
+  httpd.serve_forever()
+
+
+if __name__ == "__main__":
+  main()
