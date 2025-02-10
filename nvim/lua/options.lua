@@ -25,7 +25,7 @@ opt.virtualedit = "block"
 
 -- line length
 opt.textwidth = 80
-opt.colorcolumn = "80"
+opt.colorcolumn = "+1"  -- textwidth + 1
 opt.linebreak = true
 
 -- tabs are two spaces

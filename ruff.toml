@@ -1,0 +1,7 @@
+indent-width = 2
+
+[lint]
+ignore = [
+  "E701", # multiple-statements-on-one-line-colon
+  "E731", # lambda-assignment
+]

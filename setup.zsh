@@ -8,7 +8,7 @@ cd $CONFIGS
 git submodule update --init --recursive
 
 # dirs
-mkdir -p ~/.config/{environment.d,nvim,tmux}
+mkdir -p ~/.config/{environment.d,nvim,ruff,tmux}
 mkdir -p ~/.local/{bin,tmp}
 
 # symlinks
@@ -16,6 +16,7 @@ ln -ns "$CONFIGS/bin/mtmux" ~/.local/bin/mtmux
 ln -ns "$CONFIGS/dir_colors" ~/.dir_colors
 ln -ns "$CONFIGS/nvim/init.lua" ~/.config/nvim/init.lua
 ln -ns "$CONFIGS/nvim/lua" ~/.config/nvim/lua
+ln -ns "$CONFIGS/ruff.toml" ~/.config/ruff/ruff.toml
 ln -ns "$CONFIGS/tmux.conf" ~/.config/tmux/tmux.conf
 ln -ns "$CONFIGS/vim" ~/.vim
 ln -ns "$CONFIGS/vimrc" ~/.vimrc
