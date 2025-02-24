@@ -1,0 +1,125 @@
+#!/usr/bin/env python
+"""A minimal prometheus exporter for borg backup ages. Which are in retained messages in
+mqtt, right?"""
+
+import argparse
+import datetime
+import http.server
+import io
+import logging
+import os
+import re
+import sys
+
+import paho.mqtt.client as mqtt
+
+BACKUP_TSTAMP_RE = re.compile(r"([0-9\-]{10} [0-9:]{8})")
+
+AGES = {}
+
+
+def on_message(client, userdata, message):
+  logging.info(f"received message on {message.topic}: {message.payload.decode()}")
+  topic_parts = message.topic.split("/")
+  if len(topic_parts) != 3:
+    return
+  _, host, server = topic_parts
+  AGES[(host, server)] = message.payload.decode()
+
+
+def prometheize_backup_ages() -> str:
+  resp = io.StringIO()
+  resp.write(
+    "\n".join(
+      (
+        "# HELP borg_backup_age age, in seconds, of borg backups",
+        "# TYPE borg_backup_age gauge",
+        "",
+      )
+    )
+  )
+  for (host, server), tstamp in AGES.items():
+    backup_date = datetime.datetime.strptime(tstamp, "%Y-%m-%d %H:%M:%S")
+    age_s = round((datetime.datetime.now() - backup_date).total_seconds())
+    resp.write('borg_backup_age{host="')
+    resp.write(host)
+    resp.write('",server="')
+    resp.write(server)
+    resp.write('"} ')
+    resp.write(str(age_s))
+    resp.write("\n")
+  return resp.getvalue()
+
+
+class RequestHandler(http.server.BaseHTTPRequestHandler):
+  def do_GET(self):
+    if self.path != "/metrics":
+      self.send_response(404)
+      self.end_headers()
+      self.wfile.write("not found".encode("utf-8"))
+      return
+
+    self.send_response(200)
+    self.end_headers()
+    self.wfile.write(prometheize_backup_ages().encode("utf-8"))
+
+
+def install():
+  """Create, enable, and start a user unit running this service, clobbering
+  any such unit that already exists."""
+  service_path = os.path.abspath(sys.argv[0])
+  service_name = os.path.basename(service_path)
+  unit_name = f"{service_name}.service"
+  unit_path = os.path.expanduser(f"~/.config/systemd/user/{unit_name}")
+
+  os.makedirs(os.path.dirname(unit_path), exist_ok=True)
+  with open(unit_path, "w") as f:
+    f.write(
+      f"""
+[Unit]
+Description=Service health metrics exporter
+
+[Service]
+ExecStart={service_path}
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+                """.strip()
+    )
+  os.system("systemctl --user daemon-reload")
+  os.system(f"systemctl --user enable --now {service_name}")
+
+
+def export_forever():
+  logging.basicConfig(level=logging.INFO)
+  # sum(map(ord, "borg-backup-age-exporter"))
+  server_address = ("0.0.0.0", 2381)
+  logging.info(f"starting server on {server_address[0]}:{server_address[1]}")
+  httpd = http.server.ThreadingHTTPServer(server_address, RequestHandler)
+  httpd.serve_forever()
+
+
+def main():
+  parser = argparse.ArgumentParser()
+  parser.add_argument(
+    "--install",
+    default=False,
+    action="store_true",
+    help="install this program as a user service, overwriting any existing service, "
+    "and exit",
+  )
+  args = parser.parse_args()
+  if args.install:
+    install()
+  else:
+    mqttc = mqtt.Client(os.path.basename(sys.argv[0]))
+    mqttc.on_message = on_message
+    mqttc.connect("localhost")
+    mqttc.subscribe("backups/#")
+    mqttc.loop_start()
+    export_forever()
+
+
+if __name__ == "__main__":
+  main()
