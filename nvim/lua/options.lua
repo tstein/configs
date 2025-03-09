@@ -6,7 +6,8 @@ opt.mouse = "a"
 opt.number = true
 opt.pumheight = 10
 opt.showtabline = 1  -- only show if >1 tabs
-opt.smartcase = true
+opt.ignorecase = true
+opt.smartcase = true  -- only effective when ignorecase is also enabled
 opt.switchbuf = "usetab"
 opt.undofile = true
 -- integrates nvim with the system clipboard
