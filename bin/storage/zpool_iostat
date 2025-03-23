@@ -1,0 +1,4 @@
+#!/bin/zsh
+sudo -v
+print -n "waiting for first poll..."
+sudo watch -n 0 zpool iostat -lvy 10 1

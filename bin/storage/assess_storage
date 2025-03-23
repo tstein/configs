@@ -1,0 +1,153 @@
+#!/bin/zsh
+
+set -u
+
+function format_tput() {
+  tput=$1
+  if (($tput > 1024**3)); then
+    printf "%5.1f GiB/s" $(($tput * 1.0 / 1024**3))
+  elif (($tput > 1024**2)); then
+    printf "%5.1f MiB/s" $(($tput * 1.0 / 1024**2))
+  elif (($tput > 1024)); then
+    printf "%5.1f KiB/s" $(($tput * 1.0 / 1024))
+  else
+    printf "%5d B/s" $tput
+  fi
+}
+
+function format_iops() {
+  iops=$1
+  if (($iops > 1000**2)); then
+    printf "%5.1f MIOPS" $(($iops * 1.0 / 1000**2))
+  elif (($iops > 1000)); then
+    printf "%5.1f kIOPS" $(($iops * 1.0 / 1000))
+  else
+    printf "%5d IOPS" $iops
+  fi
+}
+
+function format_ns() {
+  ns=$1
+  if (($ns > 1000**3)); then
+    printf "%5.1f s" $(($ns * 1.0 / 1000**3))
+  elif (($ns > 1000**2)); then
+    printf "%5.1f ms" $(($ns * 1.0 / 1000**2))
+  elif (($ns > 1000)); then
+    printf "%5.1f us" $(($ns * 1.0 / 1000))
+  else
+    printf "%5d ns" $ns
+  fi
+}
+
+function run_fio() {
+  mode=$1
+  filename=$2
+  filesize=$3
+
+  cmd="fio --name=t --output-format=json \
+    --ioengine libaio --direct=1 --verify=0 \
+    --filename=${filename} "
+  case $mode in
+    seqr)
+      cmd="${cmd} --rw=read --bs=1M --iodepth=64 --runtime=120s"
+      ;;
+    seqw)
+      cmd="${cmd} --rw=write --bs=1M --iodepth=64 --runtime=120s"
+      ;;
+    randr)
+      cmd="${cmd} --rw=randread --bs=4k --iodepth=64 --runtime=120s"
+      ;;
+    randw)
+      cmd="${cmd} --rw=randwrite --bs=4k --iodepth=64 --runtime=120s"
+      ;;
+    *)
+      print "invalid invocation of fio(): $@"
+      exit 255
+      ;;
+  esac
+  if [[ $filesize != "all" ]]; then
+      cmd="${cmd} --size=${filesize}"
+  fi
+
+  output=$(eval $cmd)
+  if [[ $? != 0 ]]; then
+    print "fio cmd returned $?:"
+    print $cmd
+    print "output:"
+    print $output
+    exit 255
+  fi
+
+  jq ".jobs[0]" <<<"$output"
+}
+
+function seqr() {
+  output=$(run_fio seqr $1 $2)
+  avg_tput=$(jq ".read.bw_bytes" <<<"$output")
+  print "seqr:  $(format_tput $avg_tput)"
+}
+
+function seqw() {
+  output=$(run_fio seqw $1 $2)
+  avg_tput=$(jq ".write.bw_bytes" <<<"$output")
+  print "seqw:  $(format_tput $avg_tput)"
+}
+
+function randr() {
+  output=$(run_fio randr $1 $2)
+  iops=$(jq ".read.iops" <<<"$output")
+  clat_p50=$(jq '.read.clat_ns.percentile."50.000000"' <<<"$output")
+  clat_p90=$(jq '.read.clat_ns.percentile."90.000000"' <<<"$output")
+  clat_p99=$(jq '.read.clat_ns.percentile."99.000000"' <<<"$output")
+  clat_p999=$(jq '.read.clat_ns.percentile."99.900000"' <<<"$output")
+  print "randr: $(format_iops $iops), clat:"
+  print "  p50:  $(format_ns $clat_p50)"
+  print "  p90:  $(format_ns $clat_p90)"
+  print "  p99:  $(format_ns $clat_p99)"
+  print "  p999: $(format_ns $clat_p999)"
+}
+
+function randw() {
+  output=$(run_fio randw $1 $2)
+  iops=$(jq ".write.iops" <<<"$output")
+  clat_p50=$(jq '.write.clat_ns.percentile."50.000000"' <<<"$output")
+  clat_p90=$(jq '.write.clat_ns.percentile."90.000000"' <<<"$output")
+  clat_p99=$(jq '.write.clat_ns.percentile."99.000000"' <<<"$output")
+  clat_p999=$(jq '.write.clat_ns.percentile."99.900000"' <<<"$output")
+  print "randw: $(format_iops $iops), clat:"
+  print "  p50:  $(format_ns $clat_p50)"
+  print "  p90:  $(format_ns $clat_p90)"
+  print "  p99:  $(format_ns $clat_p99)"
+  print "  p999: $(format_ns $clat_p999)"
+}
+
+function main() {
+  testfile=$1
+  filesize=${2:-all}
+
+  # It's okay to let fio lay out the test file for us, but if it doesn't exist
+  # and is in /dev, it's probably a device file that's disappeared because this
+  # testing triggered a bad behavior or some other reason. Don't waste time and
+  # memory by testing a tmpfs.
+  case $testfile in
+    /dev/*)
+      if [[ ! -e $testfile ]]; then
+        print "test target doesn't exist; refusing to create a file in /dev"
+        exit 1
+      fi
+      ;;
+    *)
+      ;;
+  esac
+
+  if [[ -e $testfile && ! -w $testfile ]]; then
+    print "can't write to ${testfile}; bailing out"
+    exit 1
+  fi
+
+  seqw $testfile $filesize
+  seqr $testfile $filesize
+  randw $testfile $filesize
+  randr $testfile $filesize
+}
+main $@
