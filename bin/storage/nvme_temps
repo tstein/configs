@@ -13,50 +13,68 @@ pci_lines = lspci("-mm").split("\n")
 nvme_lines = [d for d in pci_lines if '"Non-Volatile memory controller"' in d]
 nvme_pcis = []
 for line in nvme_lines:
-    addr = line.split()[0]
-    # -mm is space-separated and quoted when necessary. Not *the* most
-    # machine-readable.
-    name = " ".join(line.split(' "')[-2:]).replace('"', '')
-    # Clean it up a bit.
-    name = re.sub(r"(Electronics|Semiconductor) ", "", name)
-    name = re.sub(r"Co(rp\w*|.*Ltd\.?) ", "", name)
-    name = re.sub(r" [\[\(]?NVM.*$", "", name)
-    name = re.sub(r" Series", "", name)
+  addr = line.split()[0]
+  # -mm is space-separated and quoted when necessary. Not *the* most
+  # machine-readable.
+  name = " ".join(line.split(' "')[-2:]).replace('"', "")
+  # Clean it up a bit.
+  name = re.sub(r"(Electronics|Semiconductor) ", "", name)
+  name = re.sub(r"Co(rp\w*|.*Ltd\.?) ", "", name)
+  name = re.sub(r" [\[\(]?NVM.*[\]\)]?.*$", "", name)
+  name = re.sub(r" Series", "", name)
 
-    nvme_pcis.append((addr, name))
+  nvme_pcis.append((addr, name))
 nvme_pcis.sort(key=operator.itemgetter(1))
 
-# Create a PCI address to NVMe namespace device filename mapping. Hugely
-# assumes PCIe and NVMe simplicity.
+
+# Create a PCI address to NVMe namespace device filename mapping. Hugely assumes PCIe
+# and NVMe simplicity.
 def transform_path(pci_path):
-    # ../../devices/pci0000:00/0000:00:01.1/0000:01:00.0/0000:02:04.0/0000:04:00.0/nvme/nvme0/
-    # ->
-    # 04:00.0
-    return pci_path.split("/")[-3].replace("0000:", "")
+  # ../../devices/pci0000:00/0000:00:01.1/0000:01:00.0/0000:02:04.0/0000:04:00.0/nvme/nvme0/
+  # ->
+  # 04:00.0
+  return pci_path.split("/")[-3].replace("0000:", "")
+
 
 sys_class_nvme = "/sys/class/nvme"
 nvme_devs = {
-    transform_path(os.readlink(os.path.join(sys_class_nvme, dev))): f"{dev}n0"
-    for dev in os.listdir(sys_class_nvme)
+  transform_path(os.readlink(os.path.join(sys_class_nvme, dev))): f"{dev}"
+  for dev in os.listdir(sys_class_nvme)
 }
 
-for (addr, name) in nvme_pcis:
-    if not (device := nvme_devs.get(addr)):
-        print(f"couldn't find device file for {addr} {name}!")
-        continue
 
-    # Find the sensor from the PCI address.
-    # Turn 26.00.0 into nvme-pci-2600.
-    sensor_chip = f"nvme-pci-{addr.split(".")[0].replace(":", "")}"
-    temp = None
-    for line in sensors("-u", sensor_chip).split("\n"):
-        # Take the Composite sensor, ignore any others for now.
-        if "temp1_input" in line:
-            temp = round(float(line.split(": ")[1]), 1)
-            break
-    if not temp:
-        print(f"couldn't find temp for {addr} {name}!")
-        continue
+# Instead of the names derived from PCI vendor/device codes (which are imprecise and
+# dependent on sidechannel info), get the device-reported model names.
+def lookup_name(nvme):
+  with open(f"/sys/class/nvme/{nvme}/model") as f:
+    model = f.read().strip()
+  with open(f"/sys/class/nvme/{nvme}/serial") as f:
+    serial = f.read().strip()
+  return f"{model} {serial}"
 
-    # Just print a table of values.
-    print(f"{addr} {device:<8} {temp:>5}°C {name}")
+
+nvme_names = {nvme: lookup_name(nvme) for nvme in nvme_devs.values()}
+
+for addr, name in nvme_pcis:
+  if not (device := nvme_devs.get(addr)):
+    print(f"couldn't find device file for {addr} {name}!")
+    continue
+  if not (name := nvme_names.get(device)):
+    print(f"couldn't find name for {name}!")
+    continue
+
+  # Find the sensor from the PCI address.
+  # Turn 26.00.0 into nvme-pci-2600.
+  sensor_chip = f"nvme-pci-{addr.split('.')[0].replace(':', '')}"
+  temp = None
+  for line in sensors("-u", sensor_chip).split("\n"):
+    # Take the Composite sensor, ignore any others for now.
+    if "temp1_input" in line:
+      temp = round(float(line.split(": ")[1]), 1)
+      break
+  if not temp:
+    print(f"couldn't find temp for {addr} {name}!")
+    continue
+
+  # Just print a table of values.
+  print(f"{addr} {device:<6} {temp:>5}°C {name}")
