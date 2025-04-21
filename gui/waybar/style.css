@@ -96,6 +96,14 @@ label:focus {
   background-color: #53b5ed;
 }
 
+#custom-bill-distance {
+  color: #222222;
+  background-color: #87ceeb;
+  margin: 3 4px;
+  padding: 0 2px;
+  border-radius: 5px;
+}
+
 #pulseaudio {
   background-color: #ff7900;
   color: #000000;

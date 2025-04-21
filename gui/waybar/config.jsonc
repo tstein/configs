@@ -3,7 +3,7 @@
 
   "modules-left": ["sway/workspaces", "sway/mode", "sway/window"],
   "modules-center": ["custom/media"],
-  "modules-right": ["sway/language", "idle_inhibitor", "pulseaudio", "backlight", "battery", "tray", "clock"],
+  "modules-right": ["sway/language", "idle_inhibitor", "custom/bill-distance", "pulseaudio", "backlight", "battery", "tray", "clock"],
 
   // modules-left
   "sway/workspaces": {
@@ -41,6 +41,12 @@
       "activated": "☕",
       "deactivated": "🥛"
     },
+  },
+  "custom/bill-distance": {
+    "interval": 60,
+    "exec": "$HOME/.local/bin/bill-distance",
+    "format": "☁️ {0}",
+    "tooltip-format": "min/stdev",
   },
   "pulseaudio": {
     "format": "{volume}% {icon} {format_source}",

@@ -1,0 +1,9 @@
+#!/bin/zsh
+# Measure network distance to bill and print a summary. For use by waybar.
+
+local ping_out=$(ping -qA -c5 bill 2>/dev/null)
+if print $ping_out | grep -q rtt; then
+  print $ping_out | grep rtt | sed -E 's_.* = ([0-9]+)\.[0-9]+/([0-9]+)\.[0-9]+/([0-9]+)\..*_\1/\2/\3_'
+else
+  print "?/?/?"
+fi
