@@ -113,7 +113,7 @@ def main():
   if args.install:
     install()
   else:
-    mqttc = mqtt.Client(os.path.basename(sys.argv[0]))
+    mqttc = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, os.path.basename(sys.argv[0]))
     mqttc.on_message = on_message
     mqttc.connect("localhost")
     mqttc.subscribe("backups/#")
