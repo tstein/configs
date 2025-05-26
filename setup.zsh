@@ -14,6 +14,7 @@ mkdir -p ~/.local/{bin,tmp}
 # symlinks
 ln -ns "$CONFIGS/bin/mtmux" ~/.local/bin/mtmux
 ln -ns "$CONFIGS/dir_colors" ~/.dir_colors
+ln -ns "$CONFIGS/nvim/after" ~/.config/nvim/after
 ln -ns "$CONFIGS/nvim/init.lua" ~/.config/nvim/init.lua
 ln -ns "$CONFIGS/nvim/lua" ~/.config/nvim/lua
 ln -ns "$CONFIGS/ruff.toml" ~/.config/ruff/ruff.toml

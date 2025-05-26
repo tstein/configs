@@ -16,4 +16,3 @@ lsp.pyright.setup {
     },
   },
 }
-lsp.rust_analyzer.setup{}
