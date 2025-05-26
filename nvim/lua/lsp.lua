@@ -16,3 +16,5 @@ lsp.pyright.setup {
     },
   },
 }
+
+vim.lsp.inlay_hint.enable()
