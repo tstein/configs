@@ -216,7 +216,7 @@ git_status() {
   case $? in
     124)
       # we timed out while trying to determine if we are in a git repo
-      print -n " $GITTXT:$TIMEOUTTXT"
+      GITTXT="${GITTXT}:${TIMEOUTTXT}"
       return
       ;;
     128)
@@ -225,29 +225,29 @@ git_status() {
       ;;
     0)
       # we are in a git repo
-      print -n " $GITTXT:${GITBRANCH#refs/heads/}"
+      GITTXT="${GITTXT}:${GITBRANCH#refs/heads/}"
       if [ `get_prop have_timeout` ]; then
         GITSTATUS=`timeout .20s git status`
       else
         GITSTATUS=`git status`
       fi
-      if [[ $? == 124 ]]; then
-        # timeout
-        print -n $TIMEOUTTXT
-        return
-      fi
-
-      GITSTATUS=`print $GITSTATUS | grep -q "nothing to commit"`
-      if [[ $? == 0 ]]; then
-        # clean
-        return
-      else
-        # dirty
-        print -n "(*)"
-        return
-      fi
-      ;;
+      print ${GITSTATUS} | grep -q "nothing to commit"
+      case $? in
+        124)
+          # we timed out trying to determine if the repo is clean
+          GITTXT="${GITTXT}(${TIMEOUTTXT})"
+          ;;
+        0)
+          # clean
+          # (no explicit output)
+          ;;
+        *)
+          # dirty
+          GITTXT="${GITTXT}(*)"
+          ;;
+      esac
   esac
+  print -n " ${GITTXT}"
 }
 # }}}
 
