@@ -23,6 +23,10 @@ focus_follows_mouse no
 # mouse+Super to drag floating windows
 floating_modifier Super
 
+# colors
+set $oregon #306ac0
+client.focused $oregon $oregon #ffffff
+
 ############
 # bindings #
 ############
