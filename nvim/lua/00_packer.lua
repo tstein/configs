@@ -35,32 +35,30 @@ return packer.startup(function(use)
 
   -- completion
   use "neovim/nvim-lspconfig"
-  use "nvim-lua/completion-nvim"
   use "hrsh7th/nvim-cmp"
   use "hrsh7th/cmp-nvim-lsp"
   use "hrsh7th/cmp-buffer"
   use "hrsh7th/cmp-path"
   use "mrcjkb/rustaceanvim"
   use {
-    'nvim-treesitter/nvim-treesitter',
+    "nvim-treesitter/nvim-treesitter",
     run = function()
-      local ts_update = require('nvim-treesitter.install').update({ with_sync = true })
+      local ts_update = require("nvim-treesitter.install").update({ with_sync = true })
       ts_update()
     end,
   }
 
   use {
-    'nvim-telescope/telescope.nvim', branch = '0.1.x',
-    requires = { {'nvim-lua/plenary.nvim'} }
+    "nvim-telescope/telescope.nvim", branch = "0.1.x",
+    requires = { {"nvim-lua/plenary.nvim"} }
   }
 
   use "akinsho/nvim-bufferline.lua"
-  use "vim-airline/vim-airline"
+  use "nvim-lualine/lualine.nvim"
   use "fs111/pydoc.vim"
-  use "preservim/tagbar"
   use "tpope/vim-fugitive"
   use "qpkorr/vim-renamer"
-  use "mhinz/vim-signify"
+  use "lewis6991/gitsigns.nvim"
   use "tpope/vim-surround"
 
   use "sainnhe/edge"
