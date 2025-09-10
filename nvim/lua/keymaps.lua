@@ -1,10 +1,10 @@
+-- leaders are set in init.lua
+
 local function map(mode, lhs, rhs, opts)
   local options = { noremap = true, silent = true }
   if opts then options = vim.tbl_extend('force', options, opts) end
   vim.api.nvim_set_keymap(mode, lhs, rhs, options)
 end
-vim.g.mapleader = ","
-vim.g.maplocalleader = vim.g.mapleader
 
 -- telescope pickers
 map("n", "<leader>pf", ":lua require'telescope.builtin'.find_files{}<CR>")

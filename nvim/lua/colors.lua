@@ -12,8 +12,6 @@ vim.api.nvim_exec(
   if has('termguicolors')
     set termguicolors
   endif
-  let g:edge_style = 'neon'
-  let g:edge_better_performance = 1
-  colorscheme edge
+  colorscheme tokyonight-night
   let g:transparent_enabled = v:true
 ]], false)
