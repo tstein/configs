@@ -9,15 +9,12 @@
 
 export PATH=~/.local/bin:$PATH
 
-export GDK_BACKEND=wayland
-export GTK_THEME=Adwaita:dark
-# make qt behave
+export GDK_BACKEND=wayland GTK_THEME=Adwaita:dark
 export QT_QPA_PLATFORM=wayland QT_QPA_PLATFORMTHEME=qt5ct
-export QT_AUTO_SCREEN_SCALE_FACTOR=1 QT_ENABLE_HIGHDPI_SCALING=1
 export MOZ_ENABLE_WAYLAND=1
-
 export XDG_CURRENT_DESKTOP=sway
 dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
+
 # required for swaymsg output '*' color_profile icc whatever.icc
 # https://github.com/swaywm/sway/issues/1486#issuecomment-2344740148
 export WLR_RENDERER=vulkan
