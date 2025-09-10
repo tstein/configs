@@ -5,26 +5,47 @@ set -eu
 
 IMAGE="fedora:latest"
 NAME=scaff_$(date "+%Y-%m-%d_%H.%M.%S")
-# Mount the dir in the first positional arg rw at /work, defaulting to $PWD.
+FORCE_RECREATE=1
+
+function usage() {
+  print "usage: scaff [-f] [-h] [WORKDIR]"
+  print
+  print "-f      Force update of the container image"
+  print "-h      Print this help"
+}
+
+while getopts "fh" ARG; do
+  case $ARG in
+    h)
+      usage
+      exit 0
+      ;;
+    f)
+      FORCE_RECREATE=0
+      ;;
+  esac
+done
 WORKDIR=$(readlink -m ${1:-.})
 
 TEMPDIR=$(mktemp -d)
 trap "rm -rf ${TEMPDIR}" EXIT
 
-# Define the container, install some necessities, and set up a user.
-pushd ${TEMPDIR}
-cat >Dockerfile <<EOF
+if [[ 0 || $FORCE_RECREATE ]]; then
+  # Define the container, install some necessities, and set up a user.
+  pushd ${TEMPDIR}
+  cat >Dockerfile <<EOF
 FROM ${IMAGE}
 RUN dnf -y install zsh git tmux htop tree neovim vim ctags file \
 util-linux-user \
-golang npm python3-pip python3-bpython rubygems
+golang npm python3-pip python3-bpython uv rubygems
 RUN useradd -s /bin/zsh ${USER}
 RUN echo "${USER} ALL=(ALL) ALL, NOPASSWD: ALL" >>/etc/sudoers
 VOLUME /work
 WORKDIR /work
 EOF
-podman pull ${IMAGE}
-buildah build --format=docker -t scaff .
+  podman pull ${IMAGE}
+  buildah build --format=docker -t scaff .
+fi
 popd
 
 # Create a replacement zlocal. This sets up a distinct prompt but also disables
@@ -34,7 +55,7 @@ echo 'PR_COLOR=$PR_CYAN' >>${TEMPDIR}/.zlocal
 echo 'PR_CHAR=📦' >>${TEMPDIR}/.zlocal
 
 # Run it!
-podman run --rm --rmi --name ${NAME} -h "scaff(${HOST})" \
+podman run --rm --name ${NAME} -h "scaff(${HOST})" \
   -v /etc/localtime:/etc/localtime:ro \
   -v ${HOME}:/home/${USER}:O \
   -v ${TEMPDIR}/.zlocal:/home/${USER}/.zlocal \
