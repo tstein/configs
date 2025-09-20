@@ -1,9 +1,8 @@
-local lsp = require('lspconfig')
+vim.lsp.config("bashls", {})
+vim.lsp.config("clangd", {})
 
-lsp.bashls.setup{}
-lsp.clangd.setup{}
-lsp.ruff.setup{}
-lsp.pyright.setup {
+vim.lsp.config("ruff", {})
+vim.lsp.config("pyright", {
   -- Let ruff handle analysis and imports.
   settings = {
     pyright = {
@@ -15,6 +14,6 @@ lsp.pyright.setup {
       },
     },
   },
-}
+})
 
 vim.lsp.inlay_hint.enable()
