@@ -25,6 +25,7 @@ require("lazy").setup({
     -- interface
     "akinsho/nvim-bufferline.lua",
     "nvim-lualine/lualine.nvim",
+    "nvim-tree/nvim-tree.lua",
     "lewis6991/gitsigns.nvim",
     "tpope/vim-surround",
     {
@@ -69,6 +70,10 @@ require("gitsigns").setup {
     changedelete = { text = "~", show_count = true },
   }
 }
+-- disable netrw
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+require("nvim-tree").setup()
 
 -- modular config bits
 local modules_dir = vim.loop.fs_scandir(vim.fn.stdpath("config") .. "/lua/")
