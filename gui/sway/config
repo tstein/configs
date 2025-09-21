@@ -65,6 +65,8 @@ bindsym Super+f fullscreen toggle
 # change container layout (stacked, tabbed, toggle split)
 #bindsym Super+s layout stacking
 bindsym Super+space layout toggle tabbed splith splitv
+bindsym Super+h split horizontal
+bindsym Super+v split vertical
 
 # toggle tiling / floating
 bindsym Super+t floating toggle
