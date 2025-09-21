@@ -7,7 +7,7 @@ include /etc/sway/config.d/*
 set $lock-cmd 'swaylock -c 132a4d'
 set $volstep 2
 set $brightstep 4
-font pango:DejaVu Sans Mono 12
+font pango:Inconsolata 13
 
 # window management
 for_window [app_id=".*"] floating enable
@@ -15,8 +15,8 @@ for_window [window_type="con" app_id="firefox"] border none
 for_window [window_type="con" class="signal"] border none
 for_window [window_type="con" app_id="kodi"] border none
 for_window [window_type="con" app_id="darktable"] border none
+for_window [window_type="con" app_id="com.mitchellh.ghostty"] border none
 for_window [window_type="con" app_id="Alacritty"] border none
-for_window [window_type="con" app_id="terminator"] border none
 for_window [shell="xwayland"] title_format "[XW] %title"
 hide_edge_borders --i3 smart
 focus_follows_mouse no
@@ -34,7 +34,7 @@ client.focused $oregon $oregon #ffffff
 bindsym Super+Shift+c kill
 
 # program shortcuts
-bindsym Super+Return exec alacritty
+bindsym Super+Return exec ghostty || alacritty
 bindsym Super+d exec bemenu-run --no-overlap --line-height 30
 bindsym Super+Shift+l exec $lock-cmd
 bindsym Super+Shift+s exec grim -g "$(slurp)" - | wl-copy
