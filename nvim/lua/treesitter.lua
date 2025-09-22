@@ -5,7 +5,7 @@ require'nvim-treesitter.configs'.setup {
     "html", "javascript", "css",
     "cmake", "make", "dockerfile", "json", "yaml",
     "git_rebase", "gitattributes", "gitcommit", "gitignore",
-    "comment", "regex",
+    "comment", "markdown", "regex",
   },
   sync_install = false,
   auto_install = true,
