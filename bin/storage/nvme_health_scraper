@@ -19,7 +19,12 @@ def main():
   cursor = conn.cursor()
 
   for host in sys.argv[1:]:
-    req = requests.get(f"http://{host}:{PORT}")
+    try:
+      req = requests.get(f"http://{host}:{PORT}")
+    except requests.exceptions.RequestException:
+      logging.exception(f"failed to scrape {host}")
+      continue
+
     if req.status_code != 200:
       logging.warning(
         f"something went wrong retrieving from {host}, "
