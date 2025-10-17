@@ -3,7 +3,7 @@
   email = me@tedstein.net
 [core]
   fsmonitor = true
-  whitespace = blank-at-eol,-blank-at-eof,tab-in-indent,tabwidth=4
+  whitespace = tab-in-indent,tabwidth=2
 [color]
   ui = auto
 [advice]
@@ -13,13 +13,17 @@
   pushNonFastForward = false
   resolveConflict = false
   statusHints = false
+
 [alias]
   br = branch -vv
   gl = log --graph --pretty=format:\
 '%Cgreen%h %Cred(%cr)%Creset -%C(yellow)%d%Creset %s %Cblue<%an>%Creset'
   st = status --branch --short
+
 [branch]
   autosetuprebase = always
+[commit]
+  verbose = true
 [diff]
   indentHeuristic = on
 [fetch]
