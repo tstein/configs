@@ -13,7 +13,7 @@ setopt extended_glob glob glob_dots
 setopt share_history extended_history hist_ignore_space
 
 # I/O
-setopt aliases clobber correct hashcmds hashdirs ignoreeof rmstarsilent normstarwait
+setopt aliases clobber correct hashcmds hashdirs ignoreeof interactive_comments rmstarsilent normstarwait
 
 # job control
 setopt autoresume notify
