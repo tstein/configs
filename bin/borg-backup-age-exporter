@@ -39,7 +39,12 @@ def prometheize_backup_ages() -> str:
     )
   )
   for (host, server), tstamp in AGES.items():
-    backup_date = datetime.datetime.strptime(tstamp, "%Y-%m-%d %H:%M:%S")
+    try:
+      backup_date = datetime.datetime.strptime(tstamp, "%Y-%m-%d %H:%M:%S")
+    except ValueError:
+      logging.exception(f"couldn't parse {tstamp=} for {host=}, {server=}")
+      continue
+
     age_s = round((datetime.datetime.now() - backup_date).total_seconds())
     resp.write('borg_backup_age{host="')
     resp.write(host)
