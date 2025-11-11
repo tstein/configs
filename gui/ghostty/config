@@ -1,0 +1,32 @@
+window-padding-x = 0
+window-padding-y = 0
+font-family = Inconsolata
+font-size = 10
+font-feature = -calt, -liga, -dlig
+cursor-style-blink = false
+link-previews = false
+
+# modified theme = Oceanic Material
+palette = 0=#000000
+palette = 1=#ee2b2a
+palette = 2=#40a33f
+palette = 3=#ffea2e
+palette = 4=#3465a4
+palette = 5=#8800a0
+palette = 6=#16afca
+palette = 7=#c0c0c0
+palette = 8=#808080
+palette = 9=#dc5c60
+palette = 10=#70be71
+palette = 11=#fff163
+palette = 12=#54a4f3
+palette = 13=#aa4dbc
+palette = 14=#42c7da
+palette = 15=#ffffff
+background = #000000
+background-opacity = .97
+foreground = #ffffff
+cursor-color = #ffffff
+cursor-text = #ffffff
+selection-background = #6d6d6d
+selection-foreground = #c2c8d7
