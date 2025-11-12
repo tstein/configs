@@ -304,9 +304,8 @@ if [[ -e $HI_FILE ]]; then
   source $HI_FILE
 fi
 
-#TODO: Check if we are a login shell. This could hang a script without that.
 if [ `get_prop have_keychain` ]; then
-  keychain -Q -q ${ssh_key_list[@]}
+  keychain -q ${ssh_key_list[@]}
   source ~/.keychain/${HOST}-sh
 fi
 
