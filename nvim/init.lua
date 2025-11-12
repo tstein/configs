@@ -32,6 +32,7 @@ require("lazy").setup({
       "nvim-telescope/telescope.nvim", branch = "0.1.x",
       dependencies = { "nvim-lua/plenary.nvim" }
     },
+    "nvim-telescope/telescope-ui-select.nvim",
     {
       "folke/tokyonight.nvim",
       lazy = false,
@@ -70,6 +71,7 @@ require("gitsigns").setup {
     changedelete = { text = "~", show_count = true },
   }
 }
+require("telescope").load_extension("ui-select")
 -- disable netrw
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
