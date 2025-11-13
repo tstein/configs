@@ -1,0 +1,7 @@
+#compdef do-and-tell
+
+# Completions for the shell function do-and-tell.
+
+_arguments -S -A "-" '*:::command:_normal'
+
+# vim: ft=zsh
