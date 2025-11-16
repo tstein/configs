@@ -33,7 +33,6 @@ user_pref("browser.ml.enable", false);
 
 // privacy & fingerprinting
 user_pref("dom.battery.enabled", false);
-user_pref("dom.event.clipboardevents.enabled", false);
 // https://support.mozilla.org/en-US/kb/privacy-preserving-attribution
 user_pref("dom.private-attribution.submission.enabled", false);
 
