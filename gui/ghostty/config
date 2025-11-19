@@ -30,3 +30,6 @@ cursor-color = #ffffff
 cursor-text = #ffffff
 selection-background = #6d6d6d
 selection-foreground = #c2c8d7
+
+# Let the WM handle fullscreening.
+keybind = ctrl+enter=unbind
