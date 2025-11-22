@@ -16,11 +16,13 @@ PORT = 2163
 def main():
   logging.basicConfig(level=logging.INFO)
   conn = psycopg2.connect("user=ted")
+  conn.set_session(autocommit=True)
   cursor = conn.cursor()
 
   for host in sys.argv[1:]:
+    scrape_url = f"http://{host}:{PORT}"
     try:
-      req = requests.get(f"http://{host}:{PORT}")
+      req = requests.get(scrape_url)
     except requests.exceptions.RequestException:
       logging.exception(f"failed to scrape {host}")
       continue
@@ -37,12 +39,14 @@ def main():
       logging.warning(f"couldn't parse result from {host}, text={req.text}")
       continue
 
+    if not smart_map:
+      logging.warning(f"reached {host}, but got no data from {scrape_url}")
+
     for device, smart_data in smart_map.items():
       cursor.execute(
         "INSERT INTO nvme_health VALUES (%s, %s, now(), %s)",
         (host, device, json.dumps(smart_data)),
       )
-  conn.commit()
 
 
 if __name__ == "__main__":
