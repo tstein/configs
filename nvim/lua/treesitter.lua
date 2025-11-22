@@ -14,3 +14,13 @@ require'nvim-treesitter.configs'.setup {
     additional_vim_regex_highlighting = false,
   },
 }
+
+-- enable SQL highlighting in strings starting with `--sql` or `/*sql*/`
+vim.treesitter.query.set("python", "injections", [[
+; extends
+(
+    ((string_content)(interpolation)*)+ @injection.content
+    (#any-match? @injection.content "^(--sql|\\/\\*sql\\*\\/)")
+    (#set! injection.language "sql")
+)
+]])
