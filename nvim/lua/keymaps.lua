@@ -36,6 +36,9 @@ map("n", "<CR>", ":noh<CR><CR>", opts)
 -- cleanup trailing whitespace
 map("n", "<leader>s", ":%s/\\s\\+$//<CR>", opts)
 
+-- apply code actions with alt+enter
+map("n", "<M-CR>", ":lua vim.lsp.buf.code_action()<CR>")
+
 -- make tab/shift-tab cycle through completion
 vim.cmd [[
   inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
