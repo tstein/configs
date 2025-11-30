@@ -59,8 +59,6 @@ require("lazy").setup({
     "tpope/vim-fugitive",
     "qpkorr/vim-renamer",
   },
-  -- automatically check for plugin updates
-  checker = { enabled = true },
 })
 require("bufferline").setup{}
 require("lualine").setup{}
