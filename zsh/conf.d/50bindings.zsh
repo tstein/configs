@@ -78,7 +78,7 @@ case `get_prop OS` in
   'Linux')
     abbreviations+=(
     'df'                'df -hT -x tmpfs -x devtmpfs --total'
-    'lsblk'             'lsblk -d -x MODEL -o NAME,MODEL,TYPE,SIZE,PHY-SEC,MQ,RQ-SIZE,SCHED'
+    'lsblk'             'lsblk -d -x MODEL -o NAME,MODEL,TRAN,SIZE,LOG-SEC,PHY-SEC,MQ,RQ-SIZE,SCHED'
     'ps'                'ps axwwo user,pid,ppid,pcpu,cputime,nice,pmem,rss,lstart=START,stat,tname,command'
     )
     ;;
