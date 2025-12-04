@@ -44,6 +44,7 @@ echo ${KEYSTR} | cryptsetup luksFormat ${DEVICE}
 
 print "# ADDING KEYFILE"
 umask 077
+mkdir -p /etc/cryptsetup-keys.d
 KEYFILE=/etc/cryptsetup-keys.d/${CRYPT_DEVICE_NAME}.key
 dd if=/dev/random of=${KEYFILE} bs=4096 count=1
 echo ${KEYSTR} | cryptsetup luksAddKey ${DEVICE} ${KEYFILE}
