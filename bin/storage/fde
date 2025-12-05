@@ -2,6 +2,22 @@
 
 set -eu
 
+function status() {
+  print -n '\033[35;1m'
+  print -n $1
+  print '\033[0m'
+}
+function status_happy() {
+  print -n '\033[32;1m'
+  print -n $1
+  print '\033[0m'
+}
+function status_unhappy() {
+  print -n '\033[31;1m'
+  print -n "error: $1"
+  print '\033[0m'
+}
+
 PROG=$(basename $0)
 if [[ $# != 1 ]]; then
   print "usage: ${PROG} DEVICE"
@@ -11,51 +27,51 @@ DEVICE=$1
 if [[ $DEVICE != /* ]]; then
   DEVICE=$(pwd)/${DEVICE}
 fi
-# suffix so the layering is clear in `zpool status`, etc.
-CRYPT_DEVICE_NAME=$(basename ${DEVICE})-crypt
+if [[ $DEVICE != /dev/disk/by-id/* ]]; then
+  status_unhappy "you almost certainly want to use a symlink from /dev/disk/by-id"
+  exit 1
+fi
 
 # checks: only meant to be used on block devices, and unlikely to be worth
 # trying anything without being root
 if [[ $(id -u) != 0 ]]; then
-  print "${PROG} must be run as root!"
+  status_unhappy "${PROG} must be run as root!"
   exit 255
 fi
 if [[ ! -b ${DEVICE} ]]; then
-  print "${DEVICE} does not appear to be a block device!"
+  status_unhappy "${DEVICE} does not appear to be a block device!"
   exit 1
 fi
 
-print "##########"
-print "#  setting up encryption on ${DEVICE}"
-print "#  current contents:"
-print -n "# "
-file -sL ${DEVICE}
-print "##########"
-print
+status_happy "# setting up encryption on ${DEVICE}"
+status "# lsblk:"
+lsblk --tree -o NAME,VENDOR,MODEL,TYPE,TRAN,SIZE,PHY-SEC,LOG-SEC,OPT-IO,LABEL,FSTYPE,MOUNTPOINTS ${DEVICE}
 
-print "# ENTER A KEY STRING"
+status "# enter a key string:"
 read -s KEYSTR
 if [[ ! ${KEYSTR} ]]; then
-  print "empty key string!"
+  status_unhappy "empty key string!"
 fi
+status "# accepting key string of length ${#KEYSTR}"
 
-print "# FORMATTING DEVICE"
+status "# formatting device"
+# suffix so the layering is clear in `zpool status`, etc.
+CRYPT_DEVICE_NAME=$(basename ${DEVICE})-crypt
 echo ${KEYSTR} | cryptsetup luksFormat ${DEVICE}
 
-print "# ADDING KEYFILE"
+status "# adding keyfile"
 umask 077
 mkdir -p /etc/cryptsetup-keys.d
 KEYFILE=/etc/cryptsetup-keys.d/${CRYPT_DEVICE_NAME}.key
 dd if=/dev/random of=${KEYFILE} bs=4096 count=1
 echo ${KEYSTR} | cryptsetup luksAddKey ${DEVICE} ${KEYFILE}
 
-print "# UPDATING CRYPTTAB"
+status "# updating crypttab"
 # A keyfile of - here causes cryptsetup to assume $KEYFILE.
 # Doing this unconditionally isn't right, but cryptsetup seems happy to ignore
 # all but the last line referencing each encrypted device.
 print "${CRYPT_DEVICE_NAME} ${DEVICE} - nofail" >>/etc/crypttab
 
-print "# OPENING ENCRYPTED DEVICE"
+status "# opening encrypted device"
 cryptsetup open ${DEVICE} ${CRYPT_DEVICE_NAME} --key-file ${KEYFILE}
-
-print "# DONE!"
+status_happy "# done! /dev/mapper/${CRYPT_DEVICE_NAME} is ready"
