@@ -15,6 +15,10 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 
+-- There's no dedicated zsh parser for now. The bash one is usable, and enables
+-- things like heredoc injection.
+vim.treesitter.language.register("bash", "zsh")
+
 -- enable SQL highlighting in strings starting with `--sql` or `/*sql*/`
 vim.treesitter.query.set("python", "injections", [[
 ; extends
