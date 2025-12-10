@@ -87,6 +87,18 @@
   "clock": {
     "interval": 1,
     "format": "{:%Y-%m-%d %H:%M}",
-    "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
+    // The first tz will be the one used in the status bar. {tzlist} will be
+    // .timezones[1:].
+    "timezones": [
+      "America/Los_Angeles",
+      "Etc/UTC",
+    ],
+    "tooltip-format": "<b>UTC: {tz_list}</b>\n<tt>{calendar}</tt>",
+    "calendar": {
+      "format": {
+        "months": "<b><span color='#306ac0'>{}</span></b>",
+        "today": "<b><span color='#306ac0'>{}</span></b>"
+      }
+    }
   },
 }
