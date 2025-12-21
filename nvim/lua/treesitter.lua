@@ -19,12 +19,16 @@ require'nvim-treesitter.configs'.setup {
 -- things like heredoc injection.
 vim.treesitter.language.register("bash", "zsh")
 
--- enable SQL highlighting in strings starting with `--sql` or `/*sql*/`
+-- Enable SQL highlighting in strings starting with `--sql` or `/*sql*/`.
 vim.treesitter.query.set("python", "injections", [[
 ; extends
-(
-    ((string_content)(interpolation)*)+ @injection.content
-    (#any-match? @injection.content "^(--sql|\\/\\*sql\\*\\/)")
-    (#set! injection.language "sql")
+(((string_content)(interpolation)*)+ @injection.content
+  (#any-match? @injection.content "^(--sql|\\/\\*sql\\*\\/)")
+  (#set! injection.language "sql")
 )
 ]])
+-- Language servers that emit semantic tokens, like ty, will nullify the above
+-- rule because semantic tokens have a priority of 125 and injections are
+-- supposed to be between 90 and 120. Disabling this doesn't break anything
+-- else.
+vim.api.nvim_set_hl(0, "@lsp.type.string.python", {})
