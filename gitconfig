@@ -30,7 +30,7 @@
   prune = true
 [init]
   defaultBranch = main
-[rebase]
-  autosquash = true
 [push]
   default = simple
+[rebase]
+  autosquash = true
