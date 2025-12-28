@@ -45,8 +45,7 @@ get-comfy() {
   print -n "Leave blank for the default [%]: "
   read CHOICE
   if [[ -v CHOICE ]]; then
-    # add an extra space - a lot of terms seem to render emoji double-wide
-    print "PR_CHAR=\"$CHOICE \"" >>~/.zlocal
+    print "PR_CHAR=\"$CHOICE\"" >>~/.zlocal
   fi
 
   # skip this for root - if you didn't auto-mtmux as your login user, it doesn't
