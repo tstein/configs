@@ -1,7 +1,7 @@
 require'nvim-treesitter.configs'.setup {
   ensure_installed = {
     "bash", "c", "cpp", "c_sharp", "go", "java", "kotlin", "lua", "perl",
-    "python", "ruby", "rust", "toml", "scala", "sql", "typescript", "vim",
+    "python", "ruby", "rust", "toml", "sql", "typescript", "vim",
     "html", "javascript", "css",
     "cmake", "make", "dockerfile", "json", "yaml",
     "git_rebase", "gitattributes", "gitcommit", "gitignore",
