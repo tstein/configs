@@ -4,7 +4,7 @@ import argparse
 import io
 import json
 import os
-import urllib
+import urllib.parse
 import re
 import sys
 import textwrap
