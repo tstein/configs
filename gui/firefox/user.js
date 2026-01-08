@@ -30,6 +30,7 @@ user_pref("browser.urlbar.suggest.quicksuggest.sponsored", false);
 // features
 user_pref("extensions.pocket.enabled", false);
 user_pref("browser.ml.enable", false);
+user_pref("browser.ml.linkPreview.longPress", false);
 
 // privacy & fingerprinting
 user_pref("dom.battery.enabled", false);
