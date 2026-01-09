@@ -20,3 +20,8 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = {"fstab", "hlsplaylist"},
   command = "setlocal tw=0"
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "python",
+  command = "setlocal tw=88"  -- black-style and ruff's default
+})
