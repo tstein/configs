@@ -96,8 +96,8 @@ getfstype() {
 # Shell configuration. {{{
 umask 022
 HISTFILE=~/.zhistfile
-HISTSIZE=5000
-SAVEHIST=1000000
+HISTSIZE=$((100*1000))
+SAVEHIST=$((1000**3))
 WORDCHARS="${WORDCHARS:s#/#}"
 
 # default programs
