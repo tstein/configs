@@ -61,7 +61,7 @@ fi
 if [[ ! -n $skip_vims ]]; then
   vim +BundleInstall +qa
   if [ which nvim >/dev/null 2>/dev/null ]; then
-    # packer is run automatically on first use
+    # lazy will run automatically on first use
     nvim
   fi
 fi
