@@ -1,19 +1,20 @@
 #!/usr/bin/env python
 """Printing slower-downer. Results not guaranteed outside ASCII."""
 
+import time
 from sys import argv, stdin, stdout
-from time import sleep, time
+
+rate = int(argv[1]) if len(argv) > 1 else 300
+delay = 1.0 / (rate / 7)  # 7 bits for ASCII
 
 try:
-    rate = int(argv[1]) if len(argv) > 1 else 300
-    delay = 1.0 / (rate / 7)  # 7 bits for ASCII
-    text = "".join([l for l in stdin])
-    start = time()
-    for c in text:
-        stdout.write(c)
-        stdout.flush()
-        sleep(delay)
-    seconds = time() - start
+  for line in stdin:
+    for c in line:
+      stdout.write(c)
+      stdout.flush()
+      time.sleep(delay)
+  stdout.write("\n")
+  stdout.flush()
 except KeyboardInterrupt:
-    stdout.write("\n")
-    stdout.flush()
+  stdout.write("\n")
+  stdout.flush()
