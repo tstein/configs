@@ -24,11 +24,11 @@ ln -ns "$CONFIGS/vimrc" ~/.vimrc
 ln -ns "$CONFIGS/zsh" ~/.config/zsh
 ln -ns "$CONFIGS/zshrc" ~/.zshrc
 
-ln -ns "$CONFIGS/alacritty" ~/.config/alacritty
-ln -ns "$CONFIGS/ghostty" ~/.config/ghostty
-ln -ns "$CONFIGS/sway/sway" ~/.config/sway
-ln -ns "$CONFIGS/sway/waybar" ~/.config/waybar
-ln -ns "$CONFIGS/wsession" ~/.wsession
+ln -ns "$CONFIGS/gui/alacritty" ~/.config/alacritty
+ln -ns "$CONFIGS/gui/ghostty" ~/.config/ghostty
+ln -ns "$CONFIGS/gui/sway" ~/.config/sway
+ln -ns "$CONFIGS/gui/waybar" ~/.config/waybar
+ln -ns "$CONFIGS/gui/wsession" ~/.wsession
 if [[ "$USER" == "ted" ]]; then
     ln -ns "$CONFIGS/gitconfig" ~/.gitconfig
 else
