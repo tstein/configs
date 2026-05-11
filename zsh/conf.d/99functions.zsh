@@ -63,7 +63,7 @@ function regularize-pixel-phots() {
     return 255
   fi
 
-  for i in PXL_*; do
+  for i in (PXL|IMG|PANO)_*; do
     create=$(exiftool -T -CreateDate $i | sed 's/:/-/' | sed 's/:/-/')
     # mp4s have this field set, but zeroed.
     if [[ $create == "0000-00-00 00:00:00" ]]; then
