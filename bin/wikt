@@ -17,13 +17,16 @@ from termcolor import colored
 
 
 MAX_WIDTH = 80
-POS_COLORS = defaultdict(lambda: "light_magenta", {
-  "noun": "light_blue",
-  "proper noun": "blue",
-  "verb": "light_red",
-  "adjective": "light_green",
-  "adverb": "light_yellow",
-})
+POS_COLORS = defaultdict(
+  lambda: "light_magenta",
+  {
+    "noun": "light_blue",
+    "proper noun": "blue",
+    "verb": "light_red",
+    "adjective": "light_green",
+    "adverb": "light_yellow",
+  },
+)
 
 
 def bail(code, errmsg):
@@ -33,9 +36,11 @@ def bail(code, errmsg):
 
 
 def url(query: str) -> str:
-  return ("https://en.wiktionary.org/api/rest_v1/page/definition/"
-      f"{urllib.parse.quote(query)}"
-      "?redirect=true")
+  return (
+    "https://en.wiktionary.org/api/rest_v1/page/definition/"
+    f"{urllib.parse.quote(query)}"
+    "?redirect=true"
+  )
 
 
 def request_definition(query: str) -> dict:
@@ -73,21 +78,19 @@ def extract_definition(definitions: dict) -> str:
   buffer = io.StringIO()
   for definitions in definitions["en"]:
     part_of_speech = definitions["partOfSpeech"].lower()
-    part_of_speech = colored(
-      part_of_speech,
-      POS_COLORS[part_of_speech],
-      attrs=["bold"])
+    part_of_speech = colored(part_of_speech, POS_COLORS[part_of_speech], attrs=["bold"])
     buffer.write(f"{part_of_speech}:\n")
 
     # A bit needlessly nested here, maybe?
-    defs = [
-      d["definition"]
-      for d in definitions["definitions"]
-      if d["definition"]
+    defs_html = [d["definition"] for d in definitions["definitions"] if d["definition"]]
+    defs_soup = [BeautifulSoup(d, "lxml") for d in defs_html]
+    # References are sometimes returned as definitions. (This happened in a response for
+    # manqué in 2026-05.)
+    defs_soup = [
+      s for s in defs_soup if not s.find("span", {"class": "reference-text"})
     ]
-    # Extract the plaintext from the SSR'd HTML.
-    defs = [dedup_space.sub(" ", BeautifulSoup(d, "lxml").text.strip())
-        for d in defs]
+    # Extract the plaintext from the HTML.
+    defs = [dedup_space.sub(" ", s.text.strip()) for s in defs_soup]
 
     # The API occasionally returns unexpectedly-duplicated results. Filter
     # those out. (This happened in the response for "giddy" in 2025-01.)
@@ -100,9 +103,7 @@ def extract_definition(definitions: dict) -> str:
 
     for n, text in enumerate(unique_defs, start=1):
       n = colored(f"{n:2}", "white", "on_dark_grey", attrs=["bold"])
-      wrapped = textwrap.fill(
-        text,
-        width=wrap_width - 5, subsequent_indent=" " * 5)
+      wrapped = textwrap.fill(text, width=wrap_width - 5, subsequent_indent=" " * 5)
       buffer.write(f" {n} {wrapped}\n")
     buffer.write("\n")
   return buffer.getvalue().strip()
@@ -111,11 +112,15 @@ def extract_definition(definitions: dict) -> str:
 def main():
   parser = argparse.ArgumentParser()
   parser.add_argument(
-    "--raw", action="store_true",
-    help="Print the raw API response instead of formatting it.")
+    "--raw",
+    action="store_true",
+    help="Print the raw API response instead of formatting it.",
+  )
   parser.add_argument(
-    "TOKEN", nargs="+",
-    help="One or more tokens to look up. Each invocation does one lookup.")
+    "TOKEN",
+    nargs="+",
+    help="One or more tokens to look up. Each invocation does one lookup.",
+  )
 
   args = parser.parse_args()
 
