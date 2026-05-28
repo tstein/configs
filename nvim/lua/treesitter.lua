@@ -1,18 +1,10 @@
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = {
-    "bash", "c", "cpp", "c_sharp", "go", "java", "kotlin", "lua", "perl",
-    "python", "ruby", "rust", "toml", "sql", "typescript", "vim",
-    "html", "javascript", "css",
-    "cmake", "make", "dockerfile", "json", "yaml",
-    "git_rebase", "gitattributes", "gitcommit", "gitignore",
-    "comment", "markdown", "regex",
-  },
-  sync_install = false,
-  auto_install = true,
-  highlight = {
-    enable = true,
-    additional_vim_regex_highlighting = false,
-  },
+require('nvim-treesitter').install {
+  "bash", "c", "cpp", "c_sharp", "go", "java", "kotlin", "lua", "perl",
+  "python", "ruby", "rust", "toml", "sql", "typescript", "vim",
+  "html", "javascript", "css",
+  "cmake", "make", "dockerfile", "json", "yaml",
+  "git_rebase", "gitattributes", "gitcommit", "gitignore",
+  "comment", "markdown", "regex",
 }
 
 -- There's no dedicated zsh parser for now. The bash one is usable, and enables

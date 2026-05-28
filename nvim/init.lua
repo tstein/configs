@@ -29,8 +29,12 @@ require("lazy").setup({
     "lewis6991/gitsigns.nvim",
     "tpope/vim-surround",
     {
-      "nvim-telescope/telescope.nvim", branch = "0.1.x",
-      dependencies = { "nvim-lua/plenary.nvim" }
+      'nvim-telescope/telescope.nvim', version = '*',
+      dependencies = {
+        'nvim-lua/plenary.nvim',
+        -- optional but recommended
+        { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+      }
     },
     "nvim-telescope/telescope-ui-select.nvim",
     {
@@ -47,7 +51,8 @@ require("lazy").setup({
     "hrsh7th/cmp-buffer",
     "hrsh7th/cmp-path",
     {
-      "nvim-treesitter/nvim-treesitter", branch = "master", lazy = false,
+      "nvim-treesitter/nvim-treesitter",
+      lazy = false,
       build = ":TSUpdate"
     },
 
