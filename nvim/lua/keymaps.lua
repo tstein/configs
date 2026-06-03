@@ -12,6 +12,37 @@ map("n", "<leader>pg", require'telescope.builtin'.git_files)
 map("n", "<leader>pd", require'telescope.builtin'.lsp_document_symbols)
 map("n", "<leader>ps", require'telescope.builtin'.lsp_dynamic_workspace_symbols)
 
+-- language-specific formatters
+local function quick_format()
+  local function run(cmd)
+    local handle = vim.fn.jobstart(cmd)
+    return vim.fn.jobwait({handle}, 10000)[1]
+  end
+
+  -- decide if we have a formatter for this filetype
+  local filetype = vim.bo.filetype
+	local cmd = nil;
+  if filetype == "python" then
+		cmd = "ruff check --select I --fix "..vim.fn.expand("%").." && ruff format "..vim.fn.expand("%")
+  elseif filetype == "rust" then
+    cmd = "cargo fmt"
+  else
+    vim.notify("quick_format: not implemented for filetype="..filetype)
+		return nil
+  end
+
+	-- run the actual formatter
+	local status = run(cmd)
+	if status == 0 then
+		-- reload the buffer
+		vim.cmd("edit")
+    vim.notify("formatted successfully and reloaded")
+	else
+		vim.notify("quick_format: "..cmd.." returned "..status)
+	end
+end
+map("n", "<leader>f", quick_format)
+
 -- save
 map("n", "<leader>w", ":w<CR>")
 -- save like you mean it
