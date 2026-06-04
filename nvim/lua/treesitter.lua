@@ -24,3 +24,21 @@ vim.treesitter.query.set("python", "injections", [[
 -- supposed to be between 90 and 120. Disabling this doesn't break anything
 -- else.
 vim.api.nvim_set_hl(0, "@lsp.type.string.python", {})
+
+-- Actually enable treesitter whenever it's useful.
+-- via https://github.com/nvim-treesitter/nvim-treesitter/issues/8221
+vim.api.nvim_create_autocmd('FileType', {
+  callback = function(args)
+    local treesitter = require('nvim-treesitter')
+    local lang = vim.treesitter.language.get_lang(args.match)
+    if vim.list_contains(treesitter.get_available(), lang) then
+      if not vim.list_contains(treesitter.get_installed(), lang) then
+        treesitter.install(lang):wait()
+      end
+      vim.treesitter.start(args.buf)
+      vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      vim.wo[0][0].foldmethod = 'expr'
+    end
+  end,
+  desc = "Enable nvim-treesitter and install parser if not installed"
+})
