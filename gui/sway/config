@@ -95,6 +95,12 @@ bindsym Super+Shift+8 move container to workspace 8
 bindsym Super+Shift+9 move container to workspace 9
 bindsym Super+Shift+0 move container to workspace 10
 
+# Super+mousewheel up for next workspace, down for previous
+bindsym --whole-window {
+  Super+button4 workspace next
+  Super+button5 workspace prev
+}
+
 bindsym Super+Shift+r reload
 bindsym Super+Shift+q exec "swaynag -t warning -e bottom -m 'log out?' -b 'yep, log out' 'swaymsg exit'"
 
