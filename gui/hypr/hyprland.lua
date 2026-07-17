@@ -106,7 +106,7 @@ hl.window_rule({ match = { float = false, workspace = "f[1]" }, rounding = 0 })
 ------------------
 -- window rules --
 ------------------
-hl.window_rule({ match = { class = ".*" }, float = true })
+hl.window_rule({ match = { class = ".*" }, float = true, persistent_size = true })
 
 hl.window_rule({
   name  = "suppress-maximize-events",
