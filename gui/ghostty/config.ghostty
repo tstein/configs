@@ -1,3 +1,6 @@
+# vim: ft=toml
+# ^ not true, but useful
+
 window-padding-x = 0
 window-padding-y = 0
 font-family = Inconsolata
@@ -5,7 +8,12 @@ font-size = 10
 font-feature = -calt, -liga, -dlig
 cursor-style-blink = false
 link-previews = false
+# Suppress the auth dialogs that don't even prevent pasting anyway.
+clipboard-read = allow
+clipboard-write = allow
 
+window-theme = ghostty
+gtk-wide-tabs = false
 # modified theme = Oceanic Material
 palette = 0=#000000
 palette = 1=#ee2b2a
@@ -24,7 +32,7 @@ palette = 13=#aa4dbc
 palette = 14=#42c7da
 palette = 15=#ffffff
 background = #000000
-background-opacity = .97
+background-opacity = .9
 foreground = #ffffff
 cursor-color = #ffffff
 cursor-text = #ffffff
