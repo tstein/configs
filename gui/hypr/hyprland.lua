@@ -237,9 +237,12 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 4%-"
 -- autostart --
 ---------------
 autostart = {
-  "swaybg -m fill -i ~/pictures/wallpaper/current",
-  "waybar",
+  -- complete the DE
+  "hypridle",
+  "hyprpaper",
   "swaync || mako",
+  "waybar",
+  -- tray programs
   "blueman-applet",
   "nm-applet",
   "keepassxc",
