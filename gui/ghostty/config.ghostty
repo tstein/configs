@@ -13,7 +13,6 @@ clipboard-read = allow
 clipboard-write = allow
 
 window-theme = ghostty
-gtk-wide-tabs = false
 # modified theme = Oceanic Material
 palette = 0=#000000
 palette = 1=#ee2b2a
