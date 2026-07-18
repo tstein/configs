@@ -107,6 +107,8 @@ hl.window_rule({ match = { float = false, workspace = "f[1]" }, rounding = 0 })
 -- window rules --
 ------------------
 hl.window_rule({ match = { class = ".*" }, float = true, persistent_size = true })
+-- new firefox floats are tiny without this
+hl.window_rule({ match = { class = "firefox" }, size = { "(monitor_w * 0.6)", "(monitor_h * 0.6)" }})
 
 hl.window_rule({
   name  = "suppress-maximize-events",
@@ -172,15 +174,17 @@ hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("hyprshot -m region"))
 hl.bind("SUPER + ALT + C", hl.dsp.exec_cmd("strawberry"))
 hl.bind("SUPER + ALT + N", hl.dsp.exec_cmd("nemo"))
 hl.bind("SUPER + ALT + Q", hl.dsp.exec_cmd("qalculate-gtk"))
+hl.bind("SUPER + D", hl.dsp.exec_cmd("PATH=~/.local/bin:$PATH bemenu-run"))
+hl.bind("SUPER + SHIFT + D", hl.dsp.exec_cmd("hyprlauncher"))
 
 -- window management
-hl.bind("SUPER + TAB", cycle_layouts)
 hl.bind("SUPER + SHIFT + C", hl.dsp.window.close())
+hl.bind("SUPER + TAB", cycle_layouts)
 hl.bind("SUPER + F", hl.dsp.window.fullscreen())
 hl.bind("SUPER + T", hl.dsp.window.float({ action = "toggle" }))
 hl.bind("SUPER + P", hl.dsp.window.pseudo())
-hl.bind("SUPER + D", hl.dsp.exec_cmd("PATH=~/.local/bin:$PATH bemenu-run"))
-hl.bind("SUPER + SHIFT + D", hl.dsp.exec_cmd("hyprlauncher"))
+-- switch between vertical and horizontal splitting (only valid for dwindle)
+hl.bind("SUPER + SPACE", hl.dsp.layout("togglesplit"))
 
 -- move focus by monitor
 hl.bind("SUPER + W", hl.dsp.focus({ monitor = "-1" }))
@@ -188,6 +192,10 @@ hl.bind("SUPER + E", hl.dsp.focus({ monitor = "+1" }))
 -- move window by monitor
 hl.bind("SUPER + SHIFT + W", hl.dsp.window.move({ monitor = "-1" }))
 hl.bind("SUPER + SHIFT + E", hl.dsp.window.move({ monitor = "+1" }))
+-- move workspace by monitor
+hl.bind("SUPER + ALT + SHIFT + W", hl.dsp.workspace.move({ monitor = "-1" }))
+hl.bind("SUPER + ALT + SHIFT + E", hl.dsp.workspace.move({ monitor = "+1" }))
+
 -- move focus by direction
 hl.bind("SUPER + left",  hl.dsp.focus({ direction = "left" }))
 hl.bind("SUPER + right", hl.dsp.focus({ direction = "right" }))
@@ -198,6 +206,7 @@ hl.bind("SUPER + SHIFT + left",  hl.dsp.window.move({ direction = "left" }))
 hl.bind("SUPER + SHIFT + right", hl.dsp.window.move({ direction = "right" }))
 hl.bind("SUPER + SHIFT + up",    hl.dsp.window.move({ direction = "up" }))
 hl.bind("SUPER + SHIFT + down",  hl.dsp.window.move({ direction = "down" }))
+
 -- focus/move window by workspace number
 for i = 1, 10 do
   local key = i % 10
@@ -248,6 +257,8 @@ autostart = {
   "keepassxc",
   "strawberry",
 }
+-- to add more, in `hyprland_local.lua:
+-- table.insert(autostart, "notify-send 'started up!'")
 
 hl.on("hyprland.start", function()
   for _, cmd in pairs(autostart) do
