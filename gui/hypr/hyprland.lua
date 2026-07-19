@@ -2,8 +2,15 @@
 -- defs and utils --
 --------------------
 oregon_blue = "#306ac0bb";
+-- send a hyprland-native notification
 function notify(msg)
   hl.notification.create({ text = msg, timeout = 2000, color = oregon_blue})
+end
+-- callback version for binds
+function notify_cb(msg)
+  return function()
+    hl.notification.create({ text = msg, timeout = 2000, color = oregon_blue})
+  end
 end
 
 -- turn off the meme stuff
@@ -215,8 +222,9 @@ for i = 1, 10 do
 end
 
 -- scroll through workspaces with mouse wheel
-hl.bind("SUPER + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
-hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+-- indices have the opposite of the effect you expect
+hl.bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "e+1" }))
+hl.bind("SUPER + mouse_down",   hl.dsp.focus({ workspace = "e-1" }))
 
 -- drag/resize by mouse
 --               left click
@@ -245,7 +253,7 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 4%-"
 ---------------
 -- autostart --
 ---------------
-autostart = {
+autostart_cmds = {
   -- complete the DE
   "hypridle",
   "hyprpaper",
@@ -257,11 +265,14 @@ autostart = {
   "keepassxc",
   "strawberry",
 }
--- to add more, in `hyprland_local.lua:
--- table.insert(autostart, "notify-send 'started up!'")
+
+-- to add more:
+function autostart(cmd)
+  table.insert(autostart_cmds, cmd)
+end
 
 hl.on("hyprland.start", function()
-  for _, cmd in pairs(autostart) do
+  for _, cmd in pairs(autostart_cmds) do
     hl.exec_cmd(cmd)
   end
 end)
