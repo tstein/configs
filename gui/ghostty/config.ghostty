@@ -13,6 +13,7 @@ clipboard-read = allow
 clipboard-write = allow
 
 window-theme = ghostty
+gtk-custom-css = style.css
 # modified theme = Oceanic Material
 palette = 0=#000000
 palette = 1=#ee2b2a
