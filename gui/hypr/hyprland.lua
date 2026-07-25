@@ -153,8 +153,9 @@ hl.config({
     kb_options = "grp:alt_space_toggle,compose:caps",
     numlock_by_default = true,
 
-    -- need both to disable focus-follows-mouse entirely.
-    follow_mouse = 0,
+    -- 2 means mouse events go to whatever window the cursor's over, without
+    -- actually changing focus
+    follow_mouse = 2,
     float_switch_override_focus = 0,
 
     touchpad = {
@@ -176,7 +177,7 @@ hl.gesture({
 -- shortcuts
 hl.bind("SUPER + RETURN", hl.dsp.exec_cmd("ghostty"))
 hl.bind("SUPER + SHIFT + L", hl.dsp.exec_cmd("hyprlock"))
-hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("hyprshot -m region"))
+hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("hyprshot -m region --clipboard-only"))
 
 -- runners
 hl.bind("SUPER + ALT + C", hl.dsp.exec_cmd("strawberry"))
@@ -255,6 +256,8 @@ hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 4%-"
 -- autostart --
 ---------------
 autostart_cmds = {
+  -- required for xdg-desktop-portals, among other things
+  "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP",
   -- complete the DE
   "hypridle",
   "hyprpaper",
