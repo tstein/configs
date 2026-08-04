@@ -3,8 +3,10 @@
 
 window-padding-x = 0
 window-padding-y = 0
+font-family = FiraCode Nerd Font
+font-family = Fira Code
 font-family = Inconsolata
-font-size = 10
+font-size = 9
 font-feature = -calt, -liga, -dlig
 cursor-style-blink = false
 link-previews = false
