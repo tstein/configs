@@ -10,7 +10,7 @@ setopt autolist autoparamkeys autoparamslash hashlistall listambiguous listpacke
 setopt extended_glob glob glob_dots
 
 # history opts
-setopt share_history extended_history hist_ignore_space
+setopt share_history extended_history hist_ignore_space hist_verify
 
 # I/O
 setopt aliases clobber correct hashcmds hashdirs ignoreeof interactive_comments rmstarsilent normstarwait
@@ -94,7 +94,6 @@ getfstype() {
 ####################################### }}}
 
 # Shell configuration. {{{
-umask 022
 HISTFILE=~/.zhistfile
 HISTSIZE=$((100*1000))
 SAVEHIST=$((1000**3))
