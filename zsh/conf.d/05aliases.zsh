@@ -4,8 +4,7 @@
 alias chomp="sed -e 's/^[[:space:]]*//' | sed -e 's/[[:space:]]*$//'"
 alias dirty-bytes="grep Dirty /proc/meminfo | cut -d: -f2 | sed 's/B/Byte/' | qalc -t | head -n 3 | tail -n 1"
 alias getip='curl ifconfig.me'
-alias mirror-recursive='wget --mirror --adjust-extension --convert-links --page-requisites --span-hosts \
-    --user-agent mozilla'
+alias mirror-recursive='wget --mirror --adjust-extension --convert-links --page-requisites --span-hosts -e robots=off --user-agent mozilla'
 alias sudo='sudo '  # Enables alias, but not function, expansion on the next word.
 alias watchfreq="watch -n .5 'cat /sys/devices/system/cpu/cpu*/cpufreq/scaling_cur_freq | sort -rn'"
 
