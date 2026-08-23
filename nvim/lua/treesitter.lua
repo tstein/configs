@@ -11,8 +11,15 @@ require('nvim-treesitter').install {
 -- things like heredoc injection.
 vim.treesitter.language.register("bash", "zsh")
 
--- Enable SQL highlighting in strings starting with `--sql` or `/*sql*/`.
+-- * Enable HTML highlighting in strings starting with `<!--html-->`, tolerant of
+--   whitespace and capitalization.
+-- * Enable SQL highlighting in strings starting with `--sql` or `/*sql*/`.
 vim.treesitter.query.set("python", "injections", [[
+; extends
+(((string_content)(interpolation)*)+ @injection.content
+  (#any-match? @injection.content "^\\s*\\<!--\\s*[hH][tT][mM][lL]\\s*--\\>")
+  (#set! injection.language "html")
+)
 ; extends
 (((string_content)(interpolation)*)+ @injection.content
   (#any-match? @injection.content "^(--sql|\\/\\*sql\\*\\/)")
