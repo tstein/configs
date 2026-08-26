@@ -176,7 +176,7 @@ hl.gesture({
 --------------
 -- shortcuts
 hl.bind("SUPER + RETURN", hl.dsp.exec_cmd("ghostty"))
-hl.bind("SUPER + SHIFT + L", hl.dsp.exec_cmd("hyprlock"))
+hl.bind("SUPER + SHIFT + L", hl.dsp.exec_cmd("hyprlock --no-fade-in"))
 hl.bind("SUPER + SHIFT + S", hl.dsp.exec_cmd("hyprshot -m region --clipboard-only"))
 
 -- runners
