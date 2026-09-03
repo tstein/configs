@@ -265,6 +265,7 @@ autostart_cmds = {
   "waybar",
   -- tray programs
   "blueman-applet",
+  "easyeffects --hide-window --service-mode",
   "nm-applet",
   "keepassxc",
   "strawberry",
