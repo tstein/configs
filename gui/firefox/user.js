@@ -41,3 +41,6 @@ user_pref("dom.private-attribution.submission.enabled", false);
 user_pref("app.shield.optoutstudies.enabled", false);
 user_pref("datareporting.healthreport.uploadEnabled", false);
 user_pref("services.sync.prefs.sync-seen.app.shield.optoutstudies.enabled", false);
+
+// enable hardware passkeys
+user_pref("security.webauthn.enable_uv_preferred", true);
