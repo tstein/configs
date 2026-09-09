@@ -20,6 +20,10 @@ hl.config({
     disable_hyprland_logo   = false,
     disable_splash_rendering = true, -- also disables the quotes
   },
+  ecosystem = {
+    no_update_news = true,
+    no_donation_nag = true,
+  },
 })
 
 
