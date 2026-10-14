@@ -229,14 +229,22 @@ end
 
 -- scroll through workspaces with mouse wheel
 -- indices have the opposite of the effect you expect
-hl.bind("SUPER + mouse_up", hl.dsp.focus({ workspace = "e+1" }))
-hl.bind("SUPER + mouse_down",   hl.dsp.focus({ workspace = "e-1" }))
+hl.bind("SUPER + mouse_up",   hl.dsp.focus({ workspace = "e+1" }))
+hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "e-1" }))
 
--- drag/resize by mouse
---               left click
+-- drag with left click, resize with right
 hl.bind("SUPER + mouse:272", hl.dsp.window.drag(),   { mouse = true })
---               right click
 hl.bind("SUPER + mouse:273", hl.dsp.window.resize(), { mouse = true })
+-- enter an i3-/sway-style resize mode
+hl.bind("SUPER + r", hl.dsp.submap("resize"))
+hl.define_submap("resize", function()
+  hl.bind("up",    hl.dsp.window.resize({ x =   0, y =  10, relative = true}), { repeating = true })
+  hl.bind("down",  hl.dsp.window.resize({ x =   0, y = -10, relative = true}), { repeating = true })
+  hl.bind("right", hl.dsp.window.resize({ x =  10, y =   0, relative = true}), { repeating = true })
+  hl.bind("left",  hl.dsp.window.resize({ x = -10, y =   0, relative = true}), { repeating = true })
+  hl.bind("escape",    hl.dsp.submap("reset"))
+  hl.bind("SUPER + r", hl.dsp.submap("reset"))
+end)
 
 -- media keys
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 2%+"), { locked = true, repeating = true })
