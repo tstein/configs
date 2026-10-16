@@ -200,14 +200,14 @@ hl.bind("SUPER + P", hl.dsp.window.pseudo())
 hl.bind("SUPER + SPACE", hl.dsp.layout("togglesplit"))
 
 -- move focus by monitor
-hl.bind("SUPER + W", hl.dsp.focus({ monitor = "-1" }))
-hl.bind("SUPER + E", hl.dsp.focus({ monitor = "+1" }))
+hl.bind("SUPER + W", hl.dsp.focus({ monitor = "left" }))
+hl.bind("SUPER + E", hl.dsp.focus({ monitor = "right" }))
 -- move window by monitor
-hl.bind("SUPER + SHIFT + W", hl.dsp.window.move({ monitor = "-1" }))
-hl.bind("SUPER + SHIFT + E", hl.dsp.window.move({ monitor = "+1" }))
+hl.bind("SUPER + SHIFT + W", hl.dsp.window.move({ monitor = "left" }))
+hl.bind("SUPER + SHIFT + E", hl.dsp.window.move({ monitor = "right" }))
 -- move workspace by monitor
-hl.bind("SUPER + ALT + SHIFT + W", hl.dsp.workspace.move({ monitor = "-1" }))
-hl.bind("SUPER + ALT + SHIFT + E", hl.dsp.workspace.move({ monitor = "+1" }))
+hl.bind("SUPER + ALT + SHIFT + W", hl.dsp.workspace.move({ monitor = "left" }))
+hl.bind("SUPER + ALT + SHIFT + E", hl.dsp.workspace.move({ monitor = "right" }))
 
 -- move focus by direction
 hl.bind("SUPER + left",  hl.dsp.focus({ direction = "left" }))
