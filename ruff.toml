@@ -4,4 +4,5 @@ indent-width = 2
 ignore = [
   "E701", # multiple-statements-on-one-line-colon
   "E731", # lambda-assignment
+  "LOG015", # the root logger is useful in scripts
 ]
